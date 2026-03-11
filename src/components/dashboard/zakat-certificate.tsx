@@ -1,15 +1,36 @@
 "use client";
 
-import { useRef } from "react";
 import type { ZakatResult } from "@/types/zakat";
 import { formatCurrency } from "@/lib/format";
 import { COUNTRIES } from "@/lib/constants";
 
+// Generic data shape that works for both live results and history records
+export interface CertificateData {
+  totalAssets: number;
+  totalDeductions: number;
+  netZakatableWealth: number;
+  nisabThresholdGold: number;
+  nisabThresholdSilver: number;
+  activeNisab: number;
+  isAboveNisab: boolean;
+  zakatAmount: number;
+  zakatAlFitr?: number;
+  agriculturalZakat?: number;
+  totalZakatDue?: number;
+  breakdown: Array<{ category: string; amount: number; percentage: number; color: string }>;
+}
+
 interface ZakatCertificateProps {
-  result: ZakatResult;
+  result: CertificateData;
   currency: string;
   nisabBasis: "gold" | "silver";
   countryCode: string;
+  /** Override the date shown on the certificate */
+  calculatedDate?: string;
+  /** Year label to show (e.g. "2025") */
+  year?: number;
+  /** Unique element id for targeting with html2canvas */
+  elementId?: string;
 }
 
 const ZAKAT_RECIPIENTS = [
@@ -23,32 +44,30 @@ const ZAKAT_RECIPIENTS = [
   { name: "Travelers", arabic: "ابن السبيل" },
 ];
 
-export function ZakatCertificate({ result, currency, nisabBasis, countryCode }: ZakatCertificateProps) {
+export function ZakatCertificate({ result, currency, nisabBasis, countryCode, calculatedDate, year, elementId }: ZakatCertificateProps) {
   const country = COUNTRIES.find((c) => c.code === countryCode);
   const currencySymbol = country?.currencySymbol || "$";
-  const today = new Date();
+  const dateObj = calculatedDate ? new Date(calculatedDate) : new Date();
   const hijriFormatter = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
-  const gregorianDate = today.toLocaleDateString("en-US", {
+  const gregorianDate = dateObj.toLocaleDateString("en-US", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
   let hijriDate = "";
   try {
-    hijriDate = hijriFormatter.format(today);
+    hijriDate = hijriFormatter.format(dateObj);
   } catch {
     hijriDate = "";
   }
 
-  const positiveBreakdown = result.breakdown.filter((b) => b.amount > 0);
-
   return (
     <div
-      id="zakat-certificate"
+      id={elementId || "zakat-certificate"}
       className="zakat-certificate-root"
       style={{
         width: "210mm",
@@ -168,7 +187,7 @@ export function ZakatCertificate({ result, currency, nisabBasis, countryCode }: 
               letterSpacing: "2px",
             }}
           >
-            Zakat Calculation Report
+            Zakat Calculation Report{year ? ` — ${year}` : ""}
           </h2>
           <p
             style={{
@@ -275,9 +294,9 @@ export function ZakatCertificate({ result, currency, nisabBasis, countryCode }: 
                 {formatCurrency(result.zakatAmount, currency)}
               </p>
 
-              {(result.agriculturalZakat > 0 || result.zakatAlFitr > 0) && (
+              {((result.agriculturalZakat || 0) > 0 || (result.zakatAlFitr || 0) > 0) && (
                 <div style={{ display: "flex", justifyContent: "center", gap: "12px", marginTop: "6px" }}>
-                  {result.agriculturalZakat > 0 && (
+                  {(result.agriculturalZakat || 0) > 0 && (
                     <span
                       style={{
                         fontSize: "11px",
@@ -288,10 +307,10 @@ export function ZakatCertificate({ result, currency, nisabBasis, countryCode }: 
                         fontWeight: 600,
                       }}
                     >
-                      Ushr: {formatCurrency(result.agriculturalZakat, currency)}
+                      Ushr: {formatCurrency(result.agriculturalZakat!, currency)}
                     </span>
                   )}
-                  {result.zakatAlFitr > 0 && (
+                  {(result.zakatAlFitr || 0) > 0 && (
                     <span
                       style={{
                         fontSize: "11px",
@@ -302,13 +321,13 @@ export function ZakatCertificate({ result, currency, nisabBasis, countryCode }: 
                         fontWeight: 600,
                       }}
                     >
-                      Fitr: {formatCurrency(result.zakatAlFitr, currency)}
+                      Fitr: {formatCurrency(result.zakatAlFitr!, currency)}
                     </span>
                   )}
                 </div>
               )}
 
-              {result.totalZakatDue !== result.zakatAmount && (
+              {result.totalZakatDue && result.totalZakatDue !== result.zakatAmount && (
                 <p
                   style={{
                     fontSize: "16px",
@@ -321,7 +340,7 @@ export function ZakatCertificate({ result, currency, nisabBasis, countryCode }: 
                     borderRadius: "20px",
                   }}
                 >
-                  Total Zakat Due: {formatCurrency(result.totalZakatDue, currency)}
+                  Total Zakat Due: {formatCurrency(result.totalZakatDue!, currency)}
                 </p>
               )}
             </>
@@ -617,6 +636,54 @@ export function ZakatCertificate({ result, currency, nisabBasis, countryCode }: 
   );
 }
 
-export function getZakatCertificateRef() {
-  return document.getElementById("zakat-certificate");
+export function recordToCertificateData(record: {
+  total_assets: number;
+  total_deductions: number;
+  net_zakatable_wealth: number;
+  nisab_threshold: number;
+  is_above_nisab: boolean;
+  zakat_amount: number;
+  breakdown: Array<{ category: string; amount: number; percentage: number; color: string }>;
+}): CertificateData {
+  return {
+    totalAssets: record.total_assets,
+    totalDeductions: record.total_deductions,
+    netZakatableWealth: record.net_zakatable_wealth,
+    nisabThresholdGold: record.nisab_threshold, // approximate — only active nisab stored
+    nisabThresholdSilver: record.nisab_threshold,
+    activeNisab: record.nisab_threshold,
+    isAboveNisab: record.is_above_nisab,
+    zakatAmount: record.zakat_amount,
+    breakdown: record.breakdown,
+  };
+}
+
+export async function exportCertificateAsImage(elementId: string, filename: string) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+
+  try {
+    const html2canvasModule = await import("html2canvas");
+    const html2canvas = html2canvasModule.default;
+
+    const canvas = await html2canvas(el, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+      width: el.scrollWidth,
+      height: el.scrollHeight,
+    });
+
+    const link = document.createElement("a");
+    link.download = filename;
+    link.href = canvas.toDataURL("image/png", 1.0);
+    link.click();
+  } catch {
+    // Fallback to print
+    window.print();
+  }
+}
+
+export function printCertificate() {
+  window.print();
 }

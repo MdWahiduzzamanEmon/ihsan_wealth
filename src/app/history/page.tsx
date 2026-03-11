@@ -17,8 +17,9 @@ import { staggerContainer, staggerItem, fadeIn } from "@/lib/animations";
 import { formatCurrency } from "@/lib/format";
 import {
   Calendar, Trash2, CheckCircle, XCircle, ArrowLeft,
-  BarChart3, Loader2, LogIn, Plus, DollarSign
+  BarChart3, Loader2, LogIn, Plus, DollarSign, Printer, FileDown
 } from "lucide-react";
+import { ZakatCertificate, recordToCertificateData, exportCertificateAsImage } from "@/components/dashboard/zakat-certificate";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Legend
@@ -36,6 +37,8 @@ export default function HistoryPage() {
   const [payments, setPayments] = useState<Record<string, ZakatPayment[]>>({});
   const [showPaymentForm, setShowPaymentForm] = useState<string | null>(null);
   const [paymentData, setPaymentData] = useState({ amount: "", recipient: "", category: "poor", notes: "" });
+  const [printRecordId, setPrintRecordId] = useState<string | null>(null);
+  const [exporting, setExporting] = useState<string | null>(null);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -87,6 +90,25 @@ export default function HistoryPage() {
     const data = await fetchPayments(recordId);
     setPayments((prev) => ({ ...prev, [recordId]: data }));
   };
+
+  const handlePrintRecord = (recordId: string) => {
+    setPrintRecordId(recordId);
+    setTimeout(() => {
+      window.print();
+    }, 400);
+  };
+
+  const handleDownloadRecord = async (record: ZakatRecord) => {
+    setPrintRecordId(record.id);
+    setExporting(record.id);
+    // Wait for render
+    await new Promise((r) => setTimeout(r, 500));
+    const certId = `history-cert-${record.id}`;
+    await exportCertificateAsImage(certId, `Zakat-Report-${record.year}.png`);
+    setExporting(null);
+  };
+
+  const printRecord = printRecordId ? filteredRecords.find((r) => r.id === printRecordId) : null;
 
   // Comparison chart data
   const comparisonData = compareYears
@@ -358,6 +380,24 @@ export default function HistoryPage() {
                           <Button
                             size="sm"
                             variant="outline"
+                            onClick={() => handlePrintRecord(record.id)}
+                            className="gap-1"
+                          >
+                            <Printer className="h-3.5 w-3.5" /> Print
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDownloadRecord(record)}
+                            disabled={exporting === record.id}
+                            className="gap-1"
+                          >
+                            {exporting === record.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <FileDown className="h-3.5 w-3.5" />}
+                            {exporting === record.id ? "..." : "Download"}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
                             onClick={() => {
                               if (showPaymentForm === record.id) {
                                 setShowPaymentForm(null);
@@ -470,6 +510,22 @@ export default function HistoryPage() {
           )}
         </div>
       </main>
+
+      {/* Hidden certificate for printing/exporting */}
+      {printRecord && (
+        <div className="print-certificate-wrapper">
+          <ZakatCertificate
+            elementId={`history-cert-${printRecord.id}`}
+            result={recordToCertificateData(printRecord)}
+            currency={printRecord.currency}
+            nisabBasis={printRecord.nisab_basis}
+            countryCode={printRecord.country}
+            calculatedDate={printRecord.calculated_at}
+            year={printRecord.year}
+          />
+        </div>
+      )}
+
       <Footer countryCode={formData.country} />
     </div>
   );
