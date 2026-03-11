@@ -81,6 +81,15 @@ export function CalculatorWizard() {
   const isLastStep = currentStep === totalSteps - 2;
   const isSummary = currentStep === totalSteps - 1;
 
+  const scrollToTop = () => {
+    const wizardEl = document.getElementById("calculator-wizard-top");
+    if (wizardEl) {
+      wizardEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   const handleNext = () => {
     setDirection("right");
     if (isLastStep) {
@@ -89,6 +98,7 @@ export function CalculatorWizard() {
     } else {
       setCurrentStep((s) => Math.min(s + 1, totalSteps - 1));
     }
+    scrollToTop();
   };
 
   const handlePrev = () => {
@@ -99,11 +109,13 @@ export function CalculatorWizard() {
     } else {
       setCurrentStep((s) => Math.max(s - 1, 0));
     }
+    scrollToTop();
   };
 
   const handleReset = () => {
     setShowResults(false);
     setCurrentStep(0);
+    scrollToTop();
   };
 
   if (!isLoaded) {
@@ -171,7 +183,7 @@ export function CalculatorWizard() {
   );
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
+    <div id="calculator-wizard-top" className="mx-auto max-w-4xl px-4 py-8">
       <div className="mb-8">
         <StepIndicator currentStep={currentStep} />
       </div>

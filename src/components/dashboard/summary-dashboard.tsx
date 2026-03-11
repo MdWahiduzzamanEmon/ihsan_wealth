@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,13 +13,14 @@ import { formatCurrency } from "@/lib/format";
 import { UI_TEXTS, getLangFromCountry } from "@/lib/islamic-content";
 import { useZakatRecords } from "@/hooks/use-zakat-records";
 import { useAuth } from "@/components/providers/auth-provider";
+import { ZakatCertificate } from "./zakat-certificate";
 import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, RadialBarChart, RadialBar,
 } from "recharts";
 import {
   CheckCircle, XCircle, Printer, RotateCcw, Save, Loader2,
-  Wheat, Heart, TrendingUp, LogIn
+  Wheat, Heart, TrendingUp, LogIn, FileDown
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -52,12 +53,56 @@ export function SummaryDashboard({ result, currency, nisabBasis, countryCode, on
   const { isAuthenticated } = useAuth();
   const { saveRecord, loading: saving, error: saveError } = useZakatRecords();
   const [saved, setSaved] = useState(false);
+  const [showCertificate, setShowCertificate] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   const handleSave = async () => {
     if (!formData || !prices) return;
     const record = await saveRecord(formData, result, prices);
     if (record) setSaved(true);
   };
+
+  const handlePrint = useCallback(() => {
+    setShowCertificate(true);
+    setTimeout(() => {
+      window.print();
+    }, 300);
+  }, []);
+
+  const handleExportPDF = useCallback(async () => {
+    setShowCertificate(true);
+    setExporting(true);
+    // Give time for certificate to render
+    await new Promise((r) => setTimeout(r, 400));
+
+    try {
+      const el = document.getElementById("zakat-certificate");
+      if (!el) return;
+
+      // Dynamic import html2canvas
+      const html2canvasModule = await import("html2canvas");
+      const html2canvas = html2canvasModule.default;
+
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        width: el.scrollWidth,
+        height: el.scrollHeight,
+      });
+
+      // Create PDF-sized canvas (A4 ratio)
+      const link = document.createElement("a");
+      link.download = `Zakat-Report-${new Date().toISOString().split("T")[0]}.png`;
+      link.href = canvas.toDataURL("image/png", 1.0);
+      link.click();
+    } catch {
+      // Fallback: just print
+      window.print();
+    } finally {
+      setExporting(false);
+    }
+  }, []);
 
   // Bar chart data for asset breakdown
   const barData = positiveBreakdown.map((b) => ({
@@ -392,13 +437,27 @@ export function SummaryDashboard({ result, currency, nisabBasis, countryCode, on
           </Link>
         )}
         {saveError && <p className="w-full text-center text-xs text-red-500">{saveError}</p>}
-        <Button variant="outline" onClick={() => window.print()} className="gap-2">
-          <Printer className="h-4 w-4" /> Print
+        <Button variant="outline" onClick={handlePrint} className="gap-2">
+          <Printer className="h-4 w-4" /> Print Report
+        </Button>
+        <Button variant="outline" onClick={handleExportPDF} disabled={exporting} className="gap-2">
+          {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
+          {exporting ? "Exporting..." : "Export as Image"}
         </Button>
         <Button variant="outline" onClick={onReset} className="gap-2">
           <RotateCcw className="h-4 w-4" /> Recalculate
         </Button>
       </motion.div>
+
+      {/* Printable Certificate (hidden on screen, shown when printing) */}
+      <div className={showCertificate ? "print-certificate-wrapper" : "hidden"}>
+        <ZakatCertificate
+          result={result}
+          currency={currency}
+          nisabBasis={nisabBasis}
+          countryCode={countryCode}
+        />
+      </div>
     </motion.div>
   );
 }

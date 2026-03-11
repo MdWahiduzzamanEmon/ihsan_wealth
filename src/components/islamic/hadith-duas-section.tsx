@@ -46,9 +46,9 @@ function QuoteCard({ quote, lang }: { quote: IslamicQuote; lang: TransLang }) {
 
   return (
     <Card className={cn("border-l-4 overflow-hidden", borderColor, bgColor)}>
-      <CardContent className="py-5 px-5">
+      <CardContent className="py-4 px-3 sm:py-5 sm:px-5">
         {/* Arabic text */}
-        <p className="font-arabic text-xl md:text-2xl leading-[2.2] text-right text-gray-800 mb-4" dir="rtl">
+        <p className="font-arabic text-lg sm:text-xl md:text-2xl leading-[2] sm:leading-[2.2] text-right text-gray-800 mb-3 sm:mb-4" dir="rtl">
           {quote.arabic}
         </p>
 
@@ -107,22 +107,22 @@ export function HadithDuasSection({ countryCode = "US" }: HadithDuasSectionProps
   const filtered = allQuotes.filter((q) => q.type === activeTab);
 
   return (
-    <section className="mx-auto max-w-4xl px-4 py-10">
+    <section className="mx-auto max-w-4xl px-3 sm:px-4 py-8 sm:py-10">
       {/* Section Header */}
-      <div className="text-center mb-8">
-        <p className="font-arabic text-2xl text-amber-600/80 mb-1">
+      <div className="text-center mb-6 sm:mb-8 px-2">
+        <p className="font-arabic text-xl sm:text-2xl text-amber-600/80 mb-1">
           العلم والحكمة
         </p>
-        <h2 className="text-2xl font-bold text-emerald-900">
+        <h2 className="text-xl sm:text-2xl font-bold text-emerald-900">
           {texts.knowledgeTitle}
         </h2>
-        <p className="mt-2 text-sm text-muted-foreground max-w-lg mx-auto">
+        <p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-muted-foreground max-w-lg mx-auto">
           {texts.knowledgeSubtitle}
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex justify-center gap-2 mb-6">
+      <div className="flex justify-center gap-1.5 sm:gap-2 mb-5 sm:mb-6 px-1">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (
@@ -130,22 +130,22 @@ export function HadithDuasSection({ countryCode = "US" }: HadithDuasSectionProps
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all",
+                "flex items-center gap-1 sm:gap-2 rounded-full px-3 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-medium transition-all",
                 activeTab === tab.id
                   ? "bg-emerald-700 text-white shadow-md shadow-emerald-200"
                   : "bg-white text-gray-600 border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50"
               )}
             >
-              <Icon className="h-4 w-4" />
+              <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span>{tab.label}</span>
-              <span className="font-arabic text-xs opacity-70">{tab.labelAr}</span>
+              <span className="font-arabic text-[10px] sm:text-xs opacity-70 hidden sm:inline">{tab.labelAr}</span>
             </button>
           );
         })}
       </div>
 
       {/* Quotes Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
         {filtered.map((quote, i) => (
           <QuoteCard key={i} quote={quote} lang={lang} />
         ))}
