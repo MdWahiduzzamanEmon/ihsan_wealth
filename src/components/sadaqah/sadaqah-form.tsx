@@ -34,9 +34,11 @@ export const SADAQAH_CATEGORIES: { value: string; label: string; icon: LucideIco
 
 interface SadaqahFormProps {
   onAdd: (record: SadaqahRecord) => void;
+  currencySymbol?: string;
+  currencyCode?: string;
 }
 
-export function SadaqahForm({ onAdd }: SadaqahFormProps) {
+export function SadaqahForm({ onAdd, currencySymbol = "$", currencyCode = "USD" }: SadaqahFormProps) {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("General");
   const [date, setDate] = useState(() => new Date().toISOString().split("T")[0]);
@@ -51,7 +53,7 @@ export function SadaqahForm({ onAdd }: SadaqahFormProps) {
     const record: SadaqahRecord = {
       id: crypto.randomUUID(),
       amount: parsed,
-      currency: "USD",
+      currency: currencyCode,
       category,
       date,
       notes: notes.trim(),
@@ -83,7 +85,7 @@ export function SadaqahForm({ onAdd }: SadaqahFormProps) {
             {/* Amount & Date Row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-sm font-medium text-emerald-800">Amount ($)</Label>
+                <Label className="text-sm font-medium text-emerald-800">Amount ({currencySymbol})</Label>
                 <Input
                   type="number"
                   step="0.01"

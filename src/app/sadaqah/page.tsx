@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useSadaqahRecords } from "@/hooks/use-sadaqah-records";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
@@ -11,15 +12,21 @@ import { SadaqahForm } from "@/components/sadaqah/sadaqah-form";
 import { SadaqahList } from "@/components/sadaqah/sadaqah-list";
 import { SadaqahStats } from "@/components/sadaqah/sadaqah-stats";
 import { fadeIn } from "@/lib/animations";
+import { COUNTRIES } from "@/lib/constants";
+import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
 import { ArrowLeft, Heart, LogIn, Loader2 } from "lucide-react";
 
 export default function SadaqahPage() {
   const { isAuthenticated, loading: authLoading } = useAuth();
   const { records, addRecord, deleteRecord, isLoading } = useSadaqahRecords();
+  const [formData] = useLocalStorage<ZakatFormData>("zakat-calculator-data", DEFAULT_FORM_DATA);
+  const country = COUNTRIES.find((c) => c.code === formData.country) || COUNTRIES[0];
+  const currencySymbol = country.currencySymbol;
+  const currencyCode = country.currency;
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20">
-      <Header />
+      <Header countryCode={formData.country} />
       <main className="flex-1">
         <div className="mx-auto max-w-5xl px-4 py-8">
           {/* Page Title */}
@@ -109,13 +116,13 @@ export default function SadaqahPage() {
           ) : !isLoading ? (
             <div className="space-y-8">
               {/* Add Form */}
-              <SadaqahForm onAdd={addRecord} />
+              <SadaqahForm onAdd={addRecord} currencySymbol={currencySymbol} currencyCode={currencyCode} />
 
               {/* Stats */}
-              <SadaqahStats records={records} />
+              <SadaqahStats records={records} currencySymbol={currencySymbol} />
 
               {/* Donations List */}
-              <SadaqahList records={records} onDelete={deleteRecord} />
+              <SadaqahList records={records} onDelete={deleteRecord} currencySymbol={currencySymbol} />
 
               {/* Motivational Footer */}
               {records.length > 0 && (
@@ -142,7 +149,7 @@ export default function SadaqahPage() {
           )}
         </div>
       </main>
-      <Footer />
+      <Footer countryCode={formData.country} />
     </div>
   );
 }

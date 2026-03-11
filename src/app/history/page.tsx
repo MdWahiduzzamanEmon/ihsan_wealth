@@ -23,9 +23,12 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Legend
 } from "recharts";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
 
 export default function HistoryPage() {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const [formData] = useLocalStorage<ZakatFormData>("zakat-calculator-data", DEFAULT_FORM_DATA);
   const { fetchRecords, deleteRecord, markPaid, addPayment, fetchPayments, loading, error } = useZakatRecords();
   const [records, setRecords] = useState<ZakatRecord[]>([]);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
@@ -115,7 +118,7 @@ export default function HistoryPage() {
   if (!isAuthenticated) {
     return (
       <div className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20">
-        <Header />
+        <Header countryCode={formData.country} />
         <main className="flex-1 flex items-center justify-center px-4">
           <motion.div className="text-center space-y-4" variants={fadeIn} initial="initial" animate="animate">
             <div className="h-20 w-20 mx-auto rounded-full bg-emerald-100 flex items-center justify-center">
@@ -137,14 +140,14 @@ export default function HistoryPage() {
             </div>
           </motion.div>
         </main>
-        <Footer />
+        <Footer countryCode={formData.country} />
       </div>
     );
   }
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20">
-      <Header />
+      <Header countryCode={formData.country} />
       <main className="flex-1">
         <div className="mx-auto max-w-5xl px-4 py-8">
           {/* Title */}
@@ -467,7 +470,7 @@ export default function HistoryPage() {
           )}
         </div>
       </main>
-      <Footer />
+      <Footer countryCode={formData.country} />
     </div>
   );
 }

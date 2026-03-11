@@ -92,21 +92,21 @@ const itemVariants = {
 
 export function FeaturesGrid() {
   return (
-    <section className="mx-auto max-w-5xl px-4 py-10">
+    <section className="mx-auto max-w-5xl px-4 py-8 sm:py-10">
       {/* Section Header */}
-      <div className="text-center mb-8">
-        <p className="font-arabic text-amber-600/60 text-lg mb-1">بِسْمِ اللَّهِ توكلنا</p>
-        <h2 className="text-2xl font-bold text-gray-900">
+      <div className="text-center mb-6 sm:mb-8">
+        <p className="font-arabic text-amber-600/60 text-base sm:text-lg mb-1">بِسْمِ اللَّهِ توكلنا</p>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
           Your Complete <span className="text-emerald-700">Islamic</span> Companion
         </h2>
-        <p className="text-sm text-gray-500 mt-1.5 max-w-md mx-auto">
+        <p className="text-xs sm:text-sm text-gray-500 mt-1.5 max-w-md mx-auto px-2">
           All the tools a Muslim needs — Zakat, Prayer, Qibla, Duas, Calendar, and more. No login required.
         </p>
       </div>
 
       {/* Features Grid */}
       <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -115,22 +115,22 @@ export function FeaturesGrid() {
         {FEATURES.map(({ href, icon: Icon, title, arabic, description, color, iconBg }) => (
           <motion.div key={href} variants={itemVariants}>
             <Link href={href} className="group block">
-              <div className="relative overflow-hidden rounded-xl border border-gray-100 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 h-full">
+              <div className="relative overflow-hidden rounded-xl border border-gray-100 bg-white p-4 sm:p-5 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 h-full">
                 {/* Gradient accent top */}
                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${color} opacity-0 group-hover:opacity-100 transition-opacity`} />
 
-                <div className="flex items-start gap-4">
-                  <div className={`shrink-0 rounded-lg p-2.5 ${iconBg} group-hover:scale-110 transition-transform`}>
-                    <Icon className="h-5 w-5" />
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className={`shrink-0 rounded-lg p-2 sm:p-2.5 ${iconBg} group-hover:scale-110 transition-transform`}>
+                    <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                   </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <h3 className="font-semibold text-gray-900 text-sm group-hover:text-emerald-700 transition-colors">
                         {title}
                       </h3>
                       <span className="font-arabic text-xs text-gray-400">{arabic}</span>
                     </div>
-                    <p className="text-xs text-gray-500 leading-relaxed">
+                    <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
                       {description}
                     </p>
                   </div>

@@ -9,15 +9,18 @@ import { HijriCalendar } from "@/components/calendar/hijri-calendar";
 import { IslamicEvents } from "@/components/calendar/islamic-events";
 import { DateConverter } from "@/components/calendar/date-converter";
 import { gregorianToHijri, getHijriMonthName, getHijriDayName } from "@/lib/hijri-utils";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
 
 export default function CalendarPage() {
   const todayHijri = useMemo(() => gregorianToHijri(new Date()), []);
   const monthName = getHijriMonthName(todayHijri.month);
   const dayName = getHijriDayName(new Date().getDay());
+  const [formData] = useLocalStorage<ZakatFormData>("zakat-calculator-data", DEFAULT_FORM_DATA);
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20">
-      <Header />
+      <Header countryCode={formData.country} />
       <main className="flex-1">
         {/* Hero section with current Hijri date */}
         <section className="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-950 py-12 md:py-16">
@@ -149,7 +152,7 @@ export default function CalendarPage() {
           </div>
         </section>
       </main>
-      <Footer />
+      <Footer countryCode={formData.country} />
     </div>
   );
 }

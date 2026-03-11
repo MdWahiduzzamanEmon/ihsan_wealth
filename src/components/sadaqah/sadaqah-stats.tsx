@@ -14,9 +14,10 @@ import { SADAQAH_CATEGORIES, type SadaqahRecord } from "./sadaqah-form";
 
 interface SadaqahStatsProps {
   records: SadaqahRecord[];
+  currencySymbol?: string;
 }
 
-export function SadaqahStats({ records }: SadaqahStatsProps) {
+export function SadaqahStats({ records, currencySymbol = "$" }: SadaqahStatsProps) {
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
@@ -86,7 +87,7 @@ export function SadaqahStats({ records }: SadaqahStatsProps) {
                   <p className="text-xs text-muted-foreground font-medium">This Month</p>
                   <AnimatedCounter
                     value={totalThisMonth}
-                    prefix="$"
+                    prefix={currencySymbol}
                     decimals={2}
                     className="text-2xl font-bold text-emerald-800"
                   />
@@ -107,7 +108,7 @@ export function SadaqahStats({ records }: SadaqahStatsProps) {
                   <p className="text-xs text-muted-foreground font-medium">This Year</p>
                   <AnimatedCounter
                     value={totalThisYear}
-                    prefix="$"
+                    prefix={currencySymbol}
                     decimals={2}
                     className="text-2xl font-bold text-amber-800"
                   />
@@ -158,7 +159,7 @@ export function SadaqahStats({ records }: SadaqahStatsProps) {
                       <XAxis dataKey="month" tick={{ fontSize: 11 }} stroke="#9ca3af" />
                       <YAxis tick={{ fontSize: 11 }} stroke="#9ca3af" />
                       <Tooltip
-                        formatter={(value) => [`$${Number(value).toFixed(2)}`, "Total"]}
+                        formatter={(value) => [`${currencySymbol}${Number(value).toFixed(2)}`, "Total"]}
                         contentStyle={{
                           borderRadius: "8px",
                           border: "1px solid #d1fae5",
@@ -206,7 +207,7 @@ export function SadaqahStats({ records }: SadaqahStatsProps) {
                         ))}
                       </Pie>
                       <Tooltip
-                        formatter={(value) => `$${Number(value).toFixed(2)}`}
+                        formatter={(value) => `${currencySymbol}${Number(value).toFixed(2)}`}
                         contentStyle={{
                           borderRadius: "8px",
                           border: "1px solid #d1fae5",

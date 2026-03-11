@@ -57,7 +57,7 @@ export function FitrSettingsStep({ formData, onChange, currencySymbol, lang }: F
                 <strong>{isLocal ? t(lang, "includeFitr") : "Include Zakat al-Fitr in my calculation"}</strong>
                 <br />
                 <span className="text-xs text-rose-600">
-                  {isLocal ? biDesc(lang, "includeFitr_desc") : "Approximately $12 USD per person (1 Sa' ≈ 2.5-3kg of staple food)"}
+                  {isLocal ? biDesc(lang, "includeFitr_desc") : `Approximately ${currencySymbol}12 per person (1 Sa' ≈ 2.5-3kg of staple food)`}
                 </span>
               </Label>
             </div>
@@ -90,7 +90,7 @@ export function FitrSettingsStep({ formData, onChange, currencySymbol, lang }: F
                 <div className="rounded-lg bg-rose-50 border border-rose-200 p-3">
                   <p className="text-sm text-rose-800">
                     Fitr for <strong>{formData.fitrMembers}</strong> {formData.fitrMembers === 1 ? "person" : "people"}:
-                    {" "}<strong>≈ ${(formData.fitrMembers * 12).toLocaleString()}</strong> USD equivalent
+                    {" "}<strong>{currencySymbol}{(formData.fitrMembers * 12).toLocaleString()}</strong>
                   </p>
                 </div>
               </motion.div>

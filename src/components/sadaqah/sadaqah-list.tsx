@@ -12,9 +12,10 @@ import { SADAQAH_CATEGORIES, type SadaqahRecord } from "./sadaqah-form";
 interface SadaqahListProps {
   records: SadaqahRecord[];
   onDelete: (id: string) => void;
+  currencySymbol?: string;
 }
 
-export function SadaqahList({ records, onDelete }: SadaqahListProps) {
+export function SadaqahList({ records, onDelete, currencySymbol = "$" }: SadaqahListProps) {
   const [confirmId, setConfirmId] = useState<string | null>(null);
 
   const grouped = useMemo(() => {
@@ -103,7 +104,7 @@ export function SadaqahList({ records, onDelete }: SadaqahListProps) {
                 </h3>
                 <div className="flex-1 h-px bg-emerald-100" />
                 <span className="text-xs text-muted-foreground">
-                  {monthRecords.length} donation{monthRecords.length !== 1 ? "s" : ""} &middot; $
+                  {monthRecords.length} donation{monthRecords.length !== 1 ? "s" : ""} &middot; {currencySymbol}
                   {monthRecords.reduce((s, r) => s + r.amount, 0).toFixed(2)}
                 </span>
               </div>
@@ -136,7 +137,7 @@ export function SadaqahList({ records, onDelete }: SadaqahListProps) {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="font-semibold text-emerald-800">
-                              ${record.amount.toFixed(2)}
+                              {currencySymbol}{record.amount.toFixed(2)}
                             </span>
                             <Badge variant="secondary" className="text-xs">
                               {record.category}
