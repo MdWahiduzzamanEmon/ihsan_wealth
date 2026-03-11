@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#065f46"/>
+      <stop offset="100%" style="stop-color:#047857"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+  <!-- Bold "IW" monogram -->
+  <text x="16" y="22" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="16" letter-spacing="-0.5">
+    <tspan fill="#f59e0b">I</tspan><tspan fill="white">W</tspan>
+  </text>
+  <!-- Gold dot accent -->
+  <circle cx="16" cy="6.5" r="2" fill="#f59e0b" opacity="0.9"/>
+</svg>

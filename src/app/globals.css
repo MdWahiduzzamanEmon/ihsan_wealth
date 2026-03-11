@@ -127,3 +127,18 @@
     @apply font-sans;
   }
 }
+
+/* Arabic font utility */
+.font-arabic {
+  font-family: var(--font-amiri), "Amiri", "Traditional Arabic", "Scheherazade New", serif;
+}
+
+/* Print styles */
+@media print {
+  header, footer, nav, button, .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}

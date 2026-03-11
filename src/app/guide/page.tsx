@@ -1,0 +1,376 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  BookOpen,
+  Calculator,
+  CalendarDays,
+  ChevronDown,
+  ChevronUp,
+  Clock,
+  Compass,
+  Heart,
+  HelpCircle,
+  History,
+  Lightbulb,
+  LogIn,
+  Sparkles,
+} from "lucide-react";
+import { DeveloperCredit } from "@/components/layout/developer-credit";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { getLangFromCountry, type TransLang } from "@/lib/islamic-content";
+import { staggerContainer, staggerItem, fadeIn, slideUp } from "@/lib/animations";
+import {
+  GUIDE_PAGE_TEXTS,
+  GUIDE_SECTIONS,
+  type GuideSection,
+} from "@/lib/guide-content";
+import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
+
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  Calculator,
+  Clock,
+  Compass,
+  BookOpen,
+  CalendarDays,
+  Heart,
+  History,
+};
+
+const REQUIRES_LOGIN = new Set(["sadaqah", "history"]);
+
+function GuideSectionCard({
+  section,
+  lang,
+  index,
+}: {
+  section: GuideSection;
+  lang: TransLang;
+  index: number;
+}) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const Icon = ICON_MAP[section.icon] || BookOpen;
+  const isRtl = lang === "ar" || lang === "ur";
+  const needsLogin = REQUIRES_LOGIN.has(section.id);
+
+  return (
+    <motion.div
+      variants={staggerItem}
+      className="group relative overflow-hidden rounded-2xl border border-emerald-200/60 bg-white shadow-sm transition-shadow hover:shadow-md"
+    >
+      {/* Geometric accent top-right */}
+      <div className="absolute -top-6 -right-6 h-24 w-24 opacity-[0.04]">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 0L100 50L50 100L0 50Z" stroke="currentColor" strokeWidth="2" className="text-emerald-800" />
+          <circle cx="50" cy="50" r="20" stroke="currentColor" strokeWidth="2" className="text-emerald-800" />
+          <path d="M50 30L70 50L50 70L30 50Z" stroke="currentColor" strokeWidth="2" className="text-emerald-800" />
+        </svg>
+      </div>
+
+      {/* Header - always visible */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full text-left"
+        dir={isRtl ? "rtl" : "ltr"}
+      >
+        <div className="flex items-start gap-4 p-5 sm:p-6">
+          {/* Number + Icon */}
+          <div className="flex shrink-0 flex-col items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
+              {index + 1}
+            </span>
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-md shadow-emerald-200">
+              <Icon className="h-5 w-5 text-white" />
+            </div>
+          </div>
+
+          {/* Title area */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className="text-lg font-bold text-emerald-900">
+                {section.title[lang]}
+              </h3>
+              {needsLogin && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-[11px] font-medium text-amber-700">
+                  <LogIn className="h-3 w-3" />
+                  {GUIDE_PAGE_TEXTS.labels.requiresLogin[lang]}
+                </span>
+              )}
+            </div>
+            <p className="mt-1 text-sm text-emerald-700/70">
+              {section.subtitle[lang]}
+            </p>
+          </div>
+
+          {/* Expand toggle */}
+          <div className="shrink-0 mt-1">
+            {isExpanded ? (
+              <ChevronUp className="h-5 w-5 text-emerald-400" />
+            ) : (
+              <ChevronDown className="h-5 w-5 text-emerald-400" />
+            )}
+          </div>
+        </div>
+      </button>
+
+      {/* Expandable content */}
+      {isExpanded && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="border-t border-emerald-100"
+          dir={isRtl ? "rtl" : "ltr"}
+        >
+          {/* Islamic Reference */}
+          <div className="mx-5 mt-5 sm:mx-6 rounded-xl bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-900 p-5 text-center relative overflow-hidden">
+            {/* Pattern overlay */}
+            <div className="absolute inset-0 opacity-10">
+              <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <pattern id={`pat-${section.id}`} x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M20 0L40 20L20 40L0 20Z" fill="none" stroke="white" strokeWidth="0.5" />
+                    <circle cx="20" cy="20" r="8" fill="none" stroke="white" strokeWidth="0.3" />
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill={`url(#pat-${section.id})`} />
+              </svg>
+            </div>
+            <p className="relative font-arabic text-xl sm:text-2xl leading-relaxed text-amber-300/90 mb-3" dir="rtl">
+              {section.islamicRef.arabic}
+            </p>
+            <p className="relative text-sm text-emerald-100/80 italic max-w-lg mx-auto">
+              &ldquo;{section.islamicRef.translation[lang]}&rdquo;
+            </p>
+            <p className="relative mt-2 text-xs text-emerald-300/50">
+              {section.islamicRef.source}
+            </p>
+          </div>
+
+          {/* Description - Why it matters */}
+          <div className="px-5 pt-5 sm:px-6">
+            <h4 className="flex items-center gap-2 text-sm font-semibold text-emerald-800 mb-2">
+              <Sparkles className="h-4 w-4 text-amber-500" />
+              {GUIDE_PAGE_TEXTS.labels.whyImportant[lang]}
+            </h4>
+            <p className="text-sm leading-relaxed text-gray-600">
+              {section.description[lang]}
+            </p>
+          </div>
+
+          {/* Steps - How to use */}
+          <div className="px-5 pt-5 sm:px-6">
+            <h4 className="flex items-center gap-2 text-sm font-semibold text-emerald-800 mb-3">
+              <BookOpen className="h-4 w-4 text-emerald-600" />
+              {GUIDE_PAGE_TEXTS.labels.howToUse[lang]}
+            </h4>
+            <ol className="space-y-2.5">
+              {section.steps[lang].map((step, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700">
+                    {i + 1}
+                  </span>
+                  <span className="text-sm leading-relaxed text-gray-600 pt-0.5">
+                    {step}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          {/* Tips */}
+          <div className="px-5 pt-5 pb-6 sm:px-6">
+            <h4 className="flex items-center gap-2 text-sm font-semibold text-emerald-800 mb-3">
+              <Lightbulb className="h-4 w-4 text-amber-500" />
+              {GUIDE_PAGE_TEXTS.labels.tips[lang]}
+            </h4>
+            <ul className="space-y-2">
+              {section.tips[lang].map((tip, i) => (
+                <li key={i} className="flex items-start gap-2.5">
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
+                  <span className="text-sm text-gray-600">{tip}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </motion.div>
+      )}
+    </motion.div>
+  );
+}
+
+export default function GuidePage() {
+  const [formData] = useLocalStorage<ZakatFormData>(
+    "zakat-calculator-data",
+    DEFAULT_FORM_DATA
+  );
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const countryCode = formData?.country || "US";
+  const lang = getLangFromCountry(countryCode);
+  const isRtl = lang === "ar" || lang === "ur";
+
+  if (!mounted) {
+    return (
+      <div className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20">
+        <Header countryCode={countryCode} />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-200 border-t-emerald-600" />
+        </main>
+        <Footer countryCode={countryCode} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20">
+      <Header countryCode={countryCode} />
+
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-900 py-12 sm:py-16">
+          {/* Islamic geometric pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="guide-hero" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+                  <path d="M40 0L80 40L40 80L0 40Z" fill="none" stroke="white" strokeWidth="0.5" />
+                  <circle cx="40" cy="40" r="16" fill="none" stroke="white" strokeWidth="0.5" />
+                  <path d="M40 24L56 40L40 56L24 40Z" fill="none" stroke="white" strokeWidth="0.5" />
+                  <circle cx="40" cy="40" r="6" fill="none" stroke="white" strokeWidth="0.3" />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#guide-hero)" />
+            </svg>
+          </div>
+
+          <motion.div
+            className="relative mx-auto max-w-4xl px-4 text-center"
+            variants={fadeIn}
+            initial="initial"
+            animate="animate"
+            dir={isRtl ? "rtl" : "ltr"}
+          >
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5">
+              <HelpCircle className="h-4 w-4 text-amber-300" />
+              <span className="text-sm text-emerald-100">
+                {lang === "ar" ? "دليل المستخدم" : lang === "bn" ? "ব্যবহারকারীর গাইড" : lang === "ur" ? "صارف رہنمائی" : lang === "tr" ? "Kullanim Kilavuzu" : lang === "ms" ? "Panduan Pengguna" : lang === "id" ? "Panduan Pengguna" : "User Guide"}
+              </span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
+              {GUIDE_PAGE_TEXTS.heading[lang]}
+            </h1>
+            <p className="text-emerald-200/80 text-base sm:text-lg max-w-2xl mx-auto">
+              {GUIDE_PAGE_TEXTS.subtitle[lang]}
+            </p>
+            <div className="mt-6 font-arabic text-amber-300/50 text-lg">
+              بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Getting Started */}
+        <section className="mx-auto max-w-4xl px-4 py-8 sm:py-10">
+          <motion.div
+            className="rounded-2xl border border-amber-200/60 bg-gradient-to-br from-amber-50/80 to-white p-6 sm:p-8"
+            variants={slideUp}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-50px" }}
+            dir={isRtl ? "rtl" : "ltr"}
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 shadow-md shadow-amber-200">
+                <Sparkles className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-emerald-900 mb-2">
+                  {GUIDE_PAGE_TEXTS.gettingStarted.title[lang]}
+                </h2>
+                <p className="text-sm leading-relaxed text-gray-600">
+                  {GUIDE_PAGE_TEXTS.gettingStarted.description[lang]}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Feature Sections */}
+        <section className="mx-auto max-w-4xl px-4 pb-8 sm:pb-10">
+          <motion.div
+            className="space-y-4"
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-50px" }}
+          >
+            {GUIDE_SECTIONS.map((section, i) => (
+              <GuideSectionCard
+                key={section.id}
+                section={section}
+                lang={lang}
+                index={i}
+              />
+            ))}
+          </motion.div>
+        </section>
+
+        {/* Decorative separator */}
+        <div className="mx-auto max-w-4xl px-4">
+          <div className="flex items-center gap-4">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-300/40 to-transparent" />
+            <div className="font-arabic text-emerald-300/50 text-lg">&#10022;</div>
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-300/40 to-transparent" />
+          </div>
+        </div>
+
+        {/* Need Help? */}
+        <section className="mx-auto max-w-4xl px-4 py-8 sm:py-10">
+          <motion.div
+            className="rounded-2xl border border-emerald-200/60 bg-gradient-to-br from-emerald-50/50 to-white p-6 sm:p-8 text-center"
+            variants={slideUp}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-50px" }}
+            dir={isRtl ? "rtl" : "ltr"}
+          >
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100">
+              <HelpCircle className="h-7 w-7 text-emerald-600" />
+            </div>
+            <h2 className="text-xl font-bold text-emerald-900 mb-3">
+              {GUIDE_PAGE_TEXTS.needHelp.title[lang]}
+            </h2>
+            <p className="text-sm leading-relaxed text-gray-600 max-w-2xl mx-auto">
+              {GUIDE_PAGE_TEXTS.needHelp.description[lang]}
+            </p>
+            <div className="mt-5">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-700"
+              >
+                <Calculator className="h-4 w-4" />
+                {lang === "ar" ? "ابدأ حساب الزكاة" : lang === "bn" ? "যাকাত হিসাব শুরু করুন" : lang === "ur" ? "زکوٰۃ حساب شروع کریں" : lang === "tr" ? "Zekat Hesaplamaya Basla" : lang === "ms" ? "Mula Kira Zakat" : lang === "id" ? "Mulai Hitung Zakat" : "Start Calculating Zakat"}
+              </Link>
+            </div>
+          </motion.div>
+        </section>
+      </main>
+
+      {/* Developer Credit */}
+      <section className="bg-gradient-to-b from-emerald-950 to-emerald-950 px-4 py-10">
+        <DeveloperCredit lang={lang} />
+      </section>
+
+      <Footer countryCode={countryCode} />
+    </div>
+  );
+}
