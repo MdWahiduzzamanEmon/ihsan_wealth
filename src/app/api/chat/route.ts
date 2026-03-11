@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { ChatOpenAI } from "@langchain/openai";
-import { HumanMessage, AIMessage, SystemMessage } from "@langchain/core/messages";
+import { HumanMessage, AIMessage, SystemMessage, type BaseMessage } from "@langchain/core/messages";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { buildSystemPrompt } from "@/lib/chat/system-prompt";
 import { createSupabaseTools, createMetalPriceTool } from "@/lib/chat/tools";
@@ -151,7 +151,7 @@ export async function POST(request: Request) {
     async start(controller) {
       try {
         // Run with tool calling loop (max 3 iterations for tool calls)
-        let currentMessages = [...lcMessages];
+        let currentMessages: BaseMessage[] = [...lcMessages];
         let iterations = 0;
         const MAX_ITERATIONS = 3;
 
@@ -168,7 +168,7 @@ export async function POST(request: Request) {
             for (const tc of toolCalls) {
               const matchedTool = tools.find((t) => t.name === tc.name);
               if (matchedTool) {
-                const toolResult = await matchedTool.invoke(tc.args);
+                const toolResult = await (matchedTool as { invoke: (args: Record<string, unknown>) => Promise<string> }).invoke(tc.args);
                 const { ToolMessage } = await import("@langchain/core/messages");
                 currentMessages.push(
                   new ToolMessage({
