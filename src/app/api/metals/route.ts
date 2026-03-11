@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const GRAMS_PER_OUNCE = 31.1035;
 
-// Cache prices for 10 minutes (live prices update frequently)
+// Cache prices for 10 minutes
 let cachedPrices: Record<string, { data: unknown; timestamp: number }> = {};
 const CACHE_DURATION = 600000; // 10 minutes
 
@@ -10,7 +10,6 @@ async function fetchExchangeRate(currency: string): Promise<number> {
   if (currency === "USD") return 1;
   const lower = currency.toLowerCase();
 
-  // Try primary URL first, then fallback
   const urls = [
     `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json`,
     `https://latest.currency-api.pages.dev/v1/currencies/usd.json`,
@@ -18,7 +17,10 @@ async function fetchExchangeRate(currency: string): Promise<number> {
 
   for (const url of urls) {
     try {
-      const res = await fetch(url, { next: { revalidate: 3600 } });
+      const res = await fetch(url, {
+        next: { revalidate: 3600 },
+        signal: AbortSignal.timeout(8000),
+      });
       if (!res.ok) continue;
       const data = await res.json();
       const rate = data.usd?.[lower];
@@ -28,7 +30,7 @@ async function fetchExchangeRate(currency: string): Promise<number> {
     }
   }
 
-  // Hardcoded fallback rates for common currencies
+  // Hardcoded fallback rates
   const fallbackRates: Record<string, number> = {
     bdt: 121, eur: 0.92, gbp: 0.79, inr: 84, pkr: 285,
     sar: 3.75, aed: 3.67, try: 32, myr: 4.7, idr: 15800,
@@ -38,56 +40,99 @@ async function fetchExchangeRate(currency: string): Promise<number> {
   return fallbackRates[lower] || 1;
 }
 
-interface SwissquotePrice {
-  spreadProfilePrices: Array<{
-    bid: number;
-    ask: number;
-  }>;
-}
-
-async function fetchMetalPricesUSD(): Promise<{
+interface MetalResult {
   goldPricePerOunce: number;
   silverPricePerOunce: number;
   live: boolean;
-}> {
-  // Source: Swissquote live forex feed (free, no API key, real-time)
+  source: string;
+}
+
+// Source 1: gold-api.com (free, no key, works from cloud servers)
+async function fetchFromGoldApi(): Promise<MetalResult | null> {
+  try {
+    const [goldRes, silverRes] = await Promise.all([
+      fetch("https://api.gold-api.com/price/XAU", {
+        next: { revalidate: 300 },
+        signal: AbortSignal.timeout(8000),
+      }),
+      fetch("https://api.gold-api.com/price/XAG", {
+        next: { revalidate: 300 },
+        signal: AbortSignal.timeout(8000),
+      }),
+    ]);
+
+    if (!goldRes.ok || !silverRes.ok) return null;
+
+    const goldData = await goldRes.json();
+    const silverData = await silverRes.json();
+
+    if (goldData?.price && silverData?.price) {
+      return {
+        goldPricePerOunce: goldData.price,
+        silverPricePerOunce: silverData.price,
+        live: true,
+        source: "gold-api.com",
+      };
+    }
+  } catch {
+    // failed
+  }
+  return null;
+}
+
+// Source 2: Swissquote (real-time, may block datacenter IPs)
+async function fetchFromSwissquote(): Promise<MetalResult | null> {
   try {
     const [goldRes, silverRes] = await Promise.all([
       fetch("https://forex-data-feed.swissquote.com/public-quotes/bboquotes/instrument/XAU/USD", {
         next: { revalidate: 300 },
+        signal: AbortSignal.timeout(6000),
       }),
       fetch("https://forex-data-feed.swissquote.com/public-quotes/bboquotes/instrument/XAG/USD", {
         next: { revalidate: 300 },
+        signal: AbortSignal.timeout(6000),
       }),
     ]);
 
-    if (goldRes.ok && silverRes.ok) {
-      const goldData: SwissquotePrice[] = await goldRes.json();
-      const silverData: SwissquotePrice[] = await silverRes.json();
+    if (!goldRes.ok || !silverRes.ok) return null;
 
-      // Use the first entry's first spread profile, average of bid/ask
-      const goldBid = goldData[0]?.spreadProfilePrices[0]?.bid;
-      const goldAsk = goldData[0]?.spreadProfilePrices[0]?.ask;
-      const silverBid = silverData[0]?.spreadProfilePrices[0]?.bid;
-      const silverAsk = silverData[0]?.spreadProfilePrices[0]?.ask;
+    const goldData = await goldRes.json();
+    const silverData = await silverRes.json();
 
-      if (goldBid && goldAsk && silverBid && silverAsk) {
-        return {
-          goldPricePerOunce: (goldBid + goldAsk) / 2,
-          silverPricePerOunce: (silverBid + silverAsk) / 2,
-          live: true,
-        };
-      }
+    const goldBid = goldData[0]?.spreadProfilePrices?.[0]?.bid;
+    const goldAsk = goldData[0]?.spreadProfilePrices?.[0]?.ask;
+    const silverBid = silverData[0]?.spreadProfilePrices?.[0]?.bid;
+    const silverAsk = silverData[0]?.spreadProfilePrices?.[0]?.ask;
+
+    if (goldBid && goldAsk && silverBid && silverAsk) {
+      return {
+        goldPricePerOunce: (goldBid + goldAsk) / 2,
+        silverPricePerOunce: (silverBid + silverAsk) / 2,
+        live: true,
+        source: "Swissquote",
+      };
     }
   } catch {
-    // fallback
+    // blocked or timeout
+  }
+  return null;
+}
+
+async function fetchMetalPricesUSD(): Promise<MetalResult> {
+  // Try gold-api.com first (works reliably from cloud), then Swissquote
+  const sources = [fetchFromGoldApi, fetchFromSwissquote];
+
+  for (const fetchFn of sources) {
+    const result = await fetchFn();
+    if (result) return result;
   }
 
-  // Fallback: hardcoded recent prices (updated March 2026)
+  // All sources failed - use hardcoded fallback
   return {
-    goldPricePerOunce: 5180,
-    silverPricePerOunce: 87,
+    goldPricePerOunce: 2650,
+    silverPricePerOunce: 31,
     live: false,
+    source: "fallback",
   };
 }
 
@@ -117,6 +162,7 @@ export async function GET(request: NextRequest) {
       currency: cacheKey,
       timestamp: new Date().toISOString(),
       live: metalPricesUSD.live,
+      source: metalPricesUSD.source,
     };
 
     cachedPrices[cacheKey] = { data: result, timestamp: Date.now() };
@@ -125,13 +171,14 @@ export async function GET(request: NextRequest) {
   } catch {
     return NextResponse.json(
       {
-        goldPricePerOunce: 5180,
-        silverPricePerOunce: 87,
-        goldPricePerGram: 5180 / GRAMS_PER_OUNCE,
-        silverPricePerGram: 87 / GRAMS_PER_OUNCE,
+        goldPricePerOunce: 2650,
+        silverPricePerOunce: 31,
+        goldPricePerGram: 2650 / GRAMS_PER_OUNCE,
+        silverPricePerGram: 31 / GRAMS_PER_OUNCE,
         currency: cacheKey,
         timestamp: new Date().toISOString(),
         live: false,
+        source: "fallback",
       },
       { status: 200 }
     );
