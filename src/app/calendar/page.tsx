@@ -8,7 +8,6 @@ import { Footer } from "@/components/layout/footer";
 import { HijriCalendar } from "@/components/calendar/hijri-calendar";
 import { IslamicEvents } from "@/components/calendar/islamic-events";
 import { DateConverter } from "@/components/calendar/date-converter";
-import { AnimatedPattern } from "@/components/ui/animated-pattern";
 import { gregorianToHijri, getHijriMonthName, getHijriDayName } from "@/lib/hijri-utils";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
@@ -26,7 +25,36 @@ export default function CalendarPage() {
         {/* Hero section with current Hijri date */}
         <section className="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-950 py-12 md:py-16">
           {/* Islamic geometric pattern overlay */}
-          <AnimatedPattern color="emerald" opacity={0.06} density="sparse" />
+          <div className="absolute inset-0 opacity-[0.06]">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern
+                  id="calendar-pattern"
+                  x="0"
+                  y="0"
+                  width="80"
+                  height="80"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <path
+                    d="M40 0L80 40L40 80L0 40Z"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="0.5"
+                  />
+                  <circle cx="40" cy="40" r="20" fill="none" stroke="white" strokeWidth="0.5" />
+                  <circle cx="40" cy="40" r="10" fill="none" stroke="white" strokeWidth="0.3" />
+                  <path
+                    d="M40 20L60 40L40 60L20 40Z"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="0.3"
+                  />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#calendar-pattern)" />
+            </svg>
+          </div>
 
           {/* Decorative crescent */}
           <div className="absolute top-4 right-8 md:right-16 opacity-10">

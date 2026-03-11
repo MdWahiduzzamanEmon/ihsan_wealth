@@ -29,7 +29,7 @@ interface ZakatCertificateProps {
   calculatedDate?: string;
   /** Year label to show (e.g. "2025") */
   year?: number;
-  /** Unique element id for targeting with html2canvas */
+  /** Unique element id for targeting with html-to-image */
   elementId?: string;
 }
 
@@ -662,12 +662,10 @@ export async function exportCertificateAsImage(elementId: string, filename: stri
   const el = document.getElementById(elementId);
   if (!el) return;
 
-  const html2canvasModule = await import("html2canvas");
-  const html2canvas = html2canvasModule.default;
+  const { toPng } = await import("html-to-image");
 
-  const canvas = await html2canvas(el, {
-    scale: 2,
-    useCORS: true,
+  const dataUrl = await toPng(el, {
+    pixelRatio: 2,
     backgroundColor: "#ffffff",
     width: el.scrollWidth,
     height: el.scrollHeight,
@@ -675,6 +673,6 @@ export async function exportCertificateAsImage(elementId: string, filename: stri
 
   const link = document.createElement("a");
   link.download = filename;
-  link.href = canvas.toDataURL("image/png", 1.0);
+  link.href = dataUrl;
   link.click();
 }

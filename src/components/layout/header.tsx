@@ -22,7 +22,7 @@ import {
   User,
   X,
 } from "lucide-react";
-import { AnimatedPattern } from "@/components/ui/animated-pattern";
+
 
 const NAV_LINKS = [
   { href: "/", label: "Calculator", icon: Calculator },
@@ -48,8 +48,19 @@ export function Header({ countryCode = "US" }: HeaderProps) {
 
   return (
     <header className="relative overflow-hidden border-b bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900">
-      {/* Animated Islamic geometric pattern overlay */}
-      <AnimatedPattern opacity={0.1} color="emerald" density="normal" />
+      {/* Islamic geometric pattern overlay */}
+      <div className="absolute inset-0 opacity-10">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="islamic" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+              <path d="M30 0L60 30L30 60L0 30Z" fill="none" stroke="white" strokeWidth="0.5" />
+              <circle cx="30" cy="30" r="12" fill="none" stroke="white" strokeWidth="0.5" />
+              <path d="M30 18L42 30L30 42L18 30Z" fill="none" stroke="white" strokeWidth="0.5" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#islamic)" />
+        </svg>
+      </div>
 
       <div className="relative mx-auto max-w-6xl px-4 py-4">
         <div className="flex items-center justify-between">

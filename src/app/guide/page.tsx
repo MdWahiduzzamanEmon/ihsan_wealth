@@ -23,7 +23,6 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { getLangFromCountry, type TransLang } from "@/lib/islamic-content";
-import { AnimatedPattern } from "@/components/ui/animated-pattern";
 import { staggerContainer, staggerItem, fadeIn, slideUp } from "@/lib/animations";
 import {
   GUIDE_PAGE_TEXTS,
@@ -131,7 +130,17 @@ function GuideSectionCard({
           {/* Islamic Reference */}
           <div className="mx-5 mt-5 sm:mx-6 rounded-xl bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-900 p-5 text-center relative overflow-hidden">
             {/* Pattern overlay */}
-            <AnimatedPattern color="emerald" opacity={0.1} density="dense" />
+            <div className="absolute inset-0 opacity-10">
+              <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <pattern id={`pat-${section.id}`} x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M20 0L40 20L20 40L0 20Z" fill="none" stroke="white" strokeWidth="0.5" />
+                    <circle cx="20" cy="20" r="8" fill="none" stroke="white" strokeWidth="0.3" />
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill={`url(#pat-${section.id})`} />
+              </svg>
+            </div>
             <p className="relative font-arabic text-xl sm:text-2xl leading-relaxed text-amber-300/90 mb-3" dir="rtl">
               {section.islamicRef.arabic}
             </p>
@@ -230,7 +239,19 @@ export default function GuidePage() {
         {/* Hero Section */}
         <section className="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-900 py-12 sm:py-16">
           {/* Islamic geometric pattern */}
-          <AnimatedPattern color="emerald" opacity={0.1} density="sparse" />
+          <div className="absolute inset-0 opacity-10">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="guide-hero" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+                  <path d="M40 0L80 40L40 80L0 40Z" fill="none" stroke="white" strokeWidth="0.5" />
+                  <circle cx="40" cy="40" r="16" fill="none" stroke="white" strokeWidth="0.5" />
+                  <path d="M40 24L56 40L40 56L24 40Z" fill="none" stroke="white" strokeWidth="0.5" />
+                  <circle cx="40" cy="40" r="6" fill="none" stroke="white" strokeWidth="0.3" />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#guide-hero)" />
+            </svg>
+          </div>
 
           <motion.div
             className="relative mx-auto max-w-4xl px-4 text-center"

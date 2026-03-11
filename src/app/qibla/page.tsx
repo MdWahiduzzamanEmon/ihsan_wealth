@@ -22,7 +22,6 @@ import {
   formatDistance,
   formatBearing,
 } from "@/lib/qibla-utils";
-import { AnimatedPattern } from "@/components/ui/animated-pattern";
 import { slideUp, staggerContainer, staggerItem, fadeIn } from "@/lib/animations";
 import { useReverseGeocode } from "@/hooks/use-reverse-geocode";
 
@@ -111,7 +110,44 @@ export default function QiblaPage() {
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20">
       {/* Header banner */}
       <div className="relative overflow-hidden bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 py-5">
-        <AnimatedPattern color="emerald" opacity={0.07} density="dense" />
+        <div className="absolute inset-0 opacity-[0.07]">
+          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern
+                id="qiblaGeo"
+                x="0"
+                y="0"
+                width="40"
+                height="40"
+                patternUnits="userSpaceOnUse"
+              >
+                <circle
+                  cx="20"
+                  cy="20"
+                  r="18"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="0.3"
+                />
+                <circle
+                  cx="20"
+                  cy="20"
+                  r="8"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="0.3"
+                />
+                <path
+                  d="M20 2L38 20L20 38L2 20Z"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="0.3"
+                />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#qiblaGeo)" />
+          </svg>
+        </div>
 
         <div className="relative mx-auto max-w-5xl px-4 text-center">
           <p className="font-arabic text-3xl md:text-4xl leading-loose text-amber-300/90 tracking-wide">

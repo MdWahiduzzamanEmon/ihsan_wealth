@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { AnimatedCounter } from "@/components/ui/custom/animated-counter";
-import { AnimatedPattern } from "@/components/ui/animated-pattern";
 import { staggerContainer, staggerItem, scaleIn } from "@/lib/animations";
 import type { ZakatFormData, ZakatResult } from "@/types/zakat";
 import type { MetalPrices } from "@/hooks/use-metal-prices";
@@ -90,7 +89,16 @@ export function SummaryDashboard({ result, currency, nisabBasis, countryCode, on
         }>
           <CardContent className="pt-8 pb-8 text-center relative">
             {result.isAboveNisab && (
-              <AnimatedPattern color="emerald" opacity={0.05} density="dense" />
+              <div className="absolute inset-0 opacity-5">
+                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <pattern id="resultPattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                      <path d="M20 0L40 20L20 40L0 20Z" fill="none" stroke="#10b981" strokeWidth="0.5" />
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" fill="url(#resultPattern)" />
+                </svg>
+              </div>
             )}
 
             {result.isAboveNisab ? (

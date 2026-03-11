@@ -12,7 +12,7 @@ import { staggerContainer, fadeIn, slideUp } from "@/lib/animations";
 import { CALCULATION_METHODS } from "@/lib/prayer-times-calc";
 import { approximateHijriDate } from "@/lib/prayer-times-calc";
 import { PrayerCard } from "@/components/prayer-times/prayer-card";
-import { AnimatedPattern } from "@/components/ui/animated-pattern";
+
 import {
   Select,
   SelectContent,
@@ -113,8 +113,18 @@ export function PrayerTimesDisplay({ state }: PrayerTimesDisplayProps) {
           animate="animate"
           className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-800 p-5 text-white shadow-xl shadow-emerald-900/20"
         >
-          {/* Animated Islamic pattern overlay */}
-          <AnimatedPattern opacity={0.06} color="emerald" density="dense" />
+          {/* Islamic pattern overlay */}
+          <div className="absolute inset-0 opacity-5">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="prayer-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M20 0L40 20L20 40L0 20Z" fill="none" stroke="white" strokeWidth="0.5" />
+                  <circle cx="20" cy="20" r="8" fill="none" stroke="white" strokeWidth="0.5" />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#prayer-pattern)" />
+            </svg>
+          </div>
 
           <div className="relative flex items-center justify-between">
             <div>
