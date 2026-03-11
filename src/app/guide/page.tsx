@@ -278,6 +278,90 @@ export default function GuidePage() {
           </motion.div>
         </section>
 
+        {/* What is IhsanWealth? */}
+        <section className="mx-auto max-w-4xl px-4 pt-8 sm:pt-10">
+          <motion.div
+            className="rounded-2xl border border-emerald-200/60 bg-gradient-to-br from-emerald-50/50 to-white p-6 sm:p-8 relative overflow-hidden"
+            variants={slideUp}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-50px" }}
+          >
+            {/* Subtle pattern */}
+            <div className="absolute -top-10 -right-10 h-40 w-40 opacity-[0.03]">
+              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50 0L100 50L50 100L0 50Z" stroke="currentColor" strokeWidth="2" className="text-emerald-800" />
+                <circle cx="50" cy="50" r="30" stroke="currentColor" strokeWidth="2" className="text-emerald-800" />
+              </svg>
+            </div>
+
+            <div className="text-center mb-5">
+              <p className="font-arabic text-2xl sm:text-3xl text-emerald-700 mb-2">إحسان الثروة</p>
+              <h2 className="text-xl sm:text-2xl font-bold text-emerald-900">
+                What Does &quot;IhsanWealth&quot; Mean?
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+              {/* Ihsan */}
+              <div className="rounded-xl border border-emerald-100 bg-white p-4 sm:p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
+                    <span className="font-arabic text-lg text-emerald-700">إحسان</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-emerald-900">Ihsan (إحسان)</h3>
+                    <p className="text-xs text-muted-foreground">Excellence &amp; Perfection</p>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  <strong>Ihsan</strong> means &quot;excellence&quot;, &quot;perfection&quot;, or &quot;doing beautiful deeds&quot; in Arabic. It is the highest level of faith in Islam — to worship Allah as though you see Him, knowing that He sees you. It represents doing everything with sincerity and the best of intentions.
+                </p>
+                <div className="mt-3 rounded-lg bg-emerald-50 p-3">
+                  <p className="font-arabic text-sm text-emerald-700 text-center" dir="rtl">
+                    أَنْ تَعْبُدَ اللَّهَ كَأَنَّكَ تَرَاهُ فَإِنْ لَمْ تَكُنْ تَرَاهُ فَإِنَّهُ يَرَاكَ
+                  </p>
+                  <p className="text-xs text-emerald-600/80 text-center mt-1 italic">
+                    &quot;To worship Allah as if you see Him, and if you cannot see Him, then He sees you&quot; — Sahih Muslim
+                  </p>
+                </div>
+              </div>
+
+              {/* Wealth */}
+              <div className="rounded-xl border border-amber-100 bg-white p-4 sm:p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100">
+                    <span className="text-lg">💰</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-emerald-900">Wealth (الثروة)</h3>
+                    <p className="text-xs text-muted-foreground">Managing Blessings with Purpose</p>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  <strong>Wealth</strong> in Islam is considered an <em>amanah</em> (trust) from Allah. It is not just money — it includes all blessings and resources. Managing wealth with ihsan means being responsible, generous, and fulfilling your obligations like Zakat.
+                </p>
+                <div className="mt-3 rounded-lg bg-amber-50 p-3">
+                  <p className="text-xs text-amber-700 text-center italic">
+                    Together, <strong>&quot;IhsanWealth&quot;</strong> means <strong>&quot;managing your wealth with excellence and spiritual mindfulness&quot;</strong> — fulfilling your Islamic financial duties beautifully, accurately, and with the consciousness of Allah.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Bengali / Bangla translation */}
+            <div className="mt-5 rounded-xl bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 p-4 text-center">
+              <p className="text-sm text-emerald-100/80 mb-1">In Bengali (বাংলায়)</p>
+              <p className="text-base sm:text-lg text-amber-300 font-medium">
+                ইহসান ওয়েলথ = সৌন্দর্য ও উৎকর্ষতার সাথে সম্পদ ব্যবস্থাপনা
+              </p>
+              <p className="text-xs text-emerald-200/60 mt-1">
+                &quot;ইহসান&quot; অর্থ উৎকর্ষতা, সৌন্দর্য ও আল্লাহর সচেতনতা। &quot;ওয়েলথ&quot; অর্থ সম্পদ। একসাথে এর অর্থ হলো আল্লাহর সন্তুষ্টির জন্য সুন্দরভাবে সম্পদ পরিচালনা করা।
+              </p>
+            </div>
+          </motion.div>
+        </section>
+
         {/* Getting Started */}
         <section className="mx-auto max-w-4xl px-4 py-8 sm:py-10">
           <motion.div

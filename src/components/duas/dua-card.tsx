@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { Dua } from "@/lib/duas-data";
-import { Copy, Check, Heart, ChevronDown, ChevronUp } from "lucide-react";
+import { Copy, Check, Heart, ChevronDown, ChevronUp, Volume2, VolumeX, Loader2 } from "lucide-react";
 import { staggerItem } from "@/lib/animations";
 
 interface DuaCardProps {
@@ -20,6 +20,8 @@ const COLLAPSE_THRESHOLD = 200;
 export function DuaCard({ dua, isFavorite, onToggleFavorite, lang }: DuaCardProps) {
   const [copied, setCopied] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
+  const [loadingVoice, setLoadingVoice] = useState(false);
 
   const translationText = (lang && dua.translations?.[lang]) || dua.translation;
   const isLong = dua.arabic.length > COLLAPSE_THRESHOLD;
@@ -34,6 +36,50 @@ export function DuaCard({ dua, isFavorite, onToggleFavorite, lang }: DuaCardProp
     } catch {
       // Fallback – should rarely fail in modern browsers
     }
+  };
+
+  const handleSpeak = () => {
+    if (!("speechSynthesis" in window)) return;
+
+    // If already speaking, stop
+    if (speaking) {
+      window.speechSynthesis.cancel();
+      setSpeaking(false);
+      return;
+    }
+
+    setLoadingVoice(true);
+
+    // Try Arabic voice first, fallback to transliteration
+    const utterance = new SpeechSynthesisUtterance(dua.arabic);
+    utterance.lang = "ar-SA";
+    utterance.rate = 0.8;
+    utterance.pitch = 1;
+
+    // Try to find an Arabic voice
+    const voices = window.speechSynthesis.getVoices();
+    const arabicVoice = voices.find(
+      (v) => v.lang.startsWith("ar") || v.name.toLowerCase().includes("arabic")
+    );
+    if (arabicVoice) {
+      utterance.voice = arabicVoice;
+    }
+
+    utterance.onstart = () => {
+      setLoadingVoice(false);
+      setSpeaking(true);
+    };
+    utterance.onend = () => setSpeaking(false);
+    utterance.onerror = () => {
+      setLoadingVoice(false);
+      setSpeaking(false);
+    };
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+
+    // Fallback timeout in case onstart doesn't fire
+    setTimeout(() => setLoadingVoice(false), 1000);
   };
 
   return (
@@ -105,6 +151,25 @@ export function DuaCard({ dua, isFavorite, onToggleFavorite, lang }: DuaCardProp
 
             {/* Action buttons */}
             <div className="flex items-center gap-1">
+              <button
+                onClick={handleSpeak}
+                className={cn(
+                  "rounded-full p-2 transition-colors",
+                  speaking
+                    ? "text-emerald-600 bg-emerald-50"
+                    : "text-gray-400 hover:text-emerald-600 hover:bg-emerald-50"
+                )}
+                aria-label={speaking ? "Stop reading" : "Listen to dua"}
+                title={speaking ? "Stop reading" : "Listen to dua"}
+              >
+                {loadingVoice ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : speaking ? (
+                  <VolumeX className="h-4 w-4" />
+                ) : (
+                  <Volume2 className="h-4 w-4" />
+                )}
+              </button>
               <button
                 onClick={handleCopy}
                 className="rounded-full p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"

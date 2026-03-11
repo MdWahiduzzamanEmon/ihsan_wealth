@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/footer";
 import { CalculatorWizard } from "@/components/calculator/calculator-wizard";
 import { BismillahBanner } from "@/components/islamic/bismillah-banner";
 import { HadithDuasSection } from "@/components/islamic/hadith-duas-section";
+import { ZakatEligibilitySection } from "@/components/islamic/zakat-eligibility-section";
 import { FeaturesGrid } from "@/components/layout/features-grid";
 
 export default function Home() {
@@ -37,6 +38,17 @@ export default function Home() {
         <FeaturesGrid />
 
         <HadithDuasSection countryCode={countryCode} />
+
+        {/* Decorative separator */}
+        <div className="mx-auto max-w-4xl px-4">
+          <div className="flex items-center gap-4">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-300/40 to-transparent" />
+            <div className="font-arabic text-emerald-300/50 text-lg">&#10022;</div>
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-300/40 to-transparent" />
+          </div>
+        </div>
+
+        <ZakatEligibilitySection countryCode={countryCode} />
       </main>
       <Footer countryCode={countryCode} />
     </div>
