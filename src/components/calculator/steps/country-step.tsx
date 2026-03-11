@@ -217,6 +217,7 @@ export function CountryStep({ formData, onChange, prices, pricesLoading, detecte
                 </div>
               </div>
             </div>
+            </>
           ) : (
             <p className="text-sm text-red-500">{isLocal ? t(lang, "unableToLoadPrices") : "Unable to load prices. Please check your internet connection."}</p>
           )}

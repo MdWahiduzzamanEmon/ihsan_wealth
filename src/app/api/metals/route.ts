@@ -162,7 +162,6 @@ export async function GET(request: NextRequest) {
       currency: cacheKey,
       timestamp: new Date().toISOString(),
       live: metalPricesUSD.live,
-      source: metalPricesUSD.source,
     };
 
     cachedPrices[cacheKey] = { data: result, timestamp: Date.now() };
@@ -178,7 +177,6 @@ export async function GET(request: NextRequest) {
         currency: cacheKey,
         timestamp: new Date().toISOString(),
         live: false,
-        source: "fallback",
       },
       { status: 200 }
     );
