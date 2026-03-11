@@ -147,7 +147,7 @@ export function CountryStep({ formData, onChange, prices, pricesLoading, detecte
       <motion.div variants={staggerItem}>
         <SectionCard
           title="Live Metal Prices"
-          titleAr={isLocal ? t(lang, "liveMetalPrices") : "أسعار المعادن الحية"}
+          titleAr="أسعار المعادن"
           badge={
             <LiveBadge
               isLive={!!prices?.live}
@@ -162,6 +162,14 @@ export function CountryStep({ formData, onChange, prices, pricesLoading, detecte
               <PriceSkeleton />
             </div>
           ) : prices ? (
+            <>
+            {/* Currency indicator */}
+            <div className="mb-3 flex items-center gap-2">
+              <span className="text-xs font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                {selectedCountry?.flag} {formData.currency} ({selectedCountry?.currencySymbol})
+              </span>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Gold Prices */}
               <div className="rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-amber-100/30 p-4">
@@ -170,18 +178,18 @@ export function CountryStep({ formData, onChange, prices, pricesLoading, detecte
                   <span className="font-semibold text-amber-800">Gold</span>
                   <span className="font-arabic text-xs text-amber-500">{isLocal ? t(lang, "gold") : "الذهب"}</span>
                 </div>
-                <div className="space-y-1.5 text-sm">
-                  <div className="flex justify-between">
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between items-center">
                     <span className="text-amber-700/70">{isLocal ? t(lang, "perGram") : "Per Gram"}</span>
-                    <span className="font-bold text-amber-900">{formatCurrency(prices.goldPricePerGram, formData.currency)}</span>
+                    <span className="font-bold text-amber-900 text-base">{selectedCountry?.currencySymbol}{prices.goldPricePerGram.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between items-center">
                     <span className="text-amber-700/70">{isLocal ? t(lang, "perTola") : "Per Tola"}</span>
-                    <span className="font-semibold text-amber-900">{formatCurrency(prices.goldPricePerTola, formData.currency)}</span>
+                    <span className="font-semibold text-amber-900">{selectedCountry?.currencySymbol}{prices.goldPricePerTola.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between items-center">
                     <span className="text-amber-700/70">{isLocal ? t(lang, "perTroyOz") : "Per Troy Oz"}</span>
-                    <span className="font-semibold text-amber-900">{formatCurrency(prices.goldPricePerOunce, formData.currency)}</span>
+                    <span className="font-semibold text-amber-900">{selectedCountry?.currencySymbol}{prices.goldPricePerOunce.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
                 </div>
               </div>
@@ -193,18 +201,18 @@ export function CountryStep({ formData, onChange, prices, pricesLoading, detecte
                   <span className="font-semibold text-gray-700">Silver</span>
                   <span className="font-arabic text-xs text-gray-400">{isLocal ? t(lang, "silver") : "الفضة"}</span>
                 </div>
-                <div className="space-y-1.5 text-sm">
-                  <div className="flex justify-between">
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between items-center">
                     <span className="text-gray-500">{isLocal ? t(lang, "perGram") : "Per Gram"}</span>
-                    <span className="font-bold text-gray-900">{formatCurrency(prices.silverPricePerGram, formData.currency)}</span>
+                    <span className="font-bold text-gray-900 text-base">{selectedCountry?.currencySymbol}{prices.silverPricePerGram.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between items-center">
                     <span className="text-gray-500">{isLocal ? t(lang, "perTola") : "Per Tola"}</span>
-                    <span className="font-semibold text-gray-900">{formatCurrency(prices.silverPricePerTola, formData.currency)}</span>
+                    <span className="font-semibold text-gray-900">{selectedCountry?.currencySymbol}{prices.silverPricePerTola.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between items-center">
                     <span className="text-gray-500">{isLocal ? t(lang, "perTroyOz") : "Per Troy Oz"}</span>
-                    <span className="font-semibold text-gray-900">{formatCurrency(prices.silverPricePerOunce, formData.currency)}</span>
+                    <span className="font-semibold text-gray-900">{selectedCountry?.currencySymbol}{prices.silverPricePerOunce.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
                 </div>
               </div>
@@ -213,7 +221,7 @@ export function CountryStep({ formData, onChange, prices, pricesLoading, detecte
             <p className="text-sm text-red-500">{isLocal ? t(lang, "unableToLoadPrices") : "Unable to load prices. Please check your internet connection."}</p>
           )}
           <p className="mt-3 text-xs text-muted-foreground/60">
-            Source: Swissquote Forex Feed (XAU/USD, XAG/USD) &middot; Currency conversion via fawazahmed0 API
+            Prices update every 10 minutes &middot; Showing in <strong>{formData.currency}</strong>
           </p>
         </SectionCard>
       </motion.div>
