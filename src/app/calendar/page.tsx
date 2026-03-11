@@ -11,12 +11,15 @@ import { DateConverter } from "@/components/calendar/date-converter";
 import { gregorianToHijri, getHijriMonthName, getHijriDayName } from "@/lib/hijri-utils";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
+import { getLangFromCountry, CALENDAR_PAGE_TEXTS } from "@/lib/islamic-content";
 
 export default function CalendarPage() {
   const todayHijri = useMemo(() => gregorianToHijri(new Date()), []);
   const monthName = getHijriMonthName(todayHijri.month);
   const dayName = getHijriDayName(new Date().getDay());
   const [formData] = useLocalStorage<ZakatFormData>("zakat-calculator-data", DEFAULT_FORM_DATA);
+  const lang = getLangFromCountry(formData.country);
+  const calT = CALENDAR_PAGE_TEXTS[lang];
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20">
@@ -102,7 +105,7 @@ export default function CalendarPage() {
 
               {/* Subtitle */}
               <p className="text-emerald-300/50 text-xs mt-4 tracking-wider uppercase">
-                Islamic (Hijri) Calendar
+                {calT.subtitle}
               </p>
             </motion.div>
           </div>

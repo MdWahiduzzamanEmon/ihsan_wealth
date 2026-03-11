@@ -9,6 +9,7 @@ import { UI_TEXTS, getLangFromCountry } from "@/lib/islamic-content";
 import { Button } from "@/components/ui/button";
 import {
   BookOpen,
+  Bot,
   Calculator,
   CalendarDays,
   Clock,
@@ -32,6 +33,7 @@ const NAV_LINKS = [
   { href: "/calendar", label: "Calendar", icon: CalendarDays },
   { href: "/sadaqah", label: "Sadaqah", icon: Heart },
   { href: "/history", label: "History", icon: History },
+  { href: "/assistant", label: "AI Assistant", icon: Bot },
   { href: "/guide", label: "Guide", icon: HelpCircle },
 ];
 

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Amiri } from "next/font/google";
 import { AuthProvider } from "@/components/providers/auth-provider";
 import { ServiceWorkerRegister } from "@/components/providers/sw-register";
+import { ChatFloatingWidget } from "@/components/chat/chat-floating-widget";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -60,6 +61,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           {children}
+          <ChatFloatingWidget />
         </AuthProvider>
         <ServiceWorkerRegister />
       </body>

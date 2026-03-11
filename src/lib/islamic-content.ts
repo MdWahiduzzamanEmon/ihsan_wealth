@@ -317,3 +317,214 @@ export const UI_TEXTS: Record<TransLang, {
     jazakallah: "جزاكم الله خيراً",
   },
 };
+
+// ─── Duas Page Texts ───
+export const DUAS_PAGE_TEXTS: Record<TransLang, {
+  pageTitle: string;
+  headerLabel: string;
+  subtitle: string;
+  showing: string;
+  of: string;
+  duas: string;
+  noResultsTitle: string;
+  noFavorites: string;
+  noSearchResults: string;
+  footerVerse: string;
+}> = {
+  en: {
+    pageTitle: "Duas Collection",
+    headerLabel: "Duas Collection",
+    subtitle: "A curated collection of essential daily supplications from the Quran and Sunnah. Memorize, practice, and keep these duas close to your heart.",
+    showing: "Showing",
+    of: "of",
+    duas: "duas",
+    noResultsTitle: "No Results",
+    noFavorites: "No favorite duas yet. Tap the heart icon on any dua to save it.",
+    noSearchResults: "No duas found matching your search. Try a different keyword.",
+    footerVerse: "And your Lord says, Call upon Me; I will respond to you.",
+  },
+  bn: {
+    pageTitle: "দু'আ সংকলন",
+    headerLabel: "দু'আ সংকলন",
+    subtitle: "কুরআন ও সুন্নাহ থেকে প্রয়োজনীয় দৈনিক দু'আসমূহের একটি নির্বাচিত সংকলন। মুখস্থ করুন, অনুশীলন করুন এবং এই দু'আগুলো হৃদয়ে ধারণ করুন।",
+    showing: "দেখানো হচ্ছে",
+    of: "এর মধ্যে",
+    duas: "দু'আ",
+    noResultsTitle: "কোনো ফলাফল নেই",
+    noFavorites: "এখনো কোনো প্রিয় দু'আ নেই। সংরক্ষণ করতে যেকোনো দু'আর হার্ট আইকনে ট্যাপ করুন।",
+    noSearchResults: "আপনার অনুসন্ধানের সাথে মিলে এমন কোনো দু'আ পাওয়া যায়নি।",
+    footerVerse: "তোমাদের রব বলেন, আমাকে ডাকো, আমি তোমাদের ডাকে সাড়া দেব।",
+  },
+  ur: {
+    pageTitle: "دعاؤں کا مجموعہ",
+    headerLabel: "دعاؤں کا مجموعہ",
+    subtitle: "قرآن و سنت سے روزمرہ ضروری دعاؤں کا منتخب مجموعہ۔ یاد کریں، عمل کریں اور ان دعاؤں کو دل میں محفوظ رکھیں۔",
+    showing: "دکھایا جا رہا ہے",
+    of: "میں سے",
+    duas: "دعائیں",
+    noResultsTitle: "کوئی نتیجہ نہیں",
+    noFavorites: "ابھی کوئی پسندیدہ دعا نہیں۔ کسی بھی دعا کے دل آئیکن پر ٹیپ کریں۔",
+    noSearchResults: "آپ کی تلاش سے ملتی جلتی کوئی دعا نہیں ملی۔",
+    footerVerse: "تمہارا رب فرماتا ہے مجھے پکارو میں تمہاری دعا قبول کروں گا۔",
+  },
+  tr: {
+    pageTitle: "Dua Koleksiyonu",
+    headerLabel: "Dua Koleksiyonu",
+    subtitle: "Kur'an ve Sunnetten secilmis gunluk onemli dualarin derlemesi. Ezberleyin, uygulayin ve bu dualari kalbinize yakin tutun.",
+    showing: "Gosterilen",
+    of: "/",
+    duas: "dua",
+    noResultsTitle: "Sonuc Yok",
+    noFavorites: "Henuz favori dua yok. Kaydetmek icin herhangi bir duanin kalp simgesine dokunun.",
+    noSearchResults: "Aramanizla eslesen dua bulunamadi. Farkli bir kelime deneyin.",
+    footerVerse: "Rabbiniz dedi ki: Bana dua edin, size icabet edeyim.",
+  },
+  ms: {
+    pageTitle: "Koleksi Doa",
+    headerLabel: "Koleksi Doa",
+    subtitle: "Koleksi doa harian penting dari Al-Quran dan Sunnah. Hafal, amalkan dan simpan doa-doa ini dekat di hati.",
+    showing: "Menunjukkan",
+    of: "daripada",
+    duas: "doa",
+    noResultsTitle: "Tiada Hasil",
+    noFavorites: "Belum ada doa kegemaran. Ketik ikon hati pada mana-mana doa untuk menyimpannya.",
+    noSearchResults: "Tiada doa yang sepadan dengan carian anda. Cuba kata kunci lain.",
+    footerVerse: "Dan Tuhan kamu berfirman: Berdoalah kepadaKu, nescaya Aku perkenankan doa kamu.",
+  },
+  id: {
+    pageTitle: "Koleksi Doa",
+    headerLabel: "Koleksi Doa",
+    subtitle: "Kumpulan doa harian penting dari Al-Quran dan Sunnah. Hafalkan, amalkan dan simpan doa-doa ini dekat di hati.",
+    showing: "Menampilkan",
+    of: "dari",
+    duas: "doa",
+    noResultsTitle: "Tidak Ada Hasil",
+    noFavorites: "Belum ada doa favorit. Ketuk ikon hati pada doa manapun untuk menyimpannya.",
+    noSearchResults: "Tidak ada doa yang cocok dengan pencarian Anda. Coba kata kunci lain.",
+    footerVerse: "Dan Tuhanmu berfirman: Berdoalah kepada-Ku, niscaya akan Aku perkenankan bagimu.",
+  },
+  ar: {
+    pageTitle: "مجموعة الأدعية",
+    headerLabel: "مجموعة الأدعية",
+    subtitle: "مجموعة مختارة من الأدعية اليومية الأساسية من القرآن والسنة. احفظها وتعلمها واحتفظ بها قريبة من قلبك.",
+    showing: "عرض",
+    of: "من",
+    duas: "دعاء",
+    noResultsTitle: "لا نتائج",
+    noFavorites: "لا توجد أدعية مفضلة بعد. اضغط على أيقونة القلب لحفظ أي دعاء.",
+    noSearchResults: "لم يتم العثور على أدعية مطابقة لبحثك. جرب كلمة مختلفة.",
+    footerVerse: "وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ",
+  },
+};
+
+// ─── Calendar Page Texts ───
+export const CALENDAR_PAGE_TEXTS: Record<TransLang, {
+  subtitle: string;
+}> = {
+  en: { subtitle: "Islamic (Hijri) Calendar" },
+  bn: { subtitle: "ইসলামী (হিজরী) ক্যালেন্ডার" },
+  ur: { subtitle: "اسلامی (ہجری) کیلنڈر" },
+  tr: { subtitle: "Islami (Hicri) Takvim" },
+  ms: { subtitle: "Kalendar Islam (Hijrah)" },
+  id: { subtitle: "Kalender Islam (Hijriah)" },
+  ar: { subtitle: "التقويم الإسلامي (الهجري)" },
+};
+
+// ─── Sadaqah Page Texts ───
+export const SADAQAH_PAGE_TEXTS: Record<TransLang, {
+  title: string;
+  subtitle: string;
+  hadithTranslation: string;
+  signInTitle: string;
+  signInDesc: string;
+  signIn: string;
+  createAccount: string;
+  loading: string;
+  loadingRecords: string;
+  motivationalHadith: string;
+}> = {
+  en: {
+    title: "Sadaqah Tracker",
+    subtitle: "Track your voluntary charity and earn continuous rewards",
+    hadithTranslation: "Charity extinguishes sin just as water extinguishes fire.",
+    signInTitle: "Sign in to track your Sadaqah",
+    signInDesc: "Your donations are saved securely to your account so you can track your giving history across devices.",
+    signIn: "Sign In",
+    createAccount: "Create Account",
+    loading: "Loading...",
+    loadingRecords: "Loading your records...",
+    motivationalHadith: "Charity does not decrease wealth.",
+  },
+  bn: {
+    title: "সদকা ট্র্যাকার",
+    subtitle: "আপনার নফল দান ট্র্যাক করুন এবং ক্রমাগত সওয়াব অর্জন করুন",
+    hadithTranslation: "সদকা গুনাহকে এমনভাবে নিভিয়ে দেয় যেমন পানি আগুন নিভিয়ে দেয়।",
+    signInTitle: "সদকা ট্র্যাক করতে সাইন ইন করুন",
+    signInDesc: "আপনার দানগুলো আপনার অ্যাকাউন্টে সুরক্ষিতভাবে সংরক্ষিত থাকে যাতে আপনি সব ডিভাইস থেকে ইতিহাস দেখতে পারেন।",
+    signIn: "সাইন ইন",
+    createAccount: "অ্যাকাউন্ট তৈরি করুন",
+    loading: "লোড হচ্ছে...",
+    loadingRecords: "আপনার রেকর্ড লোড হচ্ছে...",
+    motivationalHadith: "দান-সদকা সম্পদ কমায় না।",
+  },
+  ur: {
+    title: "صدقہ ٹریکر",
+    subtitle: "اپنے نفلی صدقات کو ٹریک کریں اور مسلسل اجر حاصل کریں",
+    hadithTranslation: "صدقہ گناہوں کو ایسے بجھا دیتا ہے جیسے پانی آگ کو بجھا دیتا ہے۔",
+    signInTitle: "صدقہ ٹریک کرنے کے لیے سائن ان کریں",
+    signInDesc: "آپ کے عطیات آپ کے اکاؤنٹ میں محفوظ طریقے سے محفوظ رہتے ہیں۔",
+    signIn: "سائن ان",
+    createAccount: "اکاؤنٹ بنائیں",
+    loading: "لوڈ ہو رہا ہے...",
+    loadingRecords: "آپ کے ریکارڈ لوڈ ہو رہے ہیں...",
+    motivationalHadith: "صدقہ مال کو کم نہیں کرتا۔",
+  },
+  tr: {
+    title: "Sadaka Takibi",
+    subtitle: "Gonullu bagislarinizi takip edin ve surekli sevap kazanin",
+    hadithTranslation: "Sadaka gunahlari sondurur, tipki suyun atesi sondurdugu gibi.",
+    signInTitle: "Sadakanizi takip etmek icin giris yapin",
+    signInDesc: "Bagislariniz hesabiniza guvenli sekilde kaydedilir.",
+    signIn: "Giris Yap",
+    createAccount: "Hesap Olustur",
+    loading: "Yukleniyor...",
+    loadingRecords: "Kayitlariniz yukleniyor...",
+    motivationalHadith: "Sadaka maldan eksiltmez.",
+  },
+  ms: {
+    title: "Penjejak Sedekah",
+    subtitle: "Jejak sedekah sunat anda dan raih pahala berterusan",
+    hadithTranslation: "Sedekah memadamkan dosa seperti air memadamkan api.",
+    signInTitle: "Log masuk untuk menjejak sedekah anda",
+    signInDesc: "Derma anda disimpan dengan selamat dalam akaun anda.",
+    signIn: "Log Masuk",
+    createAccount: "Cipta Akaun",
+    loading: "Memuatkan...",
+    loadingRecords: "Memuatkan rekod anda...",
+    motivationalHadith: "Sedekah tidak mengurangkan harta.",
+  },
+  id: {
+    title: "Pelacak Sedekah",
+    subtitle: "Lacak sedekah sunat Anda dan raih pahala terus-menerus",
+    hadithTranslation: "Sedekah memadamkan dosa seperti air memadamkan api.",
+    signInTitle: "Masuk untuk melacak sedekah Anda",
+    signInDesc: "Donasi Anda disimpan dengan aman di akun Anda.",
+    signIn: "Masuk",
+    createAccount: "Buat Akun",
+    loading: "Memuat...",
+    loadingRecords: "Memuat catatan Anda...",
+    motivationalHadith: "Sedekah tidak mengurangi harta.",
+  },
+  ar: {
+    title: "متتبع الصدقات",
+    subtitle: "تتبع صدقاتك التطوعية واكسب الأجر المستمر",
+    hadithTranslation: "الصدقة تطفئ الخطيئة كما يطفئ الماء النار.",
+    signInTitle: "سجّل الدخول لتتبع صدقاتك",
+    signInDesc: "تبرعاتك محفوظة بأمان في حسابك.",
+    signIn: "تسجيل الدخول",
+    createAccount: "إنشاء حساب",
+    loading: "جاري التحميل...",
+    loadingRecords: "جاري تحميل سجلاتك...",
+    motivationalHadith: "ما نقصت صدقة من مال.",
+  },
+};

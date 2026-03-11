@@ -13,6 +13,7 @@ import { SadaqahList } from "@/components/sadaqah/sadaqah-list";
 import { SadaqahStats } from "@/components/sadaqah/sadaqah-stats";
 import { fadeIn } from "@/lib/animations";
 import { COUNTRIES } from "@/lib/constants";
+import { getLangFromCountry, SADAQAH_PAGE_TEXTS } from "@/lib/islamic-content";
 import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
 import { ArrowLeft, Heart, LogIn, Loader2 } from "lucide-react";
 
@@ -23,6 +24,9 @@ export default function SadaqahPage() {
   const country = COUNTRIES.find((c) => c.code === formData.country) || COUNTRIES[0];
   const currencySymbol = country.currencySymbol;
   const currencyCode = country.currency;
+  const lang = getLangFromCountry(formData.country);
+  const t = SADAQAH_PAGE_TEXTS[lang];
+  const isRtl = lang === "ar" || lang === "ur";
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20">
@@ -40,11 +44,11 @@ export default function SadaqahPage() {
             </div>
             <h1 className="text-3xl font-bold text-emerald-800 flex items-center gap-3">
               <Heart className="h-8 w-8 text-emerald-600" />
-              Sadaqah Tracker
+              {t.title}
               <span className="font-arabic text-xl text-emerald-600/50">متتبع الصدقات</span>
             </h1>
             <p className="text-muted-foreground mt-1">
-              Track your voluntary charity and earn continuous rewards
+              {t.subtitle}
             </p>
           </motion.div>
 
@@ -71,7 +75,7 @@ export default function SadaqahPage() {
                 الصَّدَقَةُ تُطْفِئُ الخَطِيئَةَ كَمَا يُطْفِئُ المَاءُ النَّارَ
               </p>
               <p className="text-emerald-100 text-sm max-w-lg mx-auto">
-                &ldquo;Charity extinguishes sin just as water extinguishes fire.&rdquo;
+                &ldquo;{t.hadithTranslation}&rdquo;
               </p>
               <p className="text-emerald-300/60 text-xs mt-1">
                 &mdash; Sunan al-Tirmidhi 2616
@@ -83,7 +87,7 @@ export default function SadaqahPage() {
           {authLoading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
-              <p className="text-sm text-gray-500">Loading...</p>
+              <p className="text-sm text-gray-500">{t.loading}</p>
             </div>
           ) : !isAuthenticated ? (
             <motion.div
@@ -95,20 +99,20 @@ export default function SadaqahPage() {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 mb-4">
                 <LogIn className="h-8 w-8 text-emerald-600" />
               </div>
-              <h2 className="text-xl font-bold text-gray-900 mb-2">Sign in to track your Sadaqah</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">{t.signInTitle}</h2>
               <p className="text-sm text-gray-500 max-w-md mx-auto mb-6">
-                Your donations are saved securely to your account so you can track your giving history across devices.
+                {t.signInDesc}
               </p>
               <div className="flex items-center justify-center gap-3">
                 <Link href="/auth/login">
                   <Button className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2">
                     <LogIn className="h-4 w-4" />
-                    Sign In
+                    {t.signIn}
                   </Button>
                 </Link>
                 <Link href="/auth/register">
                   <Button variant="outline" className="border-emerald-300 text-emerald-700 hover:bg-emerald-50">
-                    Create Account
+                    {t.createAccount}
                   </Button>
                 </Link>
               </div>
@@ -136,7 +140,7 @@ export default function SadaqahPage() {
                     مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    &ldquo;Charity does not decrease wealth.&rdquo; &mdash; Sahih Muslim 2588
+                    &ldquo;{t.motivationalHadith}&rdquo; &mdash; Sahih Muslim 2588
                   </p>
                 </motion.div>
               )}
@@ -144,7 +148,7 @@ export default function SadaqahPage() {
           ) : (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
-              <p className="text-sm text-gray-500">Loading your records...</p>
+              <p className="text-sm text-gray-500">{t.loadingRecords}</p>
             </div>
           )}
         </div>
