@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/bump-sw.js && next build && cp -r public .next/standalone/public && cp -r .next/static .next/standalone/.next/static",
-    "start": "PORT=${PORT:-3000} node .next/standalone/server.js",
+    "build": "node scripts/bump-sw.js && next build",
+    "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
