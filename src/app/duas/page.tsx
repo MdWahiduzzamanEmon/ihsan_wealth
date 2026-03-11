@@ -8,6 +8,7 @@ import { useFavoriteDuas } from "@/hooks/use-favorite-duas";
 import { DUAS, type DuaCategory } from "@/lib/duas-data";
 import { DuaCard } from "@/components/duas/dua-card";
 import { DuasFilter } from "@/components/duas/duas-filter";
+import { AnimatedPattern } from "@/components/ui/animated-pattern";
 import { staggerContainer } from "@/lib/animations";
 import { getLangFromCountry } from "@/lib/islamic-content";
 import { ArrowLeft, BookOpen } from "lucide-react";
@@ -66,18 +67,7 @@ export default function DuasPage() {
       {/* Header */}
       <header className="relative overflow-hidden border-b bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900">
         {/* Islamic geometric pattern overlay */}
-        <div className="absolute inset-0 opacity-10">
-          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="islamic-duas" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-                <path d="M30 0L60 30L30 60L0 30Z" fill="none" stroke="white" strokeWidth="0.5" />
-                <circle cx="30" cy="30" r="12" fill="none" stroke="white" strokeWidth="0.5" />
-                <path d="M30 18L42 30L30 42L18 30Z" fill="none" stroke="white" strokeWidth="0.5" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#islamic-duas)" />
-          </svg>
-        </div>
+        <AnimatedPattern color="emerald" opacity={0.1} density="normal" />
 
         <div className="relative mx-auto max-w-5xl px-4 py-5">
           <div className="flex items-center justify-between">

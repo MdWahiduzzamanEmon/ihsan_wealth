@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { SadaqahForm } from "@/components/sadaqah/sadaqah-form";
 import { SadaqahList } from "@/components/sadaqah/sadaqah-list";
 import { SadaqahStats } from "@/components/sadaqah/sadaqah-stats";
+import { AnimatedPattern } from "@/components/ui/animated-pattern";
 import { fadeIn } from "@/lib/animations";
 import { COUNTRIES } from "@/lib/constants";
 import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
@@ -55,17 +56,7 @@ export default function SadaqahPage() {
             initial="initial"
             animate="animate"
           >
-            <div className="absolute inset-0 opacity-10">
-              <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <pattern id="sadaqah-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <circle cx="20" cy="20" r="8" fill="none" stroke="white" strokeWidth="0.5" />
-                    <path d="M20 12L28 20L20 28L12 20Z" fill="none" stroke="white" strokeWidth="0.5" />
-                  </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#sadaqah-pattern)" />
-              </svg>
-            </div>
+            <AnimatedPattern color="emerald" opacity={0.1} density="dense" />
             <div className="relative">
               <p className="font-arabic text-2xl text-amber-300 mb-3 leading-relaxed">
                 الصَّدَقَةُ تُطْفِئُ الخَطِيئَةَ كَمَا يُطْفِئُ المَاءُ النَّارَ

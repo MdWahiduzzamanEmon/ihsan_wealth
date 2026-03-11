@@ -15,6 +15,7 @@ import {
   BookOpen,
   Scale,
 } from "lucide-react";
+import { AnimatedPattern } from "@/components/ui/animated-pattern";
 
 /* ─── UI translations ─── */
 const T: Record<string, Record<TransLang, string>> = {
@@ -691,16 +692,7 @@ export function ZakatEligibilitySection({ countryCode = "US" }: ZakatEligibility
           {/* Quran verse reference */}
           <motion.div variants={staggerItem} className="mb-5">
             <div className="rounded-xl bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-900 p-4 sm:p-5 text-center relative overflow-hidden">
-              <div className="absolute inset-0 opacity-10">
-                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <pattern id="elig-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-                      <path d="M20 0L40 20L20 40L0 20Z" fill="none" stroke="white" strokeWidth="0.5" />
-                    </pattern>
-                  </defs>
-                  <rect width="100%" height="100%" fill="url(#elig-pattern)" />
-                </svg>
-              </div>
+              <AnimatedPattern color="emerald" opacity={0.1} density="dense" />
               <div className="relative">
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <BookOpen className="h-4 w-4 text-amber-300" />
@@ -832,16 +824,7 @@ export function ZakatEligibilitySection({ countryCode = "US" }: ZakatEligibility
           {/* Hadith reference */}
           <motion.div variants={staggerItem} className="mb-5">
             <div className="rounded-xl bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-900 p-4 sm:p-5 text-center relative overflow-hidden">
-              <div className="absolute inset-0 opacity-10">
-                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <pattern id="giver-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-                      <path d="M20 0L40 20L20 40L0 20Z" fill="none" stroke="white" strokeWidth="0.5" />
-                    </pattern>
-                  </defs>
-                  <rect width="100%" height="100%" fill="url(#giver-pattern)" />
-                </svg>
-              </div>
+              <AnimatedPattern color="emerald" opacity={0.1} density="dense" />
               <div className="relative">
                 <p className="font-arabic text-base sm:text-lg leading-[2] text-amber-300/90 mb-2" dir="rtl">
                   بُنِيَ الإِسْلاَمُ عَلَى خَمْسٍ ... وَإِيتَاءِ الزَّكَاةِ
