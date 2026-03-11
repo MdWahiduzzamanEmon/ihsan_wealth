@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -22,20 +22,25 @@ import {
   Menu,
   User,
   X,
+  ChevronDown,
 } from "lucide-react";
 
-
-const NAV_LINKS = [
+const PRIMARY_LINKS = [
   { href: "/", label: "Calculator", icon: Calculator },
-  { href: "/prayer-times", label: "Prayer Times", icon: Clock },
+  { href: "/prayer-times", label: "Prayer", icon: Clock },
   { href: "/qibla", label: "Qibla", icon: Compass },
   { href: "/duas", label: "Duas", icon: BookOpen },
+];
+
+const MORE_LINKS = [
   { href: "/calendar", label: "Calendar", icon: CalendarDays },
   { href: "/sadaqah", label: "Sadaqah", icon: Heart },
   { href: "/history", label: "History", icon: History },
-  { href: "/assistant", label: "AI Assistant", icon: Bot },
+  { href: "/assistant", label: "IhsanAI", icon: Bot },
   { href: "/guide", label: "Guide", icon: HelpCircle },
 ];
+
+const ALL_LINKS = [...PRIMARY_LINKS, ...MORE_LINKS];
 
 interface HeaderProps {
   countryCode?: string;
@@ -46,12 +51,31 @@ export function Header({ countryCode = "US" }: HeaderProps) {
   const texts = UI_TEXTS[lang];
   const { user, signOut, isAuthenticated } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setMoreOpen(false);
+  }, [pathname]);
+
+  // Close "More" dropdown on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
+        setMoreOpen(false);
+      }
+    }
+    if (moreOpen) document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [moreOpen]);
+
   return (
-    <header className="relative overflow-hidden border-b bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900">
+    <header className="sticky top-0 z-50 border-b border-emerald-700/40 bg-emerald-900/95 backdrop-blur-md relative">
       {/* Islamic geometric pattern overlay */}
-      <div className="absolute inset-0 opacity-10">
+      <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="islamic" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
@@ -64,40 +88,35 @@ export function Header({ countryCode = "US" }: HeaderProps) {
         </svg>
       </div>
 
-      <div className="relative mx-auto max-w-6xl px-4 py-4">
-        <div className="flex items-center justify-between">
+      <div className="relative mx-auto max-w-6xl px-4">
+        <div className="flex h-14 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group shrink-0">
+          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
             <Image
               src="/favicon.svg"
               alt="IhsanWealth"
-              width={40}
-              height={40}
-              className="rounded-xl shadow-lg shadow-emerald-900/50 group-hover:scale-105 transition-transform"
+              width={32}
+              height={32}
+              className="rounded-lg group-hover:scale-105 transition-transform"
             />
-            <div>
-              <h1 className="text-xl font-bold tracking-tight text-white group-hover:text-white/90 transition-colors">
-                <span className="text-amber-400">Ihsan</span>Wealth
-              </h1>
-              <p className="text-[10px] text-emerald-300/70 hidden sm:block">
-                Your Complete Islamic Finance Companion
-              </p>
-            </div>
+            <span className="text-lg font-bold tracking-tight text-white">
+              <span className="text-amber-400">Ihsan</span>Wealth
+            </span>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-0.5">
-            {NAV_LINKS.map(({ href, label, icon: Icon }) => {
+          <nav className="hidden md:flex items-center gap-0.5">
+            {PRIMARY_LINKS.map(({ href, label, icon: Icon }) => {
               const isActive = pathname === href;
               return (
                 <Link key={href} href={href}>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className={`gap-1.5 text-xs ${
+                    className={`gap-1.5 text-xs h-8 px-2.5 ${
                       isActive
                         ? "text-amber-300 bg-white/10"
-                        : "text-emerald-100 hover:text-white hover:bg-white/10"
+                        : "text-emerald-100/80 hover:text-white hover:bg-white/10"
                     }`}
                   >
                     <Icon className="h-3.5 w-3.5" />
@@ -106,16 +125,54 @@ export function Header({ countryCode = "US" }: HeaderProps) {
                 </Link>
               );
             })}
+
+            {/* More dropdown */}
+            <div ref={moreRef} className="relative">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setMoreOpen(!moreOpen)}
+                className={`gap-1 text-xs h-8 px-2.5 ${
+                  MORE_LINKS.some((l) => l.href === pathname)
+                    ? "text-amber-300 bg-white/10"
+                    : "text-emerald-100/80 hover:text-white hover:bg-white/10"
+                }`}
+              >
+                More
+                <ChevronDown className={`h-3 w-3 transition-transform ${moreOpen ? "rotate-180" : ""}`} />
+              </Button>
+
+              {moreOpen && (
+                <div className="absolute right-0 top-full mt-1 w-44 rounded-lg border border-emerald-700/50 bg-emerald-900 shadow-xl py-1 z-50">
+                  {MORE_LINKS.map(({ href, label, icon: Icon }) => {
+                    const isActive = pathname === href;
+                    return (
+                      <Link key={href} href={href} onClick={() => setMoreOpen(false)}>
+                        <div
+                          className={`flex items-center gap-2.5 px-3 py-2 text-sm transition-colors ${
+                            isActive
+                              ? "bg-white/10 text-amber-300"
+                              : "text-emerald-100/80 hover:bg-white/10 hover:text-white"
+                          }`}
+                        >
+                          <Icon className="h-4 w-4 shrink-0" />
+                          {label}
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </nav>
 
-          {/* Right side: Auth + Mobile menu */}
-          <div className="flex items-center gap-2">
-            {/* Auth */}
+          {/* Right side */}
+          <div className="flex items-center gap-1.5">
             {isAuthenticated ? (
-              <div className="flex items-center gap-2">
-                <div className="hidden md:flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5">
-                  <User className="h-3.5 w-3.5 text-emerald-200" />
-                  <span className="text-xs text-emerald-100 max-w-[100px] truncate">
+              <div className="flex items-center gap-1.5">
+                <div className="hidden sm:flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1">
+                  <User className="h-3 w-3 text-emerald-300" />
+                  <span className="text-xs text-emerald-100 max-w-[80px] truncate">
                     {user?.user_metadata?.name || user?.email?.split("@")[0]}
                   </span>
                 </div>
@@ -123,15 +180,14 @@ export function Header({ countryCode = "US" }: HeaderProps) {
                   variant="ghost"
                   size="sm"
                   onClick={signOut}
-                  className="text-emerald-200 hover:text-white hover:bg-white/10 gap-1.5"
+                  className="text-emerald-200/70 hover:text-white hover:bg-white/10 h-8 px-2"
                 >
                   <LogOut className="h-4 w-4" />
-                  <span className="hidden sm:inline text-xs">Sign Out</span>
                 </Button>
               </div>
             ) : (
               <Link href="/auth/login">
-                <Button variant="ghost" size="sm" className="text-emerald-100 hover:text-white hover:bg-white/10 gap-1.5 text-xs">
+                <Button variant="ghost" size="sm" className="text-emerald-100/80 hover:text-white hover:bg-white/10 gap-1.5 text-xs h-8">
                   <LogIn className="h-4 w-4" />
                   <span className="hidden sm:inline">Sign In</span>
                 </Button>
@@ -142,7 +198,7 @@ export function Header({ countryCode = "US" }: HeaderProps) {
             <Button
               variant="ghost"
               size="sm"
-              className="lg:hidden text-emerald-100 hover:text-white hover:bg-white/10"
+              className="md:hidden text-emerald-100 hover:text-white hover:bg-white/10 h-8 w-8 p-0"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -153,17 +209,17 @@ export function Header({ countryCode = "US" }: HeaderProps) {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="relative lg:hidden border-t border-emerald-700/50 bg-emerald-900/95 backdrop-blur-sm">
-          <nav className="mx-auto max-w-6xl px-4 py-3 grid grid-cols-2 gap-1">
-            {NAV_LINKS.map(({ href, label, icon: Icon }) => {
+        <div className="md:hidden border-t border-emerald-700/40 bg-emerald-900/98 backdrop-blur-md">
+          <nav className="mx-auto max-w-6xl px-3 py-2 grid grid-cols-3 gap-1">
+            {ALL_LINKS.map(({ href, label, icon: Icon }) => {
               const isActive = pathname === href;
               return (
                 <Link key={href} href={href} onClick={() => setMobileMenuOpen(false)}>
                   <div
-                    className={`flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+                    className={`flex flex-col items-center gap-1 rounded-lg px-2 py-2.5 text-[11px] transition-colors ${
                       isActive
                         ? "bg-white/15 text-amber-300"
-                        : "text-emerald-100 hover:bg-white/10 hover:text-white"
+                        : "text-emerald-100/70 hover:bg-white/10 hover:text-white"
                     }`}
                   >
                     <Icon className="h-4 w-4 shrink-0" />

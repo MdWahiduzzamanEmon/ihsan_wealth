@@ -318,6 +318,21 @@ export const UI_TEXTS: Record<TransLang, {
   },
 };
 
+// ─── Footer Link Texts ───
+export const FOOTER_LINKS_TEXTS: Record<TransLang, {
+  sitemap: string;
+  privacyPolicy: string;
+  usageRights: string;
+}> = {
+  en: { sitemap: "Sitemap", privacyPolicy: "Privacy Policy", usageRights: "Usage Rights" },
+  bn: { sitemap: "সাইটম্যাপ", privacyPolicy: "প্রাইভেসী পলিসি", usageRights: "ব্যবহারের অধিকার" },
+  ur: { sitemap: "سائٹ میپ", privacyPolicy: "رازداری کی پالیسی", usageRights: "استعمال کے حقوق" },
+  ar: { sitemap: "خريطة الموقع", privacyPolicy: "سياسة الخصوصية", usageRights: "حقوق الاستخدام" },
+  tr: { sitemap: "Site Haritası", privacyPolicy: "Gizlilik Politikası", usageRights: "Kullanım Hakları" },
+  ms: { sitemap: "Peta Laman", privacyPolicy: "Dasar Privasi", usageRights: "Hak Penggunaan" },
+  id: { sitemap: "Peta Situs", privacyPolicy: "Kebijakan Privasi", usageRights: "Hak Penggunaan" },
+};
+
 // ─── Duas Page Texts ───
 export const DUAS_PAGE_TEXTS: Record<TransLang, {
   pageTitle: string;

@@ -3,6 +3,120 @@
 import { cn } from "@/lib/utils";
 import { DUA_CATEGORIES, type DuaCategory } from "@/lib/duas-data";
 import { Search, Heart, X } from "lucide-react";
+import type { TransLang } from "@/lib/islamic-content";
+
+const FILTER_TEXTS: Record<TransLang, {
+  searchPlaceholder: string;
+  all: string;
+  favorites: string;
+  categories: Record<DuaCategory, string>;
+}> = {
+  en: {
+    searchPlaceholder: "Search duas by keyword, Arabic, or source...",
+    all: "All",
+    favorites: "Favorites",
+    categories: {
+      "morning-evening": "Morning / Evening",
+      meals: "Meals",
+      prayer: "Prayer",
+      travel: "Travel",
+      protection: "Protection",
+      forgiveness: "Forgiveness",
+      gratitude: "Gratitude",
+      general: "General",
+    },
+  },
+  bn: {
+    searchPlaceholder: "কীওয়ার্ড, আরবি বা উৎস দিয়ে দু'আ খুঁজুন...",
+    all: "সব",
+    favorites: "পছন্দের",
+    categories: {
+      "morning-evening": "সকাল / সন্ধ্যা",
+      meals: "খাবার",
+      prayer: "নামায",
+      travel: "ভ্রমণ",
+      protection: "সুরক্ষা",
+      forgiveness: "ক্ষমা",
+      gratitude: "কৃতজ্ঞতা",
+      general: "সাধারণ",
+    },
+  },
+  ur: {
+    searchPlaceholder: "کلیدی لفظ، عربی یا ماخذ سے دعا تلاش کریں...",
+    all: "سب",
+    favorites: "پسندیدہ",
+    categories: {
+      "morning-evening": "صبح / شام",
+      meals: "کھانا",
+      prayer: "نماز",
+      travel: "سفر",
+      protection: "حفاظت",
+      forgiveness: "مغفرت",
+      gratitude: "شکر",
+      general: "عمومی",
+    },
+  },
+  ar: {
+    searchPlaceholder: "ابحث عن الأدعية بالكلمات أو العربية أو المصدر...",
+    all: "الكل",
+    favorites: "المفضلة",
+    categories: {
+      "morning-evening": "الصباح والمساء",
+      meals: "الطعام",
+      prayer: "الصلاة",
+      travel: "السفر",
+      protection: "الحماية",
+      forgiveness: "المغفرة",
+      gratitude: "الشكر",
+      general: "عامة",
+    },
+  },
+  tr: {
+    searchPlaceholder: "Anahtar kelime, Arapca veya kaynak ile dua arayin...",
+    all: "Tumü",
+    favorites: "Favoriler",
+    categories: {
+      "morning-evening": "Sabah / Aksam",
+      meals: "Yemek",
+      prayer: "Namaz",
+      travel: "Seyahat",
+      protection: "Korunma",
+      forgiveness: "Bagislanma",
+      gratitude: "Sukur",
+      general: "Genel",
+    },
+  },
+  ms: {
+    searchPlaceholder: "Cari doa menggunakan kata kunci, Arab, atau sumber...",
+    all: "Semua",
+    favorites: "Kegemaran",
+    categories: {
+      "morning-evening": "Pagi / Petang",
+      meals: "Makan",
+      prayer: "Solat",
+      travel: "Perjalanan",
+      protection: "Perlindungan",
+      forgiveness: "Keampunan",
+      gratitude: "Kesyukuran",
+      general: "Umum",
+    },
+  },
+  id: {
+    searchPlaceholder: "Cari doa dengan kata kunci, Arab, atau sumber...",
+    all: "Semua",
+    favorites: "Favorit",
+    categories: {
+      "morning-evening": "Pagi / Sore",
+      meals: "Makan",
+      prayer: "Sholat",
+      travel: "Perjalanan",
+      protection: "Perlindungan",
+      forgiveness: "Ampunan",
+      gratitude: "Syukur",
+      general: "Umum",
+    },
+  },
+};
 
 interface DuasFilterProps {
   searchQuery: string;
@@ -12,6 +126,7 @@ interface DuasFilterProps {
   showFavorites: boolean;
   onToggleFavorites: () => void;
   favoriteCount: number;
+  lang?: TransLang;
 }
 
 export function DuasFilter({
@@ -22,7 +137,10 @@ export function DuasFilter({
   showFavorites,
   onToggleFavorites,
   favoriteCount,
+  lang = "en",
 }: DuasFilterProps) {
+  const t = FILTER_TEXTS[lang] || FILTER_TEXTS.en;
+
   return (
     <div className="space-y-4">
       {/* Search bar */}
@@ -32,7 +150,7 @@ export function DuasFilter({
           type="text"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Search duas by keyword, Arabic, or source..."
+          placeholder={t.searchPlaceholder}
           className="w-full rounded-xl border border-emerald-200 bg-white py-2.5 pl-10 pr-10 text-sm text-gray-700 placeholder:text-gray-400 focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100 transition-all"
         />
         {searchQuery && (
@@ -57,7 +175,7 @@ export function DuasFilter({
               : "bg-white text-gray-600 border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50"
           )}
         >
-          All
+          {t.all}
         </button>
 
         {/* Category pills */}
@@ -72,7 +190,7 @@ export function DuasFilter({
                 : "bg-white text-gray-600 border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50"
             )}
           >
-            <span>{cat.label}</span>
+            <span>{t.categories[cat.id] || cat.label}</span>
           </button>
         ))}
 
@@ -87,7 +205,7 @@ export function DuasFilter({
           )}
         >
           <Heart className={cn("h-3.5 w-3.5", showFavorites && "fill-white")} />
-          <span>Favorites</span>
+          <span>{t.favorites}</span>
           {favoriteCount > 0 && (
             <span
               className={cn(

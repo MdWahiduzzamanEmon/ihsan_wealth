@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import { Bot, Trash2, AlertTriangle } from "lucide-react";
+import { Trash2, AlertTriangle, X } from "lucide-react";
+import { IhsanLogo } from "./ihsan-logo";
 import { useChat } from "@/hooks/use-chat";
 import { ChatMessage } from "./chat-message";
 import { ChatFeatureTabs } from "./chat-feature-tabs";
@@ -14,9 +15,11 @@ interface ChatPanelProps {
   zakatSummary?: string;
   /** Full-page mode (taller) vs widget mode */
   fullPage?: boolean;
+  /** Close callback for floating widget */
+  onClose?: () => void;
 }
 
-export function ChatPanel({ lang, zakatSummary, fullPage = false }: ChatPanelProps) {
+export function ChatPanel({ lang, zakatSummary, fullPage = false, onClose }: ChatPanelProps) {
   const { messages, isStreaming, feature, setFeature, sendMessage, stopStreaming, clearChat } =
     useChat({ language: lang, zakatSummary });
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -34,23 +37,34 @@ export function ChatPanel({ lang, zakatSummary, fullPage = false }: ChatPanelPro
       {/* Header */}
       <div className="shrink-0 flex items-center justify-between px-4 py-3 border-b bg-gradient-to-r from-emerald-800 to-emerald-900 rounded-t-2xl">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-            <Bot className="h-4 w-4 text-emerald-200" />
+          <div className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center p-1">
+            <IhsanLogo size={24} />
           </div>
           <div>
             <h3 className="text-sm font-semibold text-white">{t.title}</h3>
             <p className="text-[10px] text-emerald-300/60">Powered by IhsanWealth</p>
           </div>
         </div>
-        {messages.length > 0 && (
-          <button
-            onClick={clearChat}
-            className="text-emerald-300/50 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10"
-            title={t.clearChat}
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
-        )}
+        <div className="flex items-center gap-1">
+          {messages.length > 0 && (
+            <button
+              onClick={clearChat}
+              className="text-emerald-300/50 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10"
+              title={t.clearChat}
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          )}
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="text-emerald-300/50 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10"
+              title="Close"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Feature tabs */}
@@ -62,8 +76,8 @@ export function ChatPanel({ lang, zakatSummary, fullPage = false }: ChatPanelPro
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-white">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center gap-3 py-8">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center">
-              <Bot className="h-7 w-7 text-emerald-600" />
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center p-2">
+              <IhsanLogo size={40} />
             </div>
             <div>
               <p className="text-sm font-medium text-gray-700">{t.title}</p>

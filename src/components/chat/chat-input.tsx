@@ -1,10 +1,21 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { Send, Square } from "lucide-react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { Send, Square, Mic, MicOff } from "lucide-react";
 import type { ChatFeature } from "@/types/chat";
 import type { TransLang } from "@/lib/islamic-content";
 import { CHAT_TEXTS } from "@/lib/chat/constants";
+
+// Map TransLang to BCP-47 speech recognition locale
+const LANG_TO_SPEECH: Record<TransLang, string> = {
+  en: "en-US",
+  bn: "bn-BD",
+  ur: "ur-PK",
+  ar: "ar-SA",
+  tr: "tr-TR",
+  ms: "ms-MY",
+  id: "id-ID",
+};
 
 interface ChatInputProps {
   onSend: (text: string) => void;
@@ -17,17 +28,93 @@ interface ChatInputProps {
 
 export function ChatInput({ onSend, onStop, isStreaming, feature, lang, showSuggestions }: ChatInputProps) {
   const [input, setInput] = useState("");
+  const [isListening, setIsListening] = useState(false);
+  const [speechSupported, setSpeechSupported] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
   const t = CHAT_TEXTS[lang];
+
+  // Check speech recognition support
+  useEffect(() => {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    setSpeechSupported(!!SR);
+  }, []);
 
   useEffect(() => {
     inputRef.current?.focus();
   }, [feature]);
 
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      recognitionRef.current?.abort();
+    };
+  }, []);
+
+  const toggleVoice = useCallback(() => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      return;
+    }
+
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return;
+
+    const recognition = new SR();
+    recognition.lang = LANG_TO_SPEECH[lang] || "en-US";
+    recognition.interimResults = true;
+    recognition.continuous = false;
+    recognition.maxAlternatives = 1;
+
+    let finalTranscript = input;
+
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      let interim = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalTranscript += (finalTranscript ? " " : "") + transcript;
+        } else {
+          interim = transcript;
+        }
+      }
+      setInput(finalTranscript + (interim ? " " + interim : ""));
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+      // Auto-resize textarea
+      if (inputRef.current) {
+        inputRef.current.style.height = "auto";
+        inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, 96)}px`;
+      }
+    };
+
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+      if (event.error !== "aborted" && event.error !== "no-speech") {
+        console.warn("Speech recognition error:", event.error);
+      }
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+    setIsListening(true);
+  }, [isListening, lang, input]);
+
   const handleSubmit = () => {
     if (!input.trim() || isStreaming) return;
+    recognitionRef.current?.abort();
+    setIsListening(false);
     onSend(input);
     setInput("");
+    // Reset textarea height
+    if (inputRef.current) {
+      inputRef.current.style.height = "auto";
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -58,13 +145,15 @@ export function ChatInput({ onSend, onStop, isStreaming, feature, lang, showSugg
       )}
 
       {/* Input bar */}
-      <div className="flex items-end gap-2 bg-gray-50 rounded-2xl border border-gray-200 p-2">
+      <div className={`flex items-end gap-1.5 rounded-2xl border p-2 transition-colors ${
+        isListening ? "bg-red-50 border-red-300" : "bg-gray-50 border-gray-200"
+      }`}>
         <textarea
           ref={inputRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={t.placeholder}
+          placeholder={isListening ? "Listening..." : t.placeholder}
           rows={1}
           className="flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-gray-400 max-h-24 min-h-[36px] py-1.5 px-2"
           style={{ height: "auto", overflow: "hidden" }}
@@ -74,6 +163,23 @@ export function ChatInput({ onSend, onStop, isStreaming, feature, lang, showSugg
             target.style.height = `${Math.min(target.scrollHeight, 96)}px`;
           }}
         />
+
+        {/* Voice button */}
+        {speechSupported && !isStreaming && (
+          <button
+            onClick={toggleVoice}
+            className={`shrink-0 h-9 w-9 rounded-xl flex items-center justify-center transition-all ${
+              isListening
+                ? "bg-red-500 text-white animate-pulse hover:bg-red-600"
+                : "bg-gray-200 text-gray-500 hover:bg-gray-300 hover:text-gray-700"
+            }`}
+            title={isListening ? "Stop listening" : "Voice input"}
+          >
+            {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+          </button>
+        )}
+
+        {/* Send / Stop button */}
         {isStreaming ? (
           <button
             onClick={onStop}

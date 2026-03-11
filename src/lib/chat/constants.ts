@@ -2,7 +2,7 @@ import type { ChatFeature } from "@/types/chat";
 import type { TransLang } from "@/lib/islamic-content";
 
 export const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
-export const OPENROUTER_MODEL = "nvidia/nemotron-3-super-120b-a12b:free";
+export const OPENROUTER_MODEL = "stepfun/step-3.5-flash:free";
 
 export const FEATURE_CONFIG: Record<
   ChatFeature,

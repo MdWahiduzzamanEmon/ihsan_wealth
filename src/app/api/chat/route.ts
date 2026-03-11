@@ -155,53 +155,89 @@ export async function POST(request: Request) {
         let iterations = 0;
         const MAX_ITERATIONS = 3;
 
+        // Tool-calling loop: use invoke() so we can inspect tool_calls
+        let didStream = false;
+
         while (iterations < MAX_ITERATIONS) {
           iterations++;
-          const response = await modelWithTools.invoke(currentMessages);
 
-          // Check if the model wants to call tools
+          let response;
+          try {
+            response = await modelWithTools.invoke(currentMessages);
+          } catch (invokeErr) {
+            // If tool-bound model fails (model doesn't support tools), retry without tools
+            if (toolCallSupported && iterations === 1) {
+              toolCallSupported = false;
+              response = await model.invoke(currentMessages);
+            } else {
+              throw invokeErr;
+            }
+          }
+
+          // Extract any text content from the response
+          const extractText = () => {
+            if (typeof response.content === "string") return response.content;
+            if (Array.isArray(response.content)) {
+              return response.content
+                .map((c) => (typeof c === "string" ? c : "text" in c ? (c as { text: string }).text : ""))
+                .join("");
+            }
+            return "";
+          };
+
           const toolCalls = response.tool_calls;
           if (toolCallSupported && toolCalls && toolCalls.length > 0 && tools.length > 0) {
-            // Execute tool calls
             currentMessages.push(response);
 
             for (const tc of toolCalls) {
               const matchedTool = tools.find((t) => t.name === tc.name);
               if (matchedTool) {
-                const toolResult = await (matchedTool as { invoke: (args: Record<string, unknown>) => Promise<string> }).invoke(tc.args);
-                const { ToolMessage } = await import("@langchain/core/messages");
-                currentMessages.push(
-                  new ToolMessage({
-                    content: typeof toolResult === "string" ? toolResult : JSON.stringify(toolResult),
-                    tool_call_id: tc.id || "",
-                  }),
-                );
+                try {
+                  const toolResult = await (matchedTool as { invoke: (args: Record<string, unknown>) => Promise<string> }).invoke(tc.args);
+                  const { ToolMessage } = await import("@langchain/core/messages");
+                  currentMessages.push(
+                    new ToolMessage({
+                      content: typeof toolResult === "string" ? toolResult : JSON.stringify(toolResult),
+                      tool_call_id: tc.id || "",
+                    }),
+                  );
+                } catch {
+                  const { ToolMessage } = await import("@langchain/core/messages");
+                  currentMessages.push(
+                    new ToolMessage({
+                      content: "Tool call failed. Please answer based on your knowledge.",
+                      tool_call_id: tc.id || "",
+                    }),
+                  );
+                }
               }
             }
-            // Continue loop — model will generate final response with tool results
             continue;
           }
 
-          // No tool calls — stream the final text response
-          const finalText = typeof response.content === "string"
-            ? response.content
-            : Array.isArray(response.content)
-              ? response.content.map((c) => (typeof c === "string" ? c : "text" in c ? c.text : "")).join("")
-              : "";
+          // No tool calls — stream the text
+          const finalText = extractText();
 
-          // Stream in chunks for smooth UI
-          const chunkSize = 15;
-          for (let i = 0; i < finalText.length; i += chunkSize) {
-            const chunk = finalText.slice(i, i + chunkSize);
-            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content: chunk })}\n\n`));
-            // Small delay for smooth streaming feel
-            await new Promise((r) => setTimeout(r, 10));
+          if (finalText.trim()) {
+            const CHUNK = 12;
+            for (let i = 0; i < finalText.length; i += CHUNK) {
+              const chunk = finalText.slice(i, i + CHUNK);
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content: chunk })}\n\n`));
+              await new Promise((r) => setTimeout(r, 15));
+            }
+            didStream = true;
           }
           break;
         }
+
+        // If we exhausted iterations or got empty response, send a fallback message
+        if (!didStream) {
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content: "I apologize, I was unable to generate a response. Please try again or rephrase your question." })}\n\n`));
+        }
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Unknown error";
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content: `Error: ${errorMsg}` })}\n\n`));
+        console.error("Chat API error:", errorMsg);
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content: `Sorry, something went wrong: ${errorMsg}. Please try again.` })}\n\n`));
       } finally {
         controller.enqueue(encoder.encode("data: [DONE]\n\n"));
         controller.close();

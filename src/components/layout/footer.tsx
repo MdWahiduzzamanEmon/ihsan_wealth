@@ -1,7 +1,8 @@
 "use client";
 
 import { Github } from "lucide-react";
-import { FOOTER_DUA, UI_TEXTS, getLangFromCountry } from "@/lib/islamic-content";
+import { FOOTER_DUA, UI_TEXTS, FOOTER_LINKS_TEXTS, getLangFromCountry } from "@/lib/islamic-content";
+import Link from "next/link";
 
 
 function LinkedInIcon({ className }: { className?: string }) {
@@ -47,6 +48,7 @@ interface FooterProps {
 export function Footer({ countryCode = "US" }: FooterProps) {
   const lang = getLangFromCountry(countryCode);
   const texts = UI_TEXTS[lang];
+  const linkTexts = FOOTER_LINKS_TEXTS[lang];
   const duaTranslation = FOOTER_DUA.translations[lang] || FOOTER_DUA.translations.en;
 
   return (
@@ -71,35 +73,47 @@ export function Footer({ countryCode = "US" }: FooterProps) {
         </div>
 
         {/* Disclaimer */}
-        <div className="text-center text-sm text-emerald-300/50">
-          <p className="mb-2 font-medium text-emerald-200/60">
+        <div className="text-center text-sm text-emerald-200/70">
+          <p className="mb-2 font-medium text-emerald-100/80">
             <span className="font-arabic ml-2">تنبيه</span> - {texts.disclaimer}
           </p>
-          <p className="max-w-2xl mx-auto">
+          <p className="max-w-2xl mx-auto text-emerald-200/60">
             {texts.disclaimerText}
           </p>
-          <p className="mt-3 text-xs text-emerald-400/30">
-            Gold and silver prices are fetched from public APIs and may have slight delays.
-          </p>
-          <p className="mt-4 text-xs text-emerald-400/30">
+          <p className="mt-4 text-xs text-emerald-300/50">
             <span className="font-arabic">جزاكم الله خيرا</span> &mdash; {texts.jazakallah}
           </p>
         </div>
 
+        {/* Footer Links */}
+        <div className="flex items-center justify-center gap-4 mt-6 text-xs">
+          <Link href="/site-map" className="text-emerald-300/60 hover:text-emerald-200 transition-colors duration-200">
+            {linkTexts.sitemap}
+          </Link>
+          <span className="text-emerald-700/50">|</span>
+          <Link href="/privacy" className="text-emerald-300/60 hover:text-emerald-200 transition-colors duration-200">
+            {linkTexts.privacyPolicy}
+          </Link>
+          <span className="text-emerald-700/50">|</span>
+          <Link href="/usage-rights" className="text-emerald-300/60 hover:text-emerald-200 transition-colors duration-200">
+            {linkTexts.usageRights}
+          </Link>
+        </div>
+
         {/* Developer Credit Divider */}
         <div className="flex items-center gap-3 mt-8 mb-5">
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-700/30 to-transparent" />
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-700/40 to-transparent" />
         </div>
 
         {/* Developer Credit */}
         <div className="text-center">
-          <p className="text-xs text-emerald-400/40">
+          <p className="text-xs text-emerald-300/60">
             Built with ❤️ by{" "}
             <a
               href="https://github.com/MdWahiduzzamanEmon"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-emerald-300/50 hover:text-emerald-200/70 transition-colors duration-200"
+              className="text-emerald-200/70 hover:text-emerald-100 transition-colors duration-200"
             >
               Md Wahiduzzaman Emon
             </a>
@@ -110,7 +124,7 @@ export function Footer({ countryCode = "US" }: FooterProps) {
               href="https://www.linkedin.com/in/md-wahiduzzaman-emon-51b559173/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-emerald-500/30 hover:text-emerald-300/70 transition-colors duration-200"
+              className="text-emerald-400/50 hover:text-emerald-200 transition-colors duration-200"
               aria-label="LinkedIn"
             >
               <LinkedInIcon className="h-4 w-4" />
@@ -119,7 +133,7 @@ export function Footer({ countryCode = "US" }: FooterProps) {
               href="https://www.facebook.com/wahedemon09/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-emerald-500/30 hover:text-emerald-300/70 transition-colors duration-200"
+              className="text-emerald-400/50 hover:text-emerald-200 transition-colors duration-200"
               aria-label="Facebook"
             >
               <FacebookIcon className="h-4 w-4" />
@@ -128,7 +142,7 @@ export function Footer({ countryCode = "US" }: FooterProps) {
               href="https://github.com/MdWahiduzzamanEmon"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-emerald-500/30 hover:text-emerald-300/70 transition-colors duration-200"
+              className="text-emerald-400/50 hover:text-emerald-200 transition-colors duration-200"
               aria-label="GitHub"
             >
               <Github className="h-4 w-4" />

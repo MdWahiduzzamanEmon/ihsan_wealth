@@ -86,6 +86,7 @@ export default function DuasPage() {
               showFavorites={showFavorites}
               onToggleFavorites={() => setShowFavorites(!showFavorites)}
               favoriteCount={favoriteDuas.length}
+              lang={lang}
             />
           </div>
 
