@@ -662,28 +662,19 @@ export async function exportCertificateAsImage(elementId: string, filename: stri
   const el = document.getElementById(elementId);
   if (!el) return;
 
-  try {
-    const html2canvasModule = await import("html2canvas");
-    const html2canvas = html2canvasModule.default;
+  const html2canvasModule = await import("html2canvas");
+  const html2canvas = html2canvasModule.default;
 
-    const canvas = await html2canvas(el, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: "#ffffff",
-      width: el.scrollWidth,
-      height: el.scrollHeight,
-    });
+  const canvas = await html2canvas(el, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: "#ffffff",
+    width: el.scrollWidth,
+    height: el.scrollHeight,
+  });
 
-    const link = document.createElement("a");
-    link.download = filename;
-    link.href = canvas.toDataURL("image/png", 1.0);
-    link.click();
-  } catch {
-    // Fallback to print
-    window.print();
-  }
-}
-
-export function printCertificate() {
-  window.print();
+  const link = document.createElement("a");
+  link.download = filename;
+  link.href = canvas.toDataURL("image/png", 1.0);
+  link.click();
 }

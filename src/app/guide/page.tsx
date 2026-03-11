@@ -23,6 +23,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { getLangFromCountry, type TransLang } from "@/lib/islamic-content";
+import { AnimatedPattern } from "@/components/ui/animated-pattern";
 import { staggerContainer, staggerItem, fadeIn, slideUp } from "@/lib/animations";
 import {
   GUIDE_PAGE_TEXTS,
@@ -130,17 +131,7 @@ function GuideSectionCard({
           {/* Islamic Reference */}
           <div className="mx-5 mt-5 sm:mx-6 rounded-xl bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-900 p-5 text-center relative overflow-hidden">
             {/* Pattern overlay */}
-            <div className="absolute inset-0 opacity-10">
-              <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <pattern id={`pat-${section.id}`} x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <path d="M20 0L40 20L20 40L0 20Z" fill="none" stroke="white" strokeWidth="0.5" />
-                    <circle cx="20" cy="20" r="8" fill="none" stroke="white" strokeWidth="0.3" />
-                  </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill={`url(#pat-${section.id})`} />
-              </svg>
-            </div>
+            <AnimatedPattern color="emerald" opacity={0.1} density="dense" />
             <p className="relative font-arabic text-xl sm:text-2xl leading-relaxed text-amber-300/90 mb-3" dir="rtl">
               {section.islamicRef.arabic}
             </p>
@@ -239,19 +230,7 @@ export default function GuidePage() {
         {/* Hero Section */}
         <section className="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-900 py-12 sm:py-16">
           {/* Islamic geometric pattern */}
-          <div className="absolute inset-0 opacity-10">
-            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="guide-hero" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
-                  <path d="M40 0L80 40L40 80L0 40Z" fill="none" stroke="white" strokeWidth="0.5" />
-                  <circle cx="40" cy="40" r="16" fill="none" stroke="white" strokeWidth="0.5" />
-                  <path d="M40 24L56 40L40 56L24 40Z" fill="none" stroke="white" strokeWidth="0.5" />
-                  <circle cx="40" cy="40" r="6" fill="none" stroke="white" strokeWidth="0.3" />
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#guide-hero)" />
-            </svg>
-          </div>
+          <AnimatedPattern color="emerald" opacity={0.1} density="sparse" />
 
           <motion.div
             className="relative mx-auto max-w-4xl px-4 text-center"
@@ -298,11 +277,11 @@ export default function GuidePage() {
             <div className="text-center mb-5">
               <p className="font-arabic text-2xl sm:text-3xl text-emerald-700 mb-2">إحسان الثروة</p>
               <h2 className="text-xl sm:text-2xl font-bold text-emerald-900">
-                What Does &quot;IhsanWealth&quot; Mean?
+                {lang === "bn" ? "\"ইহসান ওয়েলথ\" এর অর্থ কী?" : lang === "ur" ? "\"احسان ویلتھ\" کا کیا مطلب ہے؟" : lang === "ar" ? "ماذا يعني \"إحسان الثروة\"؟" : lang === "tr" ? "\"IhsanWealth\" Ne Anlama Gelir?" : lang === "ms" ? "Apakah Maksud \"IhsanWealth\"?" : lang === "id" ? "Apa Arti \"IhsanWealth\"?" : "What Does \"IhsanWealth\" Mean?"}
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6" dir={isRtl ? "rtl" : "ltr"}>
               {/* Ihsan */}
               <div className="rounded-xl border border-emerald-100 bg-white p-4 sm:p-5">
                 <div className="flex items-center gap-3 mb-3">
@@ -311,18 +290,32 @@ export default function GuidePage() {
                   </div>
                   <div>
                     <h3 className="font-bold text-emerald-900">Ihsan (إحسان)</h3>
-                    <p className="text-xs text-muted-foreground">Excellence &amp; Perfection</p>
+                    <p className="text-xs text-muted-foreground">
+                      {lang === "bn" ? "উৎকর্ষতা ও পূর্ণতা" : lang === "ur" ? "عمدگی اور کمال" : lang === "ar" ? "التميز والإتقان" : lang === "tr" ? "Mukemmellik ve Kusursuzluk" : lang === "ms" ? "Kecemerlangan & Kesempurnaan" : lang === "id" ? "Keunggulan & Kesempurnaan" : "Excellence & Perfection"}
+                    </p>
                   </div>
                 </div>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  <strong>Ihsan</strong> means &quot;excellence&quot;, &quot;perfection&quot;, or &quot;doing beautiful deeds&quot; in Arabic. It is the highest level of faith in Islam — to worship Allah as though you see Him, knowing that He sees you. It represents doing everything with sincerity and the best of intentions.
+                  {lang === "bn" ? "ইহসান অর্থ 'উৎকর্ষতা', 'পূর্ণতা' বা 'সুন্দর কাজ করা'। এটি ইসলামে ঈমানের সর্বোচ্চ স্তর — আল্লাহকে এমনভাবে ইবাদত করা যেন আপনি তাঁকে দেখছেন, এবং জানা যে তিনি আপনাকে দেখছেন। এটি আন্তরিকতা ও সর্বোত্তম নিয়তের সাথে সবকিছু করাকে বোঝায়।"
+                    : lang === "ur" ? "احسان کا مطلب ہے 'عمدگی'، 'کمال' یا 'خوبصورت اعمال'۔ یہ اسلام میں ایمان کا اعلیٰ ترین درجہ ہے — اللہ کی عبادت ایسے کرنا جیسے آپ اسے دیکھ رہے ہوں، یہ جانتے ہوئے کہ وہ آپ کو دیکھ رہے ہیں۔"
+                    : lang === "ar" ? "الإحسان يعني 'التميز' و'الإتقان' و'فعل الجميل'. وهو أعلى مراتب الإيمان في الإسلام — أن تعبد الله كأنك تراه، فإن لم تكن تراه فإنه يراك. يمثل فعل كل شيء بإخلاص وأفضل النوايا."
+                    : lang === "tr" ? "Ihsan, Arapcada 'mukemmellik', 'kusursuzluk' veya 'guzel ameller yapmak' anlamina gelir. Islamda imanin en yuksek derecesidir — Allahi goruyormus gibi ibadet etmek, Onun sizi gordugunu bilerek."
+                    : lang === "ms" ? "Ihsan bermaksud 'kecemerlangan', 'kesempurnaan' atau 'melakukan kebaikan'. Ia adalah tahap iman tertinggi dalam Islam — beribadah kepada Allah seolah-olah anda melihat-Nya, dengan mengetahui bahawa Dia melihat anda."
+                    : lang === "id" ? "Ihsan berarti 'keunggulan', 'kesempurnaan' atau 'berbuat kebaikan'. Ini adalah tingkat iman tertinggi dalam Islam — beribadah kepada Allah seolah-olah Anda melihat-Nya, dengan mengetahui bahwa Dia melihat Anda."
+                    : "Ihsan means 'excellence', 'perfection', or 'doing beautiful deeds' in Arabic. It is the highest level of faith in Islam — to worship Allah as though you see Him, knowing that He sees you. It represents doing everything with sincerity and the best of intentions."}
                 </p>
                 <div className="mt-3 rounded-lg bg-emerald-50 p-3">
                   <p className="font-arabic text-sm text-emerald-700 text-center" dir="rtl">
                     أَنْ تَعْبُدَ اللَّهَ كَأَنَّكَ تَرَاهُ فَإِنْ لَمْ تَكُنْ تَرَاهُ فَإِنَّهُ يَرَاكَ
                   </p>
                   <p className="text-xs text-emerald-600/80 text-center mt-1 italic">
-                    &quot;To worship Allah as if you see Him, and if you cannot see Him, then He sees you&quot; — Sahih Muslim
+                    {lang === "bn" ? "\"আল্লাহর ইবাদত করো যেন তুমি তাঁকে দেখছো, আর যদি তাঁকে না দেখো তবে জেনে রাখো তিনি তোমাকে দেখছেন\" — সহীহ মুসলিম"
+                      : lang === "ur" ? "\"اللہ کی عبادت ایسے کرو جیسے تم اسے دیکھ رہے ہو، اگر نہیں دیکھ سکتے تو جان لو وہ تمہیں دیکھ رہے ہیں\" — صحیح مسلم"
+                      : lang === "ar" ? "\"أن تعبد الله كأنك تراه، فإن لم تكن تراه فإنه يراك\" — صحيح مسلم"
+                      : lang === "tr" ? "\"Allaha Onu goruyormus gibi ibadet et, sen Onu goremesen de O seni goruyor\" — Sahih Muslim"
+                      : lang === "ms" ? "\"Beribadah kepada Allah seolah-olah kamu melihat-Nya, jika kamu tidak melihat-Nya maka sesungguhnya Dia melihatmu\" — Sahih Muslim"
+                      : lang === "id" ? "\"Beribadahlah kepada Allah seolah-olah kamu melihat-Nya, jika kamu tidak melihat-Nya maka sesungguhnya Dia melihatmu\" — Sahih Muslim"
+                      : "\"To worship Allah as if you see Him, and if you cannot see Him, then He sees you\" — Sahih Muslim"}
                   </p>
                 </div>
               </div>
@@ -334,29 +327,59 @@ export default function GuidePage() {
                     <span className="text-lg">💰</span>
                   </div>
                   <div>
-                    <h3 className="font-bold text-emerald-900">Wealth (الثروة)</h3>
-                    <p className="text-xs text-muted-foreground">Managing Blessings with Purpose</p>
+                    <h3 className="font-bold text-emerald-900">
+                      {lang === "bn" ? "ওয়েলথ (الثروة)" : lang === "ur" ? "ویلتھ (الثروة)" : lang === "ar" ? "الثروة (Wealth)" : "Wealth (الثروة)"}
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      {lang === "bn" ? "উদ্দেশ্যমূলক নেয়ামত পরিচালনা" : lang === "ur" ? "نعمتوں کا بامقصد انتظام" : lang === "ar" ? "إدارة النعم بهدف" : lang === "tr" ? "Nimetleri Amacli Yonetme" : lang === "ms" ? "Mengurus Nikmat dengan Tujuan" : lang === "id" ? "Mengelola Nikmat dengan Tujuan" : "Managing Blessings with Purpose"}
+                    </p>
                   </div>
                 </div>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  <strong>Wealth</strong> in Islam is considered an <em>amanah</em> (trust) from Allah. It is not just money — it includes all blessings and resources. Managing wealth with ihsan means being responsible, generous, and fulfilling your obligations like Zakat.
+                  {lang === "bn" ? "ইসলামে সম্পদ আল্লাহর পক্ষ থেকে একটি আমানত (বিশ্বাস)। এটি শুধু টাকা নয় — সব নেয়ামত ও সম্পদ অন্তর্ভুক্ত। ইহসানের সাথে সম্পদ পরিচালনা মানে দায়িত্বশীল, উদার হওয়া এবং যাকাতের মতো বাধ্যবাধকতা পূরণ করা।"
+                    : lang === "ur" ? "اسلام میں دولت اللہ کی طرف سے ایک امانت ہے۔ یہ صرف پیسے نہیں — اس میں تمام نعمتیں اور وسائل شامل ہیں۔ احسان کے ساتھ دولت کا انتظام کا مطلب ہے ذمہ دار، فیاض ہونا اور زکوٰۃ جیسے فرائض ادا کرنا۔"
+                    : lang === "ar" ? "المال في الإسلام أمانة من الله. ليس مجرد نقود بل يشمل جميع النعم والموارد. إدارة المال بإحسان تعني المسؤولية والكرم وأداء الواجبات كالزكاة."
+                    : lang === "tr" ? "Islamda servet Allah'tan bir emanettir. Sadece para degil — tum nimetleri ve kaynaklari icerir. Serveti ihsanla yonetmek sorumluluk, comertlik ve zekat gibi yukumlulukleri yerine getirmek demektir."
+                    : lang === "ms" ? "Harta dalam Islam dianggap amanah daripada Allah. Bukan hanya wang — ia merangkumi semua nikmat dan sumber. Mengurus harta dengan ihsan bermakna bertanggungjawab, dermawan dan menunaikan kewajipan seperti zakat."
+                    : lang === "id" ? "Harta dalam Islam dianggap sebagai amanah dari Allah. Bukan hanya uang — meliputi semua nikmat dan sumber daya. Mengelola harta dengan ihsan berarti bertanggung jawab, dermawan, dan menunaikan kewajiban seperti zakat."
+                    : "Wealth in Islam is considered an amanah (trust) from Allah. It is not just money — it includes all blessings and resources. Managing wealth with ihsan means being responsible, generous, and fulfilling your obligations like Zakat."}
                 </p>
                 <div className="mt-3 rounded-lg bg-amber-50 p-3">
                   <p className="text-xs text-amber-700 text-center italic">
-                    Together, <strong>&quot;IhsanWealth&quot;</strong> means <strong>&quot;managing your wealth with excellence and spiritual mindfulness&quot;</strong> — fulfilling your Islamic financial duties beautifully, accurately, and with the consciousness of Allah.
+                    {lang === "bn" ? "একত্রে, \"ইহসান ওয়েলথ\" অর্থ \"উৎকর্ষতা ও আধ্যাত্মিক সচেতনতার সাথে সম্পদ পরিচালনা\" — আল্লাহর সচেতনতায় সুন্দরভাবে ও সঠিকভাবে ইসলামী আর্থিক দায়িত্ব পালন।"
+                      : lang === "ur" ? "مل کر، \"احسان ویلتھ\" کا مطلب ہے \"عمدگی اور روحانی شعور کے ساتھ دولت کا انتظام\" — اللہ کے شعور میں خوبصورتی اور درستگی سے اسلامی مالی فرائض ادا کرنا۔"
+                      : lang === "ar" ? "معاً، \"إحسان الثروة\" يعني \"إدارة المال بالتميز والوعي الروحي\" — أداء الواجبات المالية الإسلامية بإتقان ودقة وبوعي الله."
+                      : lang === "tr" ? "Birlikte, \"IhsanWealth\" \"servetinizi mukemmellik ve manevi bilinçle yönetmek\" anlamına gelir."
+                      : lang === "ms" ? "Bersama, \"IhsanWealth\" bermaksud \"mengurus harta anda dengan kecemerlangan dan kesedaran rohani\" — menunaikan kewajipan kewangan Islam dengan indah dan tepat."
+                      : lang === "id" ? "Bersama, \"IhsanWealth\" berarti \"mengelola harta Anda dengan keunggulan dan kesadaran spiritual\" — menunaikan kewajiban keuangan Islam dengan indah dan tepat."
+                      : "Together, \"IhsanWealth\" means \"managing your wealth with excellence and spiritual mindfulness\" — fulfilling your Islamic financial duties beautifully, accurately, and with the consciousness of Allah."}
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Bengali / Bangla translation */}
+            {/* Native language translation */}
             <div className="mt-5 rounded-xl bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 p-4 text-center">
-              <p className="text-sm text-emerald-100/80 mb-1">In Bengali (বাংলায়)</p>
-              <p className="text-base sm:text-lg text-amber-300 font-medium">
-                ইহসান ওয়েলথ = সৌন্দর্য ও উৎকর্ষতার সাথে সম্পদ ব্যবস্থাপনা
+              <p className="text-sm text-emerald-100/80 mb-1">
+                {lang === "bn" ? "বাংলায়" : lang === "ur" ? "اردو میں" : lang === "ar" ? "بالعربية" : lang === "tr" ? "Turkce" : lang === "ms" ? "Bahasa Melayu" : lang === "id" ? "Bahasa Indonesia" : "In Your Language"}
               </p>
-              <p className="text-xs text-emerald-200/60 mt-1">
-                &quot;ইহসান&quot; অর্থ উৎকর্ষতা, সৌন্দর্য ও আল্লাহর সচেতনতা। &quot;ওয়েলথ&quot; অর্থ সম্পদ। একসাথে এর অর্থ হলো আল্লাহর সন্তুষ্টির জন্য সুন্দরভাবে সম্পদ পরিচালনা করা।
+              <p className="text-base sm:text-lg text-amber-300 font-medium" dir={isRtl ? "rtl" : "ltr"}>
+                {lang === "bn" ? "ইহসান ওয়েলথ = সৌন্দর্য ও উৎকর্ষতার সাথে সম্পদ ব্যবস্থাপনা"
+                  : lang === "ur" ? "احسان ویلتھ = عمدگی اور روحانی شعور سے دولت کا انتظام"
+                  : lang === "ar" ? "إحسان الثروة = إدارة المال بالتميز والوعي الروحي"
+                  : lang === "tr" ? "IhsanWealth = Serveti mukemmellik ve manevi bilinçle yonetmek"
+                  : lang === "ms" ? "IhsanWealth = Mengurus harta dengan kecemerlangan dan kesedaran rohani"
+                  : lang === "id" ? "IhsanWealth = Mengelola harta dengan keunggulan dan kesadaran spiritual"
+                  : "IhsanWealth = Managing wealth with excellence & spiritual mindfulness"}
+              </p>
+              <p className="text-xs text-emerald-200/60 mt-1" dir={isRtl ? "rtl" : "ltr"}>
+                {lang === "bn" ? "\"ইহসান\" অর্থ উৎকর্ষতা, সৌন্দর্য ও আল্লাহর সচেতনতা। \"ওয়েলথ\" অর্থ সম্পদ। একসাথে এর অর্থ হলো আল্লাহর সন্তুষ্টির জন্য সুন্দরভাবে সম্পদ পরিচালনা করা।"
+                  : lang === "ur" ? "\"احسان\" کا مطلب ہے عمدگی، خوبصورتی اور اللہ کا شعور۔ \"ویلتھ\" کا مطلب ہے دولت۔ مل کر اس کا مطلب ہے اللہ کی رضا کے لیے خوبصورتی سے دولت کا انتظام۔"
+                  : lang === "ar" ? "\"إحسان\" يعني التميز والجمال والوعي بالله. \"الثروة\" تعني المال. معاً يعني إدارة المال بإتقان لمرضاة الله."
+                  : lang === "tr" ? "\"Ihsan\" mukemmellik, guzellik ve Allah bilincidir. \"Wealth\" servet demektir. Birlikte, Allahin rizasi icin serveti guzel yonetmek anlamina gelir."
+                  : lang === "ms" ? "\"Ihsan\" bermaksud kecemerlangan, keindahan dan kesedaran terhadap Allah. \"Wealth\" bermaksud harta. Bersama ia bermaksud mengurus harta dengan indah untuk keredaan Allah."
+                  : lang === "id" ? "\"Ihsan\" berarti keunggulan, keindahan dan kesadaran terhadap Allah. \"Wealth\" berarti harta. Bersama berarti mengelola harta dengan indah untuk ridha Allah."
+                  : "\"Ihsan\" means excellence, beauty and consciousness of Allah. \"Wealth\" means resources. Together it means beautifully managing wealth for the pleasure of Allah."}
               </p>
             </div>
           </motion.div>

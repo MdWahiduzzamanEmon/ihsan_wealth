@@ -133,7 +133,7 @@
   font-family: var(--font-amiri), "Amiri", "Traditional Arabic", "Scheherazade New", serif;
 }
 
-/* Print styles */
+/* Print styles — certificate modal print support */
 @media print {
   /* Hide everything except the certificate */
   body > * {
@@ -167,13 +167,4 @@
     size: A4;
     margin: 0;
   }
-}
-
-/* Certificate wrapper - positioned off-screen for capture */
-.print-certificate-wrapper {
-  position: absolute;
-  left: -9999px;
-  top: 0;
-  width: 210mm;
-  background: white;
 }

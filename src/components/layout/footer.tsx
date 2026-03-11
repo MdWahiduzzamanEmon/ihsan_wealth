@@ -2,6 +2,7 @@
 
 import { Github } from "lucide-react";
 import { FOOTER_DUA, UI_TEXTS, getLangFromCountry } from "@/lib/islamic-content";
+import { AnimatedPattern } from "@/components/ui/animated-pattern";
 
 function LinkedInIcon({ className }: { className?: string }) {
   return (
@@ -49,8 +50,9 @@ export function Footer({ countryCode = "US" }: FooterProps) {
   const duaTranslation = FOOTER_DUA.translations[lang] || FOOTER_DUA.translations.en;
 
   return (
-    <footer className="border-t bg-gradient-to-b from-emerald-950 to-emerald-950 px-4 py-10 text-white/80">
-      <div className="mx-auto max-w-5xl">
+    <footer className="relative overflow-hidden border-t bg-gradient-to-b from-emerald-950 to-emerald-950 px-4 py-10 text-white/80">
+      <AnimatedPattern opacity={0.04} color="emerald" density="sparse" />
+      <div className="relative mx-auto max-w-5xl">
         {/* Closing Dua */}
         <div className="text-center mb-8">
           <p className="font-arabic text-xl text-amber-300/70 mb-2" dir="rtl">
@@ -134,9 +136,6 @@ export function Footer({ countryCode = "US" }: FooterProps) {
             </a>
           </div>
 
-          <p className="mt-3 text-xs text-emerald-400/30">
-            &copy; 2024-2026 IhsanWealth. Open source for the Ummah.
-          </p>
         </div>
       </div>
     </footer>

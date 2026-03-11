@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/footer";
 import { HijriCalendar } from "@/components/calendar/hijri-calendar";
 import { IslamicEvents } from "@/components/calendar/islamic-events";
 import { DateConverter } from "@/components/calendar/date-converter";
+import { AnimatedPattern } from "@/components/ui/animated-pattern";
 import { gregorianToHijri, getHijriMonthName, getHijriDayName } from "@/lib/hijri-utils";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";

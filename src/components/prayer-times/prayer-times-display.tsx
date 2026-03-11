@@ -12,6 +12,7 @@ import { staggerContainer, fadeIn, slideUp } from "@/lib/animations";
 import { CALCULATION_METHODS } from "@/lib/prayer-times-calc";
 import { approximateHijriDate } from "@/lib/prayer-times-calc";
 import { PrayerCard } from "@/components/prayer-times/prayer-card";
+import { AnimatedPattern } from "@/components/ui/animated-pattern";
 import {
   Select,
   SelectContent,
@@ -20,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { PrayerTimesState, PrayerName } from "@/hooks/use-prayer-times";
+import { useReverseGeocode } from "@/hooks/use-reverse-geocode";
 
 const MAIN_PRAYERS: PrayerName[] = [
   "fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha",
@@ -44,6 +46,8 @@ export function PrayerTimesDisplay({ state }: PrayerTimesDisplayProps) {
     asrJuristic,
     setAsrJuristic,
   } = state;
+
+  const locationName = useReverseGeocode(latitude, longitude);
 
   const now = new Date();
   const gregorian = now.toLocaleDateString("en-US", {
@@ -90,9 +94,7 @@ export function PrayerTimesDisplay({ state }: PrayerTimesDisplayProps) {
         {latitude !== null && longitude !== null && (
           <div className="flex items-center justify-center gap-1.5 text-xs text-gray-500">
             <MapPin className="h-3.5 w-3.5 text-emerald-500" />
-            <span>
-              {latitude.toFixed(4)}, {longitude.toFixed(4)}
-            </span>
+            <span>{locationName || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`}</span>
           </div>
         )}
 
@@ -111,18 +113,8 @@ export function PrayerTimesDisplay({ state }: PrayerTimesDisplayProps) {
           animate="animate"
           className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-800 p-5 text-white shadow-xl shadow-emerald-900/20"
         >
-          {/* Islamic pattern overlay */}
-          <div className="absolute inset-0 opacity-5">
-            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="prayer-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <path d="M20 0L40 20L20 40L0 20Z" fill="none" stroke="white" strokeWidth="0.5" />
-                  <circle cx="20" cy="20" r="8" fill="none" stroke="white" strokeWidth="0.5" />
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#prayer-pattern)" />
-            </svg>
-          </div>
+          {/* Animated Islamic pattern overlay */}
+          <AnimatedPattern opacity={0.06} color="emerald" density="dense" />
 
           <div className="relative flex items-center justify-between">
             <div>
