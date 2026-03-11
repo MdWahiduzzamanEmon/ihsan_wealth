@@ -8,6 +8,7 @@ import { useAuth } from "@/components/providers/auth-provider";
 import { Button } from "@/components/ui/button";
 import {
   BookOpen,
+  BookOpenText,
   Bot,
   Calculator,
   CalendarDays,
@@ -32,6 +33,7 @@ const PRIMARY_LINKS = [
 ];
 
 const MORE_LINKS = [
+  { href: "/quran", label: "Quran", icon: BookOpenText },
   { href: "/calendar", label: "Calendar", icon: CalendarDays },
   { href: "/sadaqah", label: "Sadaqah", icon: Heart },
   { href: "/history", label: "History", icon: History },

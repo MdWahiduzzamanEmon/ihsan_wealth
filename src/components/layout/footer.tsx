@@ -2,6 +2,7 @@
 
 import { Github } from "lucide-react";
 import { FOOTER_DUA, UI_TEXTS, FOOTER_LINKS_TEXTS, getLangFromCountry } from "@/lib/islamic-content";
+import { useVisitorCount } from "@/hooks/use-visitor-count";
 import Link from "next/link";
 
 
@@ -50,6 +51,7 @@ export function Footer({ countryCode = "US" }: FooterProps) {
   const texts = UI_TEXTS[lang];
   const linkTexts = FOOTER_LINKS_TEXTS[lang];
   const duaTranslation = FOOTER_DUA.translations[lang] || FOOTER_DUA.translations.en;
+  const visitorCount = useVisitorCount();
 
   return (
     <footer className="border-t bg-gradient-to-b from-emerald-950 to-emerald-950 px-4 py-10 text-white/80">
@@ -99,6 +101,13 @@ export function Footer({ countryCode = "US" }: FooterProps) {
             {linkTexts.usageRights}
           </Link>
         </div>
+
+        {/* Visitor Count */}
+        {visitorCount !== null && (
+          <p className="text-center text-xs text-emerald-300/50 mt-4">
+            👁 {visitorCount.toLocaleString()} visitors
+          </p>
+        )}
 
         {/* Developer Credit Divider */}
         <div className="flex items-center gap-3 mt-8 mb-5">
