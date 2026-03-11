@@ -8,16 +8,34 @@ const CACHE_DURATION = 600000; // 10 minutes
 
 async function fetchExchangeRate(currency: string): Promise<number> {
   if (currency === "USD") return 1;
-  try {
-    const res = await fetch(
-      `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json`,
-      { next: { revalidate: 3600 } }
-    );
-    const data = await res.json();
-    return data.usd?.[currency.toLowerCase()] || 1;
-  } catch {
-    return 1;
+  const lower = currency.toLowerCase();
+
+  // Try primary URL first, then fallback
+  const urls = [
+    `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json`,
+    `https://latest.currency-api.pages.dev/v1/currencies/usd.json`,
+  ];
+
+  for (const url of urls) {
+    try {
+      const res = await fetch(url, { next: { revalidate: 3600 } });
+      if (!res.ok) continue;
+      const data = await res.json();
+      const rate = data.usd?.[lower];
+      if (rate && rate > 0) return rate;
+    } catch {
+      continue;
+    }
   }
+
+  // Hardcoded fallback rates for common currencies
+  const fallbackRates: Record<string, number> = {
+    bdt: 121, eur: 0.92, gbp: 0.79, inr: 84, pkr: 285,
+    sar: 3.75, aed: 3.67, try: 32, myr: 4.7, idr: 15800,
+    aud: 1.53, cad: 1.36, ngn: 1550, kwd: 0.31, qar: 3.64,
+    bhd: 0.38, omr: 0.39, jod: 0.71, egp: 49,
+  };
+  return fallbackRates[lower] || 1;
 }
 
 interface SwissquotePrice {

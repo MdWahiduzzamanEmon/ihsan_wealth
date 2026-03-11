@@ -1,5 +1,5 @@
 // Change this version on every deploy to trigger SW update
-const SW_VERSION = "mmlxaqmb";
+const SW_VERSION = "mmlywt9c";
 const CACHE_NAME = "ihsanwealth-v" + SW_VERSION;
 
 self.addEventListener("install", (event) => {
@@ -27,14 +27,19 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(event.request.url);
 
+  // Only handle http/https requests - ignore chrome-extension://, etc.
+  if (url.protocol !== "http:" && url.protocol !== "https:") return;
+
   // Network-first for all page navigations and API calls
   // This ensures users always get the latest code
   if (event.request.mode === "navigate" || url.pathname.startsWith("/api/")) {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          if (response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          }
           return response;
         })
         .catch(() => caches.match(event.request).then((r) => r || caches.match("/")))
