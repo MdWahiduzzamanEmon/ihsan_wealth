@@ -155,6 +155,27 @@ export async function POST(request: Request) {
         let iterations = 0;
         const MAX_ITERATIONS = 3;
 
+        // Helper to stream text to the client
+        const streamText = async (text: string) => {
+          const CHUNK = 12;
+          for (let i = 0; i < text.length; i += CHUNK) {
+            const chunk = text.slice(i, i + CHUNK);
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content: chunk })}\n\n`));
+            await new Promise((r) => setTimeout(r, 15));
+          }
+        };
+
+        // Helper to extract text from a response
+        const extractText = (response: { content: string | Array<unknown> }) => {
+          if (typeof response.content === "string") return response.content;
+          if (Array.isArray(response.content)) {
+            return response.content
+              .map((c) => (typeof c === "string" ? c : c && typeof c === "object" && "text" in c ? (c as { text: string }).text : ""))
+              .join("");
+          }
+          return "";
+        };
+
         // Tool-calling loop: use invoke() so we can inspect tool_calls
         let didStream = false;
 
@@ -165,7 +186,7 @@ export async function POST(request: Request) {
           try {
             response = await modelWithTools.invoke(currentMessages);
           } catch (invokeErr) {
-            // If tool-bound model fails (model doesn't support tools), retry without tools
+            // If tool-bound model fails, retry without tools
             if (toolCallSupported && iterations === 1) {
               toolCallSupported = false;
               response = await model.invoke(currentMessages);
@@ -174,22 +195,23 @@ export async function POST(request: Request) {
             }
           }
 
-          // Extract any text content from the response
-          const extractText = () => {
-            if (typeof response.content === "string") return response.content;
-            if (Array.isArray(response.content)) {
-              return response.content
-                .map((c) => (typeof c === "string" ? c : "text" in c ? (c as { text: string }).text : ""))
-                .join("");
-            }
-            return "";
-          };
-
           const toolCalls = response.tool_calls;
-          if (toolCallSupported && toolCalls && toolCalls.length > 0 && tools.length > 0) {
+          const hasToolCalls = toolCallSupported && toolCalls && toolCalls.length > 0 && tools.length > 0;
+
+          // If response has text content, stream it regardless of tool calls
+          const responseText = extractText(response);
+          if (responseText.trim()) {
+            await streamText(responseText);
+            didStream = true;
+            // If we got text, we're done even if there were also tool calls
+            break;
+          }
+
+          // Process tool calls if present
+          if (hasToolCalls) {
             currentMessages.push(response);
 
-            for (const tc of toolCalls) {
+            for (const tc of toolCalls!) {
               const matchedTool = tools.find((t) => t.name === tc.name);
               if (matchedTool) {
                 try {
@@ -215,22 +237,24 @@ export async function POST(request: Request) {
             continue;
           }
 
-          // No tool calls — stream the text
-          const finalText = extractText();
-
-          if (finalText.trim()) {
-            const CHUNK = 12;
-            for (let i = 0; i < finalText.length; i += CHUNK) {
-              const chunk = finalText.slice(i, i + CHUNK);
-              controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content: chunk })}\n\n`));
-              await new Promise((r) => setTimeout(r, 15));
-            }
-            didStream = true;
-          }
+          // No text and no tool calls — break out
           break;
         }
 
-        // If we exhausted iterations or got empty response, send a fallback message
+        // If loop exhausted without streaming, do a final plain-model call as last resort
+        if (!didStream) {
+          try {
+            const fallbackResponse = await model.invoke(currentMessages);
+            const fallbackText = extractText(fallbackResponse);
+            if (fallbackText.trim()) {
+              await streamText(fallbackText);
+              didStream = true;
+            }
+          } catch {
+            // Ignore — will show fallback message below
+          }
+        }
+
         if (!didStream) {
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content: "I apologize, I was unable to generate a response. Please try again or rephrase your question." })}\n\n`));
         }

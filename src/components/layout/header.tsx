@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/components/providers/auth-provider";
-import { UI_TEXTS, getLangFromCountry } from "@/lib/islamic-content";
 import { Button } from "@/components/ui/button";
 import {
   BookOpen,
@@ -46,20 +45,19 @@ interface HeaderProps {
   countryCode?: string;
 }
 
-export function Header({ countryCode = "US" }: HeaderProps) {
-  const lang = getLangFromCountry(countryCode);
-  const texts = UI_TEXTS[lang];
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function Header({ countryCode: _countryCode = "US" }: HeaderProps) {
   const { user, signOut, isAuthenticated } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
-  // Close mobile menu on route change
-  useEffect(() => {
+  // Close menus when navigating
+  const closeMenus = () => {
     setMobileMenuOpen(false);
     setMoreOpen(false);
-  }, [pathname]);
+  };
 
   // Close "More" dropdown on outside click
   useEffect(() => {
@@ -147,7 +145,7 @@ export function Header({ countryCode = "US" }: HeaderProps) {
                   {MORE_LINKS.map(({ href, label, icon: Icon }) => {
                     const isActive = pathname === href;
                     return (
-                      <Link key={href} href={href} onClick={() => setMoreOpen(false)}>
+                      <Link key={href} href={href} onClick={closeMenus}>
                         <div
                           className={`flex items-center gap-2.5 px-3 py-2 text-sm transition-colors ${
                             isActive
@@ -214,7 +212,7 @@ export function Header({ countryCode = "US" }: HeaderProps) {
             {ALL_LINKS.map(({ href, label, icon: Icon }) => {
               const isActive = pathname === href;
               return (
-                <Link key={href} href={href} onClick={() => setMobileMenuOpen(false)}>
+                <Link key={href} href={href} onClick={closeMenus}>
                   <div
                     className={`flex flex-col items-center gap-1 rounded-lg px-2 py-2.5 text-[11px] transition-colors ${
                       isActive
