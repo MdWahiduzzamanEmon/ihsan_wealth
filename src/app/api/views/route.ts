@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
+import { createClient } from "@supabase/supabase-js";
 
+// Use createClient with service role key to properly bypass RLS.
+// createServerClient from @supabase/ssr is for cookie-based user auth
+// and does not reliably bypass RLS even with the service role key.
 function getAdminClient() {
-  return createServerClient(
+  return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { cookies: { getAll: () => [], setAll: () => {} } }
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 }
 
@@ -29,7 +31,14 @@ export async function POST() {
   try {
     const supabase = getAdminClient();
 
-    // Increment using rpc or raw update
+    // Atomic increment using rpc to avoid race conditions with concurrent visitors
+    const { data, error } = await supabase.rpc("increment_site_views");
+
+    if (!error && data != null) {
+      return NextResponse.json({ count: data });
+    }
+
+    // Fallback: manual select + update if rpc doesn't exist yet
     const { data: current } = await supabase
       .from("site_views")
       .select("total_count")
@@ -38,12 +47,12 @@ export async function POST() {
 
     const newCount = (current?.total_count ?? 0) + 1;
 
-    const { error } = await supabase
+    const { error: updateError } = await supabase
       .from("site_views")
       .update({ total_count: newCount })
       .eq("id", 1);
 
-    if (error) throw error;
+    if (updateError) throw updateError;
     return NextResponse.json({ count: newCount });
   } catch {
     return NextResponse.json({ count: 0 });

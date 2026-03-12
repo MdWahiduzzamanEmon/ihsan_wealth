@@ -10,3 +10,17 @@ ALTER TABLE site_views ENABLE ROW LEVEL SECURITY;
 
 -- Anyone can read the count
 CREATE POLICY "public_read" ON site_views FOR SELECT USING (true);
+
+-- Atomic increment function (avoids race conditions with concurrent visitors)
+CREATE OR REPLACE FUNCTION increment_site_views()
+RETURNS BIGINT AS $$
+DECLARE
+  new_count BIGINT;
+BEGIN
+  UPDATE site_views
+  SET total_count = total_count + 1
+  WHERE id = 1
+  RETURNING total_count INTO new_count;
+  RETURN new_count;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

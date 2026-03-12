@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { getBestVoice, preloadVoices } from "@/lib/voice-utils";
 
 interface UseArabicSpeechOptions {
   rate?: number;
@@ -11,14 +12,16 @@ interface UseArabicSpeechOptions {
 /**
  * Reusable hook for Arabic text-to-speech.
  * Works for Quran verses, duas, or any Arabic text.
+ * Uses shared voice selection for consistent quality across the app.
  */
 export function useArabicSpeech(options: UseArabicSpeechOptions = {}) {
-  const { rate = 0.8, pitch = 1, lang = "ar-SA" } = options;
+  const { rate = 0.8, pitch = 1, lang = "ar" } = options;
   const [speaking, setSpeaking] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Cancel speech on unmount
+  // Preload voices and cancel speech on unmount
   useEffect(() => {
+    preloadVoices();
     return () => {
       if (typeof window !== "undefined" && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();
@@ -40,17 +43,14 @@ export function useArabicSpeech(options: UseArabicSpeechOptions = {}) {
       setLoading(true);
 
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang;
+      utterance.lang = lang === "ar" ? "ar-SA" : lang;
       utterance.rate = rate;
       utterance.pitch = pitch;
 
-      // Try to find an Arabic voice
-      const voices = window.speechSynthesis.getVoices();
-      const arabicVoice = voices.find(
-        (v) => v.lang.startsWith("ar") || v.name.toLowerCase().includes("arabic")
-      );
-      if (arabicVoice) {
-        utterance.voice = arabicVoice;
+      // Use shared voice selection for consistent quality
+      const voice = getBestVoice(lang);
+      if (voice) {
+        utterance.voice = voice;
       }
 
       utterance.onstart = () => {

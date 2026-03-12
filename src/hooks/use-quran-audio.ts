@@ -3,19 +3,9 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { DEFAULT_RECITER_ID } from "@/lib/quran-config";
 import type { Verse } from "@/lib/quran-config";
+import { getBestVoice, preloadVoices, LANG_TO_SPEECH } from "@/lib/voice-utils";
 
 const AUDIO_CDN_BASE = "https://verses.quran.com/";
-
-// Map TransLang to BCP-47 speech synthesis language tags
-const LANG_TO_SPEECH: Record<string, string> = {
-  en: "en-US",
-  bn: "bn-BD",
-  ur: "ur-PK",
-  ar: "ar-SA",
-  tr: "tr-TR",
-  ms: "ms-MY",
-  id: "id-ID",
-};
 
 interface UseQuranAudioOptions {
   surahId: number;
@@ -98,9 +88,10 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
   useEffect(() => { versesRef.current = verses; }, [verses]);
   useEffect(() => { langRef.current = lang; }, [lang]);
 
-  // Initialize audio element once
+  // Initialize audio element once and preload voices
   useEffect(() => {
     if (typeof window === "undefined") return;
+    preloadVoices();
     const audio = new Audio();
     audio.preload = "auto";
     audioRef.current = audio;
@@ -193,14 +184,10 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
         utterance.rate = 0.9;
         utterance.pitch = 1;
 
-        // Try to find a matching voice
-        const voices = window.speechSynthesis.getVoices();
-        const langPrefix = speechLang.split("-")[0];
-        const matchingVoice = voices.find(
-          (v) => v.lang.startsWith(langPrefix) || v.lang === speechLang
-        );
-        if (matchingVoice) {
-          utterance.voice = matchingVoice;
+        // Use shared voice selection for consistent, high-quality voice
+        const voice = getBestVoice(langRef.current);
+        if (voice) {
+          utterance.voice = voice;
         }
 
         setIsSpeakingTranslation(true);
