@@ -9,14 +9,13 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { staggerContainer, staggerItem, fadeIn } from "@/lib/animations";
 import { formatCurrency } from "@/lib/format";
 import {
-  Calendar, Trash2, CheckCircle, XCircle, ArrowLeft,
+  Calendar, Trash2, CheckCircle, ArrowLeft,
   BarChart3, Loader2, LogIn, Plus, DollarSign, FileText
 } from "lucide-react";
 import { recordToCertificateData } from "@/components/dashboard/zakat-certificate";
@@ -27,10 +26,14 @@ import {
 } from "recharts";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
+import { getLangFromCountry, HISTORY_PAGE_TEXTS, type TransLang } from "@/lib/islamic-content";
 
 export default function HistoryPage() {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [formData] = useLocalStorage<ZakatFormData>("zakat-calculator-data", DEFAULT_FORM_DATA);
+  const lang = getLangFromCountry(formData.country) as TransLang;
+  const t = HISTORY_PAGE_TEXTS[lang];
+  const isRtl = lang === "ar" || lang === "ur";
   const { fetchRecords, deleteRecord, markPaid, addPayment, fetchPayments, loading, error } = useZakatRecords();
   const [records, setRecords] = useState<ZakatRecord[]>([]);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
@@ -113,7 +116,7 @@ export default function HistoryPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20">
         <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
       </div>
     );
@@ -121,25 +124,28 @@ export default function HistoryPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20">
+      <div
+        className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20"
+        dir={isRtl ? "rtl" : "ltr"}
+      >
         <Header countryCode={formData.country} />
-        <main className="flex-1 flex items-center justify-center px-4">
-          <motion.div className="text-center space-y-4" variants={fadeIn} initial="initial" animate="animate">
+        <main className="flex-1 flex items-center justify-center px-4 py-16">
+          <motion.div className="text-center space-y-5 max-w-md" variants={fadeIn} initial="initial" animate="animate">
             <div className="h-20 w-20 mx-auto rounded-full bg-emerald-100 flex items-center justify-center">
               <LogIn className="h-10 w-10 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-emerald-800">Sign In Required</h2>
-            <p className="text-muted-foreground max-w-md">
-              Please sign in to view your Zakat calculation history and track payments across years.
+            <h2 className="text-2xl font-bold text-emerald-800">{t.signInRequired}</h2>
+            <p className="text-gray-500 leading-relaxed">
+              {t.signInDesc}
             </p>
-            <div className="flex gap-3 justify-center">
+            <div className="flex gap-3 justify-center pt-2">
               <Link href="/auth/login">
-                <Button className="bg-emerald-600 hover:bg-emerald-700 gap-2">
-                  <LogIn className="h-4 w-4" /> Sign In
+                <Button className="bg-emerald-600 hover:bg-emerald-700 gap-2 h-11 px-6">
+                  <LogIn className="h-4 w-4" /> {t.signIn}
                 </Button>
               </Link>
               <Link href="/auth/register">
-                <Button variant="outline" className="gap-2">Create Account</Button>
+                <Button variant="outline" className="gap-2 h-11 px-6">{t.createAccount}</Button>
               </Link>
             </div>
           </motion.div>
@@ -150,25 +156,28 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20">
+    <div
+      className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20"
+      dir={isRtl ? "rtl" : "ltr"}
+    >
       <Header countryCode={formData.country} />
       <main className="flex-1">
-        <div className="mx-auto max-w-5xl px-4 py-8">
+        <div className="mx-auto max-w-5xl px-4 py-10">
           {/* Title */}
           <motion.div className="mb-8" variants={fadeIn} initial="initial" animate="animate">
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-center gap-3 mb-3">
               <Link href="/">
                 <Button variant="ghost" size="sm" className="gap-1">
-                  <ArrowLeft className="h-4 w-4" /> Back
+                  <ArrowLeft className="h-4 w-4" /> {t.back}
                 </Button>
               </Link>
             </div>
             <h1 className="text-3xl font-bold text-emerald-800 flex items-center gap-3">
               <Calendar className="h-8 w-8" />
-              Zakat History
-              <span className="font-arabic text-xl text-emerald-600/50">سجل الزكاة</span>
+              {t.zakatHistory}
+              <span className="font-arabic text-xl text-emerald-600/50">{t.zakatHistoryAr}</span>
             </h1>
-            <p className="text-muted-foreground mt-1">Track and compare your Zakat calculations across years</p>
+            <p className="text-gray-500 mt-1.5">{t.trackSubtitle}</p>
           </motion.div>
 
           {/* Year Filter Pills */}
@@ -180,7 +189,7 @@ export default function HistoryPage() {
                   !selectedYear ? "bg-emerald-600 text-white" : "bg-muted hover:bg-emerald-100"
                 }`}
               >
-                All Years
+                {t.allYears}
               </button>
               {years.map((y) => (
                 <button
@@ -203,7 +212,7 @@ export default function HistoryPage() {
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
                     <BarChart3 className="h-4 w-4 text-emerald-600" />
-                    Compare Years
+                    {t.compareYears}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -236,7 +245,7 @@ export default function HistoryPage() {
                         onClick={() => setCompareYears(null)}
                         className="text-xs text-muted-foreground hover:text-red-500"
                       >
-                        Clear
+                        {t.clear}
                       </button>
                     )}
                   </div>
@@ -269,18 +278,18 @@ export default function HistoryPage() {
 
           {/* Records */}
           {loading && records.length === 0 ? (
-            <div className="flex justify-center py-12">
+            <div className="flex justify-center py-16">
               <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
             </div>
           ) : filteredRecords.length === 0 ? (
-            <motion.div className="text-center py-16 space-y-3" variants={fadeIn} initial="initial" animate="animate">
+            <motion.div className="text-center py-20 space-y-4" variants={fadeIn} initial="initial" animate="animate">
               <Calendar className="h-12 w-12 mx-auto text-muted-foreground/40" />
-              <h3 className="text-lg font-medium text-muted-foreground">No Records Yet</h3>
-              <p className="text-sm text-muted-foreground/70">
-                Calculate your Zakat and save it to start building your history.
+              <h3 className="text-lg font-medium text-muted-foreground">{t.noRecords}</h3>
+              <p className="text-sm text-muted-foreground/70 max-w-sm mx-auto">
+                {t.noRecordsDesc}
               </p>
               <Link href="/">
-                <Button className="bg-emerald-600 hover:bg-emerald-700 mt-2">Go to Calculator</Button>
+                <Button className="bg-emerald-600 hover:bg-emerald-700 mt-2 h-11 px-6">{t.goToCalculator}</Button>
               </Link>
             </motion.div>
           ) : (
@@ -296,30 +305,30 @@ export default function HistoryPage() {
                               {record.year}
                             </Badge>
                             <Badge className={record.is_above_nisab ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-600"}>
-                              {record.is_above_nisab ? "Above Nisab" : "Below Nisab"}
+                              {record.is_above_nisab ? t.aboveNisab : t.belowNisab}
                             </Badge>
                             {record.is_paid && (
                               <Badge className="bg-green-100 text-green-700 gap-1">
-                                <CheckCircle className="h-3 w-3" /> Paid
+                                <CheckCircle className="h-3 w-3" /> {t.paid}
                               </Badge>
                             )}
                           </div>
 
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
                             <div>
-                              <p className="text-muted-foreground">Total Assets</p>
+                              <p className="text-muted-foreground">{t.totalAssets}</p>
                               <p className="font-semibold">{formatCurrency(record.total_assets, record.currency)}</p>
                             </div>
                             <div>
-                              <p className="text-muted-foreground">Deductions</p>
+                              <p className="text-muted-foreground">{t.deductions}</p>
                               <p className="font-semibold text-red-600">-{formatCurrency(record.total_deductions, record.currency)}</p>
                             </div>
                             <div>
-                              <p className="text-muted-foreground">Net Wealth</p>
+                              <p className="text-muted-foreground">{t.netWealth}</p>
                               <p className="font-semibold">{formatCurrency(record.net_zakatable_wealth, record.currency)}</p>
                             </div>
                             <div>
-                              <p className="text-muted-foreground">Zakat Due</p>
+                              <p className="text-muted-foreground">{t.zakatDue}</p>
                               <p className="font-bold text-emerald-700 text-lg">
                                 {formatCurrency(record.zakat_amount, record.currency)}
                               </p>
@@ -342,7 +351,7 @@ export default function HistoryPage() {
                           </div>
 
                           <p className="text-xs text-muted-foreground mt-2">
-                            Calculated {new Date(record.calculated_at).toLocaleDateString()} &middot;
+                            {t.calculated} {new Date(record.calculated_at).toLocaleDateString()} &middot;
                             {record.nisab_basis} nisab &middot; {record.country}/{record.currency}
                             {record.prices_were_live ? " (live prices)" : " (estimated)"}
                           </p>
@@ -356,7 +365,7 @@ export default function HistoryPage() {
                               onClick={() => handleMarkPaid(record.id)}
                               className="gap-1 text-emerald-600 border-emerald-200 hover:bg-emerald-50"
                             >
-                              <CheckCircle className="h-3.5 w-3.5" /> Mark Paid
+                              <CheckCircle className="h-3.5 w-3.5" /> {t.markPaid}
                             </Button>
                           )}
                           <Button
@@ -365,7 +374,7 @@ export default function HistoryPage() {
                             onClick={() => setCertificateRecord(record)}
                             className="gap-1"
                           >
-                            <FileText className="h-3.5 w-3.5" /> Certificate
+                            <FileText className="h-3.5 w-3.5" /> {t.certificate}
                           </Button>
                           <Button
                             size="sm"
@@ -380,7 +389,7 @@ export default function HistoryPage() {
                             }}
                             className="gap-1"
                           >
-                            <DollarSign className="h-3.5 w-3.5" /> Payments
+                            <DollarSign className="h-3.5 w-3.5" /> {t.payments}
                           </Button>
                           <Button
                             size="sm"
@@ -398,7 +407,7 @@ export default function HistoryPage() {
                         <div className="mt-4 pt-4 border-t space-y-3">
                           <h4 className="text-sm font-semibold flex items-center gap-2">
                             <DollarSign className="h-4 w-4 text-emerald-600" />
-                            Payment Tracker
+                            {t.paymentTracker}
                           </h4>
 
                           {/* Existing payments */}
@@ -422,7 +431,7 @@ export default function HistoryPage() {
                           {/* Add payment form */}
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                             <div>
-                              <Label className="text-xs">Amount</Label>
+                              <Label className="text-xs">{t.amount}</Label>
                               <Input
                                 type="number"
                                 placeholder="0.00"
@@ -432,16 +441,16 @@ export default function HistoryPage() {
                               />
                             </div>
                             <div>
-                              <Label className="text-xs">Recipient</Label>
+                              <Label className="text-xs">{t.recipient}</Label>
                               <Input
-                                placeholder="Who received?"
+                                placeholder={t.recipient}
                                 value={paymentData.recipient}
                                 onChange={(e) => setPaymentData((p) => ({ ...p, recipient: e.target.value }))}
                                 className="h-8 text-sm"
                               />
                             </div>
                             <div>
-                              <Label className="text-xs">Category</Label>
+                              <Label className="text-xs">{t.category}</Label>
                               <select
                                 value={paymentData.category}
                                 onChange={(e) => setPaymentData((p) => ({ ...p, category: e.target.value }))}
@@ -464,7 +473,7 @@ export default function HistoryPage() {
                                 disabled={!paymentData.amount || !paymentData.recipient}
                                 className="bg-emerald-600 hover:bg-emerald-700 gap-1 h-8 w-full"
                               >
-                                <Plus className="h-3.5 w-3.5" /> Add
+                                <Plus className="h-3.5 w-3.5" /> {t.add}
                               </Button>
                             </div>
                           </div>

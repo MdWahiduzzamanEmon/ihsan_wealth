@@ -13,6 +13,15 @@ export const TRANSLATION_IDS: Record<TransLang, number> = {
 
 export const QURAN_API_BASE = "https://api.quran.com/api/v4";
 
+// Reciters for audio playback
+export const RECITERS = [
+  { id: 7, name: "Mishary Alafasy", nameAr: "مشاري العفاسي" },
+  { id: 1, name: "Abdul Basit (Murattal)", nameAr: "عبد الباسط - مرتل" },
+  { id: 2, name: "Abdul Basit (Mujawwad)", nameAr: "عبد الباسط - مجود" },
+  { id: 5, name: "Abu Bakr Al-Shatri", nameAr: "أبو بكر الشاطري" },
+];
+export const DEFAULT_RECITER_ID = 7;
+
 // UI texts for the Quran reader
 export const QURAN_TEXTS: Record<TransLang, {
   pageTitle: string;
@@ -32,6 +41,14 @@ export const QURAN_TEXTS: Record<TransLang, {
   tafsir: string;
   showTafsir: string;
   hideTafsir: string;
+  play: string;
+  pause: string;
+  playing: string;
+  reciter: string;
+  selectReciter: string;
+  playFullSurah: string;
+  nowPlaying: string;
+  verse: string;
 }> = {
   en: {
     pageTitle: "The Holy Quran",
@@ -51,6 +68,14 @@ export const QURAN_TEXTS: Record<TransLang, {
     tafsir: "Tafsir",
     showTafsir: "Show Tafsir",
     hideTafsir: "Hide Tafsir",
+    play: "Play",
+    pause: "Pause",
+    playing: "Playing",
+    reciter: "Reciter",
+    selectReciter: "Select Reciter",
+    playFullSurah: "Play Surah",
+    nowPlaying: "Now Playing",
+    verse: "Verse",
   },
   bn: {
     pageTitle: "পবিত্র কুরআন",
@@ -70,6 +95,14 @@ export const QURAN_TEXTS: Record<TransLang, {
     tafsir: "তাফসীর",
     showTafsir: "তাফসীর দেখুন",
     hideTafsir: "তাফসীর লুকান",
+    play: "চালান",
+    pause: "বিরতি",
+    playing: "চলছে",
+    reciter: "ক্বারী",
+    selectReciter: "ক্বারী নির্বাচন করুন",
+    playFullSurah: "সূরা চালান",
+    nowPlaying: "চলছে",
+    verse: "আয়াত",
   },
   ur: {
     pageTitle: "قرآن مجید",
@@ -89,6 +122,14 @@ export const QURAN_TEXTS: Record<TransLang, {
     tafsir: "تفسیر",
     showTafsir: "تفسیر دیکھیں",
     hideTafsir: "تفسیر چھپائیں",
+    play: "چلائیں",
+    pause: "روکیں",
+    playing: "چل رہا ہے",
+    reciter: "قاری",
+    selectReciter: "قاری منتخب کریں",
+    playFullSurah: "سورت چلائیں",
+    nowPlaying: "چل رہا ہے",
+    verse: "آیت",
   },
   ar: {
     pageTitle: "القرآن الكريم",
@@ -108,6 +149,14 @@ export const QURAN_TEXTS: Record<TransLang, {
     tafsir: "تفسير",
     showTafsir: "عرض التفسير",
     hideTafsir: "إخفاء التفسير",
+    play: "تشغيل",
+    pause: "إيقاف مؤقت",
+    playing: "قيد التشغيل",
+    reciter: "القارئ",
+    selectReciter: "اختر القارئ",
+    playFullSurah: "تشغيل السورة",
+    nowPlaying: "قيد التشغيل",
+    verse: "آية",
   },
   tr: {
     pageTitle: "Kuran-i Kerim",
@@ -127,6 +176,14 @@ export const QURAN_TEXTS: Record<TransLang, {
     tafsir: "Tefsir",
     showTafsir: "Tefsiri Goster",
     hideTafsir: "Tefsiri Gizle",
+    play: "Oynat",
+    pause: "Duraklat",
+    playing: "Oynuyor",
+    reciter: "Kari",
+    selectReciter: "Kari Sec",
+    playFullSurah: "Sureyi Oynat",
+    nowPlaying: "Su an caliniyor",
+    verse: "Ayet",
   },
   ms: {
     pageTitle: "Al-Quran Al-Karim",
@@ -146,6 +203,14 @@ export const QURAN_TEXTS: Record<TransLang, {
     tafsir: "Tafsir",
     showTafsir: "Tunjukkan Tafsir",
     hideTafsir: "Sembunyikan Tafsir",
+    play: "Main",
+    pause: "Jeda",
+    playing: "Sedang bermain",
+    reciter: "Qari",
+    selectReciter: "Pilih Qari",
+    playFullSurah: "Main Surah",
+    nowPlaying: "Sedang dimainkan",
+    verse: "Ayat",
   },
   id: {
     pageTitle: "Al-Quran Al-Karim",
@@ -165,6 +230,14 @@ export const QURAN_TEXTS: Record<TransLang, {
     tafsir: "Tafsir",
     showTafsir: "Tampilkan Tafsir",
     hideTafsir: "Sembunyikan Tafsir",
+    play: "Putar",
+    pause: "Jeda",
+    playing: "Sedang diputar",
+    reciter: "Qari",
+    selectReciter: "Pilih Qari",
+    playFullSurah: "Putar Surah",
+    nowPlaying: "Sedang diputar",
+    verse: "Ayat",
   },
 };
 

@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/select";
 import type { PrayerTimesState, PrayerName } from "@/hooks/use-prayer-times";
 import { useReverseGeocode } from "@/hooks/use-reverse-geocode";
+import type { PRAYER_PAGE_TEXTS } from "@/lib/islamic-content";
+import type { TransLang } from "@/lib/islamic-content";
 
 const MAIN_PRAYERS: PrayerName[] = [
   "fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha",
@@ -29,9 +31,11 @@ const MAIN_PRAYERS: PrayerName[] = [
 
 interface PrayerTimesDisplayProps {
   state: PrayerTimesState;
+  t: (typeof PRAYER_PAGE_TEXTS)[keyof typeof PRAYER_PAGE_TEXTS];
+  lang: TransLang;
 }
 
-export function PrayerTimesDisplay({ state }: PrayerTimesDisplayProps) {
+export function PrayerTimesDisplay({ state, t, lang }: PrayerTimesDisplayProps) {
   const {
     prayerTimes,
     currentPrayer,
@@ -50,7 +54,8 @@ export function PrayerTimesDisplay({ state }: PrayerTimesDisplayProps) {
   const locationName = useReverseGeocode(latitude, longitude);
 
   const now = new Date();
-  const gregorian = now.toLocaleDateString("en-US", {
+  const dateLocale = lang === "bn" ? "bn-BD" : lang === "ur" ? "ur-PK" : lang === "ar" ? "ar-SA" : lang === "tr" ? "tr-TR" : lang === "ms" ? "ms-MY" : lang === "id" ? "id-ID" : "en-US";
+  const gregorian = now.toLocaleDateString(dateLocale, {
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -67,7 +72,7 @@ export function PrayerTimesDisplay({ state }: PrayerTimesDisplayProps) {
         className="flex flex-col items-center justify-center gap-4 py-20"
       >
         <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
-        <p className="text-sm text-gray-500">Detecting your location...</p>
+        <p className="text-sm text-gray-500">{t.detectingLocation}</p>
       </motion.div>
     );
   }
@@ -129,7 +134,7 @@ export function PrayerTimesDisplay({ state }: PrayerTimesDisplayProps) {
           <div className="relative flex items-center justify-between">
             <div>
               <p className="text-xs font-medium uppercase tracking-wider text-emerald-200">
-                Next Prayer
+                {t.nextPrayer}
               </p>
               <p className="mt-1 text-2xl font-bold capitalize">
                 {nextPrayer}
@@ -139,7 +144,7 @@ export function PrayerTimesDisplay({ state }: PrayerTimesDisplayProps) {
             <div className="text-right">
               <div className="flex items-center gap-1.5 text-amber-300">
                 <Clock className="h-4 w-4" />
-                <span className="text-xs uppercase tracking-wider">Time Remaining</span>
+                <span className="text-xs uppercase tracking-wider">{t.timeRemaining}</span>
               </div>
               <p className="mt-1 font-mono text-3xl font-bold tracking-tight text-amber-300">
                 {countdown}
@@ -158,7 +163,7 @@ export function PrayerTimesDisplay({ state }: PrayerTimesDisplayProps) {
       >
         <div className="flex items-center gap-1.5 text-xs font-medium text-gray-600">
           <Settings2 className="h-3.5 w-3.5" />
-          <span>Method:</span>
+          <span>{t.method}</span>
         </div>
         <Select value={method} onValueChange={(v) => v && setMethod(v)}>
           <SelectTrigger className="h-8 text-xs min-w-[180px]">
@@ -174,7 +179,7 @@ export function PrayerTimesDisplay({ state }: PrayerTimesDisplayProps) {
         </Select>
 
         <div className="flex items-center gap-1.5 text-xs font-medium text-gray-600 ml-auto sm:ml-0">
-          <span>Asr:</span>
+          <span>{t.asr}</span>
         </div>
         <div className="flex rounded-lg border border-gray-200 overflow-hidden text-xs">
           <button
@@ -185,7 +190,7 @@ export function PrayerTimesDisplay({ state }: PrayerTimesDisplayProps) {
                 : "bg-white text-gray-600 hover:bg-gray-50"
             }`}
           >
-            Standard
+            {t.standard}
           </button>
           <button
             onClick={() => setAsrJuristic("hanafi")}
@@ -195,7 +200,7 @@ export function PrayerTimesDisplay({ state }: PrayerTimesDisplayProps) {
                 : "bg-white text-gray-600 hover:bg-gray-50"
             }`}
           >
-            Hanafi
+            {t.hanafi}
           </button>
         </div>
       </motion.div>
@@ -217,6 +222,7 @@ export function PrayerTimesDisplay({ state }: PrayerTimesDisplayProps) {
                 isCurrent={currentPrayer === prayer}
                 isNext={nextPrayer === prayer}
                 countdown={nextPrayer === prayer ? countdown : undefined}
+                currentPrayerLabel={t.currentPrayer}
               />
             ))}
           </motion.div>
@@ -225,7 +231,7 @@ export function PrayerTimesDisplay({ state }: PrayerTimesDisplayProps) {
           <div className="mt-2 rounded-xl border border-dashed border-violet-200 bg-violet-50/30 p-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-violet-600">Tahajjud (Last third of night)</span>
+                <span className="text-xs font-medium text-violet-600">{t.tahajjudLabel}</span>
                 <span className="font-arabic text-xs text-violet-400">التهجد</span>
               </div>
               <span className="font-mono text-sm font-semibold text-violet-700">{prayerTimes.tahajjud}</span>

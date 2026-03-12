@@ -80,6 +80,7 @@ interface PrayerCardProps {
   isCurrent: boolean;
   isNext: boolean;
   countdown?: string;
+  currentPrayerLabel?: string;
 }
 
 export function PrayerCard({
@@ -88,6 +89,7 @@ export function PrayerCard({
   isCurrent,
   isNext,
   countdown,
+  currentPrayerLabel,
 }: PrayerCardProps) {
   const info = PRAYER_INFO[prayer];
   const Icon = info.icon;
@@ -156,7 +158,7 @@ export function PrayerCard({
           {/* Status label */}
           {isCurrent && (
             <span className="text-[10px] font-medium uppercase tracking-wider text-emerald-600">
-              Current Prayer
+              {currentPrayerLabel || "Current Prayer"}
             </span>
           )}
           {isNext && countdown && (

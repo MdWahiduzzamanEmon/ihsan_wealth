@@ -1,11 +1,13 @@
 "use client";
 
-import { use, useState, useMemo } from "react";
+import { use, useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft, BookOpenText, Loader2 } from "lucide-react";
 import { useChapters, useVerses, getChapterFromCache } from "@/hooks/use-quran";
+import { useQuranAudio } from "@/hooks/use-quran-audio";
 import { VerseDisplay } from "@/components/quran/verse-display";
+import { SurahAudioPlayer } from "@/components/quran/surah-audio-player";
 import { QURAN_TEXTS } from "@/lib/quran-config";
 import { getLangFromCountry, type TransLang } from "@/lib/islamic-content";
 import { useLocalStorage } from "@/hooks/use-local-storage";
@@ -37,6 +39,29 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
 
   const showBismillah = surahNum !== 9 && chapter?.bismillah_pre !== false;
 
+  // Audio hook
+  const audio = useQuranAudio({
+    surahId: surahNum,
+    totalVerses: chapter?.verses_count || 0,
+    verses,
+  });
+
+  // Auto-scroll to currently playing verse
+  const verseRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+  const setVerseRef = useCallback((verseNumber: number, el: HTMLDivElement | null) => {
+    if (el) verseRefs.current.set(verseNumber, el);
+    else verseRefs.current.delete(verseNumber);
+  }, []);
+
+  useEffect(() => {
+    if (audio.currentVerseNumber && audio.isPlaying) {
+      const el = verseRefs.current.get(audio.currentVerseNumber);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+  }, [audio.currentVerseNumber, audio.isPlaying]);
+
   return (
     <div
       className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20"
@@ -45,7 +70,7 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
       <Header countryCode={formData.country} />
 
       <main className="flex-1">
-        <div className="mx-auto max-w-3xl px-4 py-8">
+        <div className="mx-auto max-w-3xl px-4 py-8 pb-32">
           {/* Back link */}
           <Link
             href="/quran"
@@ -131,7 +156,18 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
               animate="animate"
             >
               {verses.map((verse) => (
-                <VerseDisplay key={verse.id} verse={verse} lang={lang} t={t} />
+                <div
+                  key={verse.id}
+                  ref={(el) => setVerseRef(verse.verse_number, el)}
+                >
+                  <VerseDisplay
+                    verse={verse}
+                    lang={lang}
+                    t={t}
+                    isCurrentlyPlaying={audio.currentVerseNumber === verse.verse_number && audio.isPlaying}
+                    onPlayVerse={audio.playVerse}
+                  />
+                </div>
               ))}
             </motion.div>
           )}
@@ -164,6 +200,30 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
       </main>
 
       <Footer countryCode={formData.country} />
+
+      {/* Audio Player */}
+      {chapter && (
+        <SurahAudioPlayer
+          surahName={chapter.name_simple}
+          currentVerseNumber={audio.currentVerseNumber}
+          totalVerses={chapter.verses_count}
+          isPlaying={audio.isPlaying}
+          progress={audio.progress}
+          duration={audio.duration}
+          currentTime={audio.currentTime}
+          reciterId={audio.reciterId}
+          isFullSurahMode={audio.isFullSurahMode}
+          onPlayFullSurah={() => audio.playFullSurah(audio.currentVerseNumber || 1)}
+          onPause={audio.pause}
+          onResume={audio.resume}
+          onStop={audio.stop}
+          onSeekTo={audio.seekTo}
+          onSetReciter={audio.setReciter}
+          onNextVerse={audio.nextVerse}
+          onPrevVerse={audio.prevVerse}
+          t={t}
+        />
+      )}
     </div>
   );
 }

@@ -2,8 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, BookOpen, Loader2, Volume2, VolumeX } from "lucide-react";
-import { useArabicSpeech } from "@/hooks/use-arabic-speech";
+import { ChevronDown, BookOpen, Loader2, Play, Pause } from "lucide-react";
 import { staggerItem } from "@/lib/animations";
 import type { Verse, QURAN_TEXTS } from "@/lib/quran-config";
 import { HAS_MAUDUDI_FOOTNOTES, TAFSIR_IDS } from "@/lib/quran-config";
@@ -13,6 +12,8 @@ interface VerseDisplayProps {
   verse: Verse;
   lang: TransLang;
   t: (typeof QURAN_TEXTS)[keyof typeof QURAN_TEXTS];
+  isCurrentlyPlaying?: boolean;
+  onPlayVerse?: (verseNumber: number) => void;
 }
 
 // Extract footnote IDs from translation text like <sup foot_note="176997">1</sup>
@@ -54,12 +55,11 @@ function formatPlainText(text: string): string {
   return paragraphs.map((p) => `<p>${p}</p>`).join("");
 }
 
-export function VerseDisplay({ verse, lang, t }: VerseDisplayProps) {
+export function VerseDisplay({ verse, lang, t, isCurrentlyPlaying, onPlayVerse }: VerseDisplayProps) {
   const [tafsirOpen, setTafsirOpen] = useState(false);
   const [tafsirTexts, setTafsirTexts] = useState<string[]>([]);
   const [tafsirLoading, setTafsirLoading] = useState(false);
   const [tafsirFetched, setTafsirFetched] = useState(false);
-  const { speak, speaking, loading: speechLoading } = useArabicSpeech();
 
   const rawTranslation = verse.translations?.[0]?.text || "";
   const cleanTranslation = stripHtml(rawTranslation);
@@ -108,7 +108,11 @@ export function VerseDisplay({ verse, lang, t }: VerseDisplayProps) {
   return (
     <motion.div
       variants={staggerItem}
-      className="rounded-xl border border-emerald-100 bg-white p-5 shadow-sm"
+      className={`rounded-xl border p-5 shadow-sm transition-all duration-300 ${
+        isCurrentlyPlaying
+          ? "border-emerald-400 bg-emerald-50/50 ring-2 ring-emerald-400/20 border-l-4 border-l-emerald-500"
+          : "border-emerald-100 bg-white"
+      }`}
     >
       {/* Verse number badge + key + audio */}
       <div className="flex items-center gap-3 mb-4">
@@ -116,24 +120,24 @@ export function VerseDisplay({ verse, lang, t }: VerseDisplayProps) {
           {verse.verse_number}
         </span>
         <span className="text-[11px] text-gray-400">{verse.verse_key}</span>
-        <button
-          onClick={() => speak(verse.text_uthmani)}
-          className={`ml-auto rounded-full p-1.5 transition-colors ${
-            speaking
-              ? "text-emerald-600 bg-emerald-50"
-              : "text-gray-400 hover:text-emerald-600 hover:bg-emerald-50"
-          }`}
-          aria-label={speaking ? "Stop" : "Listen"}
-          title={speaking ? "Stop recitation" : "Listen to verse"}
-        >
-          {speechLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : speaking ? (
-            <VolumeX className="h-4 w-4" />
-          ) : (
-            <Volume2 className="h-4 w-4" />
-          )}
-        </button>
+        {onPlayVerse && (
+          <button
+            onClick={() => onPlayVerse(verse.verse_number)}
+            className={`ml-auto rounded-full p-2 transition-all ${
+              isCurrentlyPlaying
+                ? "text-emerald-600 bg-emerald-100 shadow-sm"
+                : "text-gray-400 hover:text-emerald-600 hover:bg-emerald-50"
+            }`}
+            aria-label={isCurrentlyPlaying ? t.pause : t.play}
+            title={isCurrentlyPlaying ? t.pause : t.play}
+          >
+            {isCurrentlyPlaying ? (
+              <Pause className="h-4 w-4 fill-current" />
+            ) : (
+              <Play className="h-4 w-4 fill-current" />
+            )}
+          </button>
+        )}
       </div>
 
       {/* Arabic text */}
