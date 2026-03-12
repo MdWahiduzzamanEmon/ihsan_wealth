@@ -88,12 +88,12 @@ export function useTasbihHistory() {
       setSessions((prev) => [newSession, ...prev]);
 
       try {
-        const { data: { user: authUser } } = await supabase.auth.getUser();
-        if (!authUser) return newSession;
+        const { data: { session: sess } } = await supabase.auth.getSession();
+        if (!sess?.user) return newSession;
 
         const { error } = await supabase.from("tasbih_sessions").insert({
           id: newSession.id,
-          user_id: authUser.id,
+          user_id: sess.user.id,
           dhikr_type: newSession.dhikr_type,
           custom_text: newSession.custom_text || null,
           target_count: newSession.target_count,
@@ -115,14 +115,14 @@ export function useTasbihHistory() {
     async (id: string) => {
       setSessions((prev) => prev.filter((s) => s.id !== id));
       try {
-        const { data: { user: authUser } } = await supabase.auth.getUser();
-        if (!authUser) return;
+        const { data: { session: sess } } = await supabase.auth.getSession();
+        if (!sess?.user) return;
 
         const { error } = await supabase
           .from("tasbih_sessions")
           .delete()
           .eq("id", id)
-          .eq("user_id", authUser.id);
+          .eq("user_id", sess.user.id);
         if (error) console.error("Failed to delete tasbih session:", error.message);
       } catch (err) {
         console.error("Failed to delete tasbih session:", err);

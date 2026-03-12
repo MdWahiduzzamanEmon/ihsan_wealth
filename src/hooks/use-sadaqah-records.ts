@@ -72,12 +72,12 @@ export function useSadaqahRecords() {
       setRecords((prev) => [record, ...prev]);
 
       try {
-        const { data: { user: authUser } } = await supabase.auth.getUser();
-        if (!authUser) return;
+        const { data: { session: sess } } = await supabase.auth.getSession();
+        if (!sess?.user) return;
 
         const { error } = await supabase.from("sadaqah_records").insert({
           id: record.id,
-          user_id: authUser.id,
+          user_id: sess.user.id,
           amount: record.amount,
           currency: record.currency,
           category: record.category,
@@ -98,14 +98,14 @@ export function useSadaqahRecords() {
       setRecords((prev) => prev.filter((r) => r.id !== id));
 
       try {
-        const { data: { user: authUser } } = await supabase.auth.getUser();
-        if (!authUser) return;
+        const { data: { session: sess } } = await supabase.auth.getSession();
+        if (!sess?.user) return;
 
         const { error } = await supabase
           .from("sadaqah_records")
           .delete()
           .eq("id", id)
-          .eq("user_id", authUser.id);
+          .eq("user_id", sess.user.id);
         if (error) console.error("Failed to delete sadaqah:", error.message);
       } catch (err) {
         console.error("Failed to delete sadaqah:", err);

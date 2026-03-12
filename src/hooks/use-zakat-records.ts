@@ -57,13 +57,13 @@ export function useZakatRecords() {
     const currentYear = year || new Date().getFullYear();
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Please sign in to save your calculation");
+      const { data: { session: sess } } = await supabase.auth.getSession();
+      if (!sess?.user) throw new Error("Please sign in to save your calculation");
 
       const { data, error: dbError } = await supabase
         .from("zakat_records")
         .upsert({
-          user_id: user.id,
+          user_id: sess.user.id,
           year: currentYear,
           year_type: "gregorian",
           currency: formData.currency,
@@ -149,12 +149,12 @@ export function useZakatRecords() {
     category: string;
     notes?: string;
   }) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
+    const { data: { session: sess } } = await supabase.auth.getSession();
+    if (!sess?.user) return null;
 
     const { data, error: dbError } = await supabase
       .from("zakat_payments")
-      .insert({ ...payment, user_id: user.id })
+      .insert({ ...payment, user_id: sess.user.id })
       .select()
       .single();
 
