@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useSupabase } from "@/hooks/use-supabase";
 import type { ZakatFormData, ZakatResult } from "@/types/zakat";
 import type { MetalPrices } from "@/hooks/use-metal-prices";
 
@@ -43,7 +43,7 @@ export interface ZakatPayment {
 export function useZakatRecords() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const supabase = createClient();
+  const supabase = useSupabase();
 
   const saveRecord = useCallback(async (
     formData: ZakatFormData,

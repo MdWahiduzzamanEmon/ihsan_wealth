@@ -19,7 +19,6 @@ import {
   LogIn,
   Sparkles,
 } from "lucide-react";
-import { DeveloperCredit } from "@/components/layout/developer-credit";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { useLocalStorage } from "@/hooks/use-local-storage";
@@ -43,7 +42,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   History,
 };
 
-const REQUIRES_LOGIN = new Set(["sadaqah", "history"]);
+const REQUIRES_LOGIN = new Set(["sadaqah", "history", "tasbih"]);
 
 function GuideSectionCard({
   section,
@@ -494,11 +493,6 @@ export default function GuidePage() {
           </motion.div>
         </section>
       </main>
-
-      {/* Developer Credit */}
-      <section className="bg-gradient-to-b from-emerald-950 to-emerald-950 px-4 py-10">
-        <DeveloperCredit lang={lang} />
-      </section>
 
       <Footer countryCode={countryCode} />
     </div>

@@ -12,6 +12,7 @@ import {
   HelpCircle,
   Hash,
   BookHeart,
+  UserCircle,
   type LucideIcon,
 } from "lucide-react";
 
@@ -320,6 +321,31 @@ export const APP_FEATURES: AppFeature[] = [
     nav: "more",
     showInGrid: true,
     showInSiteMap: true,
+  },
+  {
+    id: "profile",
+    href: "/profile",
+    icon: UserCircle,
+    iconName: "UserCircle",
+    label: {
+      en: "Profile", bn: "প্রোফাইল", ur: "پروفائل",
+      ar: "الملف الشخصي", tr: "Profil", ms: "Profil", id: "Profil",
+    },
+    arabic: "الملف الشخصي",
+    description: {
+      en: "View your spiritual journey with progress stats, charts, and activity overview",
+      bn: "অগ্রগতি পরিসংখ্যান, চার্ট এবং কার্যকলাপ সারসংক্ষেপ সহ আপনার আধ্যাত্মিক যাত্রা দেখুন",
+      ur: "پیشرفت کے اعداد و شمار، چارٹس اور سرگرمی کے جائزے کے ساتھ اپنا روحانی سفر دیکھیں",
+      ar: "اعرض رحلتك الروحانية مع إحصائيات التقدم والرسوم البيانية ونظرة عامة على النشاط",
+      tr: "Ilerleme istatistikleri, grafikler ve aktivite ozeti ile manevi yolculugunuzu gorun",
+      ms: "Lihat perjalanan rohani anda dengan statistik kemajuan, carta dan gambaran aktiviti",
+      id: "Lihat perjalanan spiritual Anda dengan statistik kemajuan, grafik, dan ringkasan aktivitas",
+    },
+    color: "from-sky-500 to-sky-700",
+    iconBg: "bg-sky-100 text-sky-700",
+    nav: "more",
+    showInGrid: false,
+    showInSiteMap: false,
   },
   {
     id: "guide",

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useState, useEffect, useCallback } from "react";
+import { useSupabase } from "@/hooks/use-supabase";
 import { useAuth } from "@/components/providers/auth-provider";
 import type { SadaqahRecord } from "@/components/sadaqah/sadaqah-form";
 
@@ -9,7 +9,7 @@ export function useSadaqahRecords() {
   const { user, isAuthenticated } = useAuth();
   const [records, setRecords] = useState<SadaqahRecord[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const supabase = useMemo(() => createClient(), []);
+  const supabase = useSupabase();
 
   // Fetch records from Supabase when authenticated
   useEffect(() => {
@@ -24,10 +24,16 @@ export function useSadaqahRecords() {
 
     async function fetchRecords() {
       try {
+        // Force the Supabase client to resolve its auth session from cookies
+        const { data: { session: resolvedSession } } = await supabase.auth.getSession();
+        if (!resolvedSession) {
+          if (!cancelled) setIsLoading(false);
+          return;
+        }
+
         const { data, error } = await supabase
           .from("sadaqah_records")
           .select("*")
-          .eq("user_id", user!.id)
           .order("date", { ascending: false });
 
         if (cancelled) return;

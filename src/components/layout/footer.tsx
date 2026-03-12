@@ -1,10 +1,11 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { Github } from "lucide-react";
 import { FOOTER_DUA, UI_TEXTS, FOOTER_LINKS_TEXTS, getLangFromCountry } from "@/lib/islamic-content";
 import { useVisitorCount } from "@/hooks/use-visitor-count";
-import Link from "next/link";
-
+import { GRID_FEATURES } from "@/lib/app-features";
 
 function LinkedInIcon({ className }: { className?: string }) {
   return (
@@ -54,110 +55,164 @@ export function Footer({ countryCode = "US" }: FooterProps) {
   const visitorCount = useVisitorCount();
 
   return (
-    <footer className="border-t bg-gradient-to-b from-emerald-950 to-emerald-950 px-4 py-10 text-white/80">
-      <div className="mx-auto max-w-5xl">
+    <footer className="relative border-t border-emerald-800/50 bg-gradient-to-b from-emerald-950 via-emerald-950 to-[#0a1f1a] px-4 pt-12 pb-8 text-white/80 overflow-hidden">
+      {/* Subtle pattern background */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="footer-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+              <path d="M30 0L60 30L30 60L0 30Z" fill="none" stroke="white" strokeWidth="0.5" />
+              <circle cx="30" cy="30" r="12" fill="none" stroke="white" strokeWidth="0.3" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#footer-pattern)" />
+        </svg>
+      </div>
+
+      <div className="relative mx-auto max-w-5xl">
         {/* Closing Dua */}
-        <div className="text-center mb-8">
-          <p className="font-arabic text-xl text-amber-300/70 mb-2" dir="rtl">
+        <div className="text-center mb-10">
+          <p className="font-arabic text-2xl text-amber-300/60 mb-3 leading-relaxed" dir="rtl">
             {FOOTER_DUA.arabic}
           </p>
-          <p className="text-xs text-emerald-300/50 italic max-w-xl mx-auto">
+          <p className="text-sm text-emerald-200/40 italic max-w-xl mx-auto leading-relaxed">
             &ldquo;{duaTranslation}&rdquo;
           </p>
-          <p className="text-xs text-emerald-400/40 mt-1">- {FOOTER_DUA.source}</p>
+          <p className="text-xs text-emerald-400/35 mt-1.5">— {FOOTER_DUA.source}</p>
         </div>
 
-        {/* Divider */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-700/50 to-transparent" />
-          <span className="font-arabic text-amber-400/40 text-sm">&#9770;</span>
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-700/50 to-transparent" />
-        </div>
-
-        {/* Disclaimer */}
-        <div className="text-center text-sm text-emerald-200/70">
-          <p className="mb-2 font-medium text-emerald-100/80">
-            <span className="font-arabic ml-2">تنبيه</span> - {texts.disclaimer}
-          </p>
-          <p className="max-w-2xl mx-auto text-emerald-200/60">
-            {texts.disclaimerText}
-          </p>
-          <p className="mt-4 text-xs text-emerald-300/50">
-            <span className="font-arabic">جزاكم الله خيرا</span> &mdash; {texts.jazakallah}
-          </p>
-        </div>
-
-        {/* Footer Links */}
-        <div className="flex items-center justify-center gap-4 mt-6 text-xs">
-          <Link href="/site-map" className="text-emerald-300/60 hover:text-emerald-200 transition-colors duration-200">
-            {linkTexts.sitemap}
-          </Link>
-          <span className="text-emerald-700/50">|</span>
-          <Link href="/privacy" className="text-emerald-300/60 hover:text-emerald-200 transition-colors duration-200">
-            {linkTexts.privacyPolicy}
-          </Link>
-          <span className="text-emerald-700/50">|</span>
-          <Link href="/usage-rights" className="text-emerald-300/60 hover:text-emerald-200 transition-colors duration-200">
-            {linkTexts.usageRights}
-          </Link>
-        </div>
-
-        {/* Visitor Count */}
-        {visitorCount !== null && (
-          <p className="text-center text-xs text-emerald-300/50 mt-4">
-            👁 {visitorCount.toLocaleString()} visitors
-          </p>
-        )}
-
-        {/* Developer Credit Divider */}
-        <div className="flex items-center gap-3 mt-8 mb-5">
+        {/* Ornamental divider */}
+        <div className="flex items-center gap-4 mb-10">
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-700/40 to-transparent" />
+          <div className="flex items-center gap-2">
+            <div className="h-1 w-1 rounded-full bg-amber-400/30" />
+            <span className="font-arabic text-amber-400/30 text-sm">&#10022;</span>
+            <div className="h-1 w-1 rounded-full bg-amber-400/30" />
+          </div>
           <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-700/40 to-transparent" />
         </div>
 
-        {/* Developer Credit */}
-        <div className="text-center">
-          <p className="text-xs text-emerald-300/60">
-            Built with ❤️ by{" "}
-            <a
-              href="https://github.com/MdWahiduzzamanEmon"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-emerald-200/70 hover:text-emerald-100 transition-colors duration-200"
-            >
-              Md Wahiduzzaman Emon
-            </a>
-          </p>
-
-          <div className="mt-2 flex items-center justify-center gap-3">
-            <a
-              href="https://www.linkedin.com/in/md-wahiduzzaman-emon-51b559173/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-emerald-400/50 hover:text-emerald-200 transition-colors duration-200"
-              aria-label="LinkedIn"
-            >
-              <LinkedInIcon className="h-4 w-4" />
-            </a>
-            <a
-              href="https://www.facebook.com/wahedemon09/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-emerald-400/50 hover:text-emerald-200 transition-colors duration-200"
-              aria-label="Facebook"
-            >
-              <FacebookIcon className="h-4 w-4" />
-            </a>
-            <a
-              href="https://github.com/MdWahiduzzamanEmon"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-emerald-400/50 hover:text-emerald-200 transition-colors duration-200"
-              aria-label="GitHub"
-            >
-              <Github className="h-4 w-4" />
-            </a>
+        {/* Main footer content grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+          {/* Brand column */}
+          <div className="text-center md:text-left">
+            <Link href="/" className="inline-flex items-center gap-2.5 mb-3">
+              <Image
+                src="/favicon.svg"
+                alt="IhsanWealth"
+                width={28}
+                height={28}
+                className="rounded-lg"
+              />
+              <span className="text-lg font-bold tracking-tight text-white">
+                <span className="text-amber-400">Ihsan</span>Wealth
+              </span>
+            </Link>
+            <p className="text-xs text-emerald-300/40 leading-relaxed max-w-xs mx-auto md:mx-0">
+              Your complete Islamic companion — empowering Muslims worldwide with essential tools for worship and finance.
+            </p>
           </div>
 
+          {/* Quick links column */}
+          <div className="text-center md:text-left">
+            <h3 className="text-xs font-semibold text-emerald-200/70 uppercase tracking-wider mb-3">Features</h3>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+              {GRID_FEATURES.slice(0, 8).map((f) => (
+                <Link
+                  key={f.id}
+                  href={f.href}
+                  className="text-xs text-emerald-300/40 hover:text-emerald-200 transition-colors truncate"
+                >
+                  {f.label.en}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Legal column */}
+          <div className="text-center md:text-left">
+            <h3 className="text-xs font-semibold text-emerald-200/70 uppercase tracking-wider mb-3">Legal</h3>
+            <div className="flex flex-col gap-1.5">
+              <Link href="/site-map" className="text-xs text-emerald-300/40 hover:text-emerald-200 transition-colors">
+                {linkTexts.sitemap}
+              </Link>
+              <Link href="/privacy" className="text-xs text-emerald-300/40 hover:text-emerald-200 transition-colors">
+                {linkTexts.privacyPolicy}
+              </Link>
+              <Link href="/usage-rights" className="text-xs text-emerald-300/40 hover:text-emerald-200 transition-colors">
+                {linkTexts.usageRights}
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Disclaimer */}
+        <div className="rounded-xl bg-white/[0.03] border border-emerald-700/20 px-5 py-4 mb-8">
+          <p className="text-xs text-emerald-200/60 leading-relaxed text-center">
+            <span className="font-arabic text-amber-300/40 mr-1.5">تنبيه</span>
+            <span className="font-medium text-emerald-200/70">{texts.disclaimer}:</span>{" "}
+            {texts.disclaimerText}
+          </p>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="flex flex-col items-center gap-4 pt-6 border-t border-emerald-800/30">
+          {/* Developer credit with social links */}
+          <div className="flex items-center gap-3">
+            <p className="text-[11px] text-emerald-400/40">
+              &copy; {new Date().getFullYear()} IhsanWealth. Built with care by{" "}
+              <a
+                href="https://github.com/MdWahiduzzamanEmon"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-emerald-300/40 hover:text-emerald-200 transition-colors"
+              >
+                Md Wahiduzzaman Emon
+              </a>
+            </p>
+            <div className="flex items-center gap-1.5">
+              <a
+                href="https://www.linkedin.com/in/md-wahiduzzaman-emon-51b559173/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="h-6 w-6 rounded-md bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
+                aria-label="LinkedIn"
+              >
+                <LinkedInIcon className="h-3 w-3 text-emerald-400/50" />
+              </a>
+              <a
+                href="https://www.facebook.com/wahedemon09/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="h-6 w-6 rounded-md bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
+                aria-label="Facebook"
+              >
+                <FacebookIcon className="h-3 w-3 text-emerald-400/50" />
+              </a>
+              <a
+                href="https://github.com/MdWahiduzzamanEmon"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="h-6 w-6 rounded-md bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
+                aria-label="GitHub"
+              >
+                <Github className="h-3 w-3 text-emerald-400/50" />
+              </a>
+            </div>
+          </div>
+
+          {/* Visitor count chip & jazakallah */}
+          <div className="flex items-center gap-3 flex-wrap justify-center">
+            {visitorCount !== null && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-800/40 border border-emerald-700/30 px-3 py-1 text-[11px] text-emerald-300/60">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/70 animate-pulse" />
+                {visitorCount.toLocaleString()} visitors
+              </span>
+            )}
+            <p className="text-[11px] text-emerald-400/30">
+              <span className="font-arabic">جزاكم الله خيرا</span> — {texts.jazakallah}
+            </p>
+          </div>
         </div>
       </div>
     </footer>

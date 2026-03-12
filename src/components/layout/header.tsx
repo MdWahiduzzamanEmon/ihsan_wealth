@@ -143,12 +143,14 @@ export function Header({ countryCode: _countryCode = "US" }: HeaderProps) {
           <div className="flex items-center gap-1.5">
             {isAuthenticated ? (
               <div className="flex items-center gap-1.5">
-                <div className="hidden sm:flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1">
-                  <User className="h-3 w-3 text-emerald-300" />
-                  <span className="text-xs text-emerald-100 max-w-[80px] truncate">
-                    {user?.user_metadata?.name || user?.email?.split("@")[0]}
-                  </span>
-                </div>
+                <Link href="/profile" onClick={closeMenus}>
+                  <div className="hidden sm:flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 hover:bg-white/20 transition-colors cursor-pointer">
+                    <User className="h-3 w-3 text-emerald-300" />
+                    <span className="text-xs text-emerald-100 max-w-[80px] truncate">
+                      {user?.user_metadata?.name || user?.email?.split("@")[0]}
+                    </span>
+                  </div>
+                </Link>
                 <Button
                   variant="ghost"
                   size="sm"

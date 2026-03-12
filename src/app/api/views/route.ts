@@ -13,6 +13,10 @@ function getAdminClient() {
 
 export async function GET() {
   try {
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.error("[views] SUPABASE_SERVICE_ROLE_KEY is not set");
+      return NextResponse.json({ count: 0 });
+    }
     const supabase = getAdminClient();
     const { data, error } = await supabase
       .from("site_views")
@@ -22,13 +26,18 @@ export async function GET() {
 
     if (error) throw error;
     return NextResponse.json({ count: data.total_count });
-  } catch {
+  } catch (err) {
+    console.error("[views] GET failed:", err);
     return NextResponse.json({ count: 0 });
   }
 }
 
 export async function POST() {
   try {
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.error("[views] SUPABASE_SERVICE_ROLE_KEY is not set");
+      return NextResponse.json({ count: 0 });
+    }
     const supabase = getAdminClient();
 
     // Atomic increment using rpc to avoid race conditions with concurrent visitors
@@ -54,7 +63,8 @@ export async function POST() {
 
     if (updateError) throw updateError;
     return NextResponse.json({ count: newCount });
-  } catch {
+  } catch (err) {
+    console.error("[views] POST failed:", err);
     return NextResponse.json({ count: 0 });
   }
 }

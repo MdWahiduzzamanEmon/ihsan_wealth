@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useState, useEffect, useCallback } from "react";
+import { useSupabase } from "@/hooks/use-supabase";
 import { useAuth } from "@/components/providers/auth-provider";
 
 export interface TasbihSession {
@@ -15,13 +15,13 @@ export interface TasbihSession {
 }
 
 export function useTasbihHistory() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, session: authSession, isAuthenticated } = useAuth();
   const [sessions, setSessions] = useState<TasbihSession[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const supabase = useMemo(() => createClient(), []);
+  const supabase = useSupabase();
 
   useEffect(() => {
-    if (!isAuthenticated || !user) {
+    if (!isAuthenticated || !user || !authSession) {
       setSessions([]);
       setIsLoading(false);
       return;
@@ -32,10 +32,17 @@ export function useTasbihHistory() {
 
     async function fetchSessions() {
       try {
+        // Force the Supabase client to resolve its auth session from cookies
+        // before querying — without this, RLS may see auth.uid() as NULL
+        const { data: { session: resolvedSession } } = await supabase.auth.getSession();
+        if (!resolvedSession) {
+          if (!cancelled) setIsLoading(false);
+          return;
+        }
+
         const { data, error } = await supabase
           .from("tasbih_sessions")
           .select("*")
-          .eq("user_id", user!.id)
           .order("completed_at", { ascending: false })
           .limit(100);
 
@@ -65,7 +72,7 @@ export function useTasbihHistory() {
 
     fetchSessions();
     return () => { cancelled = true; };
-  }, [isAuthenticated, user, supabase]);
+  }, [isAuthenticated, user, authSession, supabase]);
 
   const addSession = useCallback(
     async (session: Omit<TasbihSession, "id" | "completed_at" | "date">) => {
@@ -89,6 +96,7 @@ export function useTasbihHistory() {
             custom_text: newSession.custom_text || null,
             target_count: newSession.target_count,
             completed_count: newSession.completed_count,
+            completed_at: newSession.completed_at,
             date: newSession.date,
           });
           if (error) console.error("Failed to save tasbih session:", error.message);

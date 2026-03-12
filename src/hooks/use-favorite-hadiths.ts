@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useSupabase } from "@/hooks/use-supabase";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 
@@ -10,7 +10,7 @@ export function useFavoriteHadiths() {
   const [localFavorites, setLocalFavorites] = useLocalStorage<string[]>("favorite-hadiths", []);
   const [dbFavorites, setDbFavorites] = useState<string[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const supabase = createClient();
+  const supabase = useSupabase();
   const prevUserId = useRef<string | null>(null);
 
   // Fetch favorites from Supabase when authenticated
@@ -29,10 +29,15 @@ export function useFavoriteHadiths() {
 
     (async () => {
       try {
+        const { data: { session: resolvedSession } } = await supabase.auth.getSession();
+        if (!resolvedSession) {
+          if (!cancelled) setIsLoading(false);
+          return;
+        }
+
         const { data, error } = await supabase
           .from("favorite_hadiths")
-          .select("hadith_id")
-          .eq("user_id", user.id);
+          .select("hadith_id");
 
         if (cancelled) return;
 
