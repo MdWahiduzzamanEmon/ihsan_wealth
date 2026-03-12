@@ -45,7 +45,7 @@ export default function HadithPage() {
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20" dir={isRtl ? "rtl" : "ltr"}>
       <Header countryCode={formData.country} />
       <main className="flex-1">
-        <div className="mx-auto max-w-3xl px-4 py-8">
+        <div className="mx-auto max-w-4xl px-4 py-8">
           {/* Page Title */}
           <motion.div className="mb-8" variants={fadeIn} initial="initial" animate="animate">
             <div className="flex items-center gap-3 mb-2">

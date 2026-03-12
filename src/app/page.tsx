@@ -9,6 +9,7 @@ import { BismillahBanner } from "@/components/islamic/bismillah-banner";
 import { HadithDuasSection } from "@/components/islamic/hadith-duas-section";
 import { ZakatEligibilitySection } from "@/components/islamic/zakat-eligibility-section";
 import { FeaturesGrid } from "@/components/layout/features-grid";
+import { SalatHomeWidget } from "@/components/salat-tracker/salat-home-widget";
 
 export default function Home() {
   const [formData] = useLocalStorage<ZakatFormData>(
@@ -35,6 +36,9 @@ export default function Home() {
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-300/40 to-transparent" />
           </div>
         </div>
+
+        {/* Salat Tracker Widget (logged-in users only) */}
+        <SalatHomeWidget />
 
         {/* Features Grid */}
         <FeaturesGrid />

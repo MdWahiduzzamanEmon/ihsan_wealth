@@ -10,6 +10,7 @@ import { useTasbihHistory } from "@/hooks/use-tasbih-history";
 import { useFavoriteHadiths } from "@/hooks/use-favorite-hadiths";
 import { useFavoriteDuas } from "@/hooks/use-favorite-duas";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useSalatTracker } from "@/hooks/use-salat-tracker";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,7 +25,7 @@ import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
 import {
   ArrowLeft, Loader2, LogIn, UserCircle, Calculator,
   Heart, Hash, BookHeart, TrendingUp, CheckCircle, Clock,
-  Star, BookOpen,
+  Star, BookOpen, ClipboardCheck, Flame,
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -60,6 +61,7 @@ export default function ProfilePage() {
   const { sessions: tasbihSessions, todayTotal: tasbihToday, isLoading: tasbihLoading } = useTasbihHistory();
   const { favorites: hadithFavorites } = useFavoriteHadiths();
   const { favorites: duaFavorites } = useFavoriteDuas();
+  const salatTracker = useSalatTracker(formData.country);
 
   const [zakatRecords, setZakatRecords] = useState<ZakatRecord[]>([]);
   const [zakatLoading, setZakatLoading] = useState(false);
@@ -604,6 +606,60 @@ export default function ProfilePage() {
                         </div>
                       </Link>
                     </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Salat Tracker Summary */}
+              <motion.div variants={slideUp} initial="initial" animate="animate">
+                <Card>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-base flex items-center gap-2 text-emerald-800">
+                        <ClipboardCheck className="h-4 w-4 text-green-600" />
+                        {t.salatTracker || "Salat Tracker"}
+                      </CardTitle>
+                      <Link href="/salat-tracker">
+                        <Button variant="ghost" size="sm" className="text-xs text-emerald-600 hover:text-emerald-700">
+                          {t.viewAll} →
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    {salatTracker.records.length === 0 ? (
+                      <div className="text-center py-8">
+                        <ClipboardCheck className="h-10 w-10 mx-auto text-muted-foreground/30 mb-3" />
+                        <p className="text-sm text-muted-foreground">{t.noSalatYet || "No prayer tracking data yet"}</p>
+                        <Link href="/salat-tracker">
+                          <Button size="sm" className="mt-3 bg-green-600 hover:bg-green-700">
+                            <ClipboardCheck className="h-3.5 w-3.5 mr-1.5" /> {t.startTracking}
+                          </Button>
+                        </Link>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div className="flex flex-col items-center rounded-xl bg-green-50 p-3">
+                          <div className="flex items-center gap-1 mb-1">
+                            <Flame className="h-4 w-4 text-orange-500" />
+                            <span className="text-lg font-bold text-orange-600">{salatTracker.stats.currentStreak}</span>
+                          </div>
+                          <span className="text-[10px] text-gray-500">{t.currentStreak || "Current Streak"}</span>
+                        </div>
+                        <div className="flex flex-col items-center rounded-xl bg-emerald-50 p-3">
+                          <span className="text-lg font-bold text-emerald-700">{salatTracker.stats.completionRate}%</span>
+                          <span className="text-[10px] text-gray-500">{t.completionRate || "Completion"}</span>
+                        </div>
+                        <div className="flex flex-col items-center rounded-xl bg-blue-50 p-3">
+                          <span className="text-lg font-bold text-blue-700">{salatTracker.stats.onTimeRate}%</span>
+                          <span className="text-[10px] text-gray-500">{t.onTimeRate || "On-Time"}</span>
+                        </div>
+                        <div className="flex flex-col items-center rounded-xl bg-purple-50 p-3">
+                          <span className="text-lg font-bold text-purple-700">{salatTracker.stats.jamaahRate}%</span>
+                          <span className="text-[10px] text-gray-500">{t.jamaahRate || "Jamaah"}</span>
+                        </div>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>

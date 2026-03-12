@@ -210,11 +210,33 @@ export function createSupabaseTools(supabase: SupabaseClient, userId: string) {
 
       parts.push(`\nTotal Sadaqah Given: ${sadaqahTotal} (${sadaqah?.length || 0} donations)`);
 
+      // Salat stats
+      const today = new Date().toISOString().split("T")[0];
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 6);
+      const { data: salatRecords } = await supabase
+        .from("salat_records")
+        .select("date, prayer_name, prayer_type, status, in_jamaah, on_time")
+        .eq("user_id", userId)
+        .gte("date", weekAgo.toISOString().split("T")[0])
+        .order("date", { ascending: false })
+        .limit(100);
+
+      if (salatRecords?.length) {
+        const fard = salatRecords.filter((r) => r.prayer_type === "fard");
+        const prayed = fard.filter((r) => r.status === "prayed" || r.status === "late").length;
+        const todayFard = fard.filter((r) => r.date === today && (r.status === "prayed" || r.status === "late")).length;
+        parts.push(`\nSalat This Week: ${prayed} fard prayers completed`);
+        parts.push(`Today: ${todayFard}/5 fard completed`);
+      } else {
+        parts.push("\nNo salat tracking data yet.");
+      }
+
       return parts.join("\n");
     },
     {
       name: "get_user_summary",
-      description: "Get a quick overview of the user's financial ibadah — recent zakat calculations and total sadaqah. Use this when the user asks for a general summary or overview.",
+      description: "Get a quick overview of the user's ibadah — recent zakat calculations, total sadaqah, and salat (prayer) tracking stats. Use this when the user asks for a general summary or overview.",
       schema: z.object({}),
     },
   );
@@ -262,5 +284,144 @@ export function createSupabaseTools(supabase: SupabaseClient, userId: string) {
     },
   );
 
-  return [getZakatRecords, getZakatPayments, getSadaqahRecords, getTasbihSessions, getUserSummary];
+  const getSalatRecords = tool(
+    async ({ period, date }) => {
+      const today = new Date().toISOString().split("T")[0];
+      let startDate = today;
+
+      if (period === "week") {
+        const d = new Date();
+        d.setDate(d.getDate() - 6);
+        startDate = d.toISOString().split("T")[0];
+      } else if (period === "month") {
+        const d = new Date();
+        d.setDate(d.getDate() - 29);
+        startDate = d.toISOString().split("T")[0];
+      } else if (period === "year") {
+        const d = new Date();
+        d.setFullYear(d.getFullYear() - 1);
+        startDate = d.toISOString().split("T")[0];
+      }
+
+      if (date) {
+        startDate = date;
+      }
+
+      const { data, error } = await supabase
+        .from("salat_records")
+        .select("date, prayer_name, prayer_type, status, in_jamaah, on_time")
+        .eq("user_id", userId)
+        .gte("date", startDate)
+        .lte("date", date || today)
+        .order("date", { ascending: false })
+        .limit(200);
+
+      if (error) return `Error fetching salat records: ${error.message}`;
+      if (!data?.length) return "No salat records found. The user hasn't started tracking prayers yet.";
+
+      // Compute stats
+      const fardRecords = data.filter((r) => r.prayer_type === "fard");
+      const prayed = fardRecords.filter((r) => r.status === "prayed" || r.status === "late").length;
+      const missed = fardRecords.filter((r) => r.status === "missed").length;
+      const onTime = fardRecords.filter((r) => r.on_time && r.status !== "missed").length;
+      const jamaah = fardRecords.filter((r) => r.in_jamaah && r.status !== "missed").length;
+      const uniqueDays = new Set(data.map((r) => r.date)).size;
+
+      // Today's status
+      const todayRecords = data.filter((r) => r.date === today && r.prayer_type === "fard");
+      const todayPrayed = todayRecords.filter((r) => r.status === "prayed" || r.status === "late");
+
+      // Most missed prayer
+      const missedByPrayer: Record<string, number> = {};
+      for (const r of fardRecords.filter((r) => r.status === "missed")) {
+        missedByPrayer[r.prayer_name] = (missedByPrayer[r.prayer_name] || 0) + 1;
+      }
+      const mostMissed = Object.entries(missedByPrayer).sort((a, b) => b[1] - a[1])[0];
+
+      const parts = [
+        `Prayer Tracking Summary (${period || "today"}):`,
+        `  Days tracked: ${uniqueDays}`,
+        `  Fard prayed: ${prayed} | Missed: ${missed}`,
+        `  On-time rate: ${prayed > 0 ? Math.round((onTime / prayed) * 100) : 0}%`,
+        `  Jamaah rate: ${prayed > 0 ? Math.round((jamaah / prayed) * 100) : 0}%`,
+        `  Completion rate: ${uniqueDays > 0 ? Math.round((prayed / (uniqueDays * 5)) * 100) : 0}%`,
+      ];
+
+      if (todayPrayed.length > 0) {
+        parts.push(`\nToday: ${todayPrayed.length}/5 fard completed (${todayPrayed.map((r) => r.prayer_name).join(", ")})`);
+      }
+
+      if (mostMissed) {
+        parts.push(`\nMost missed prayer: ${mostMissed[0]} (${mostMissed[1]} times)`);
+      }
+
+      // Qaza debt
+      const allMissed = fardRecords.filter((r) => r.status === "missed").length;
+      const allQaza = fardRecords.filter((r) => r.status === "qaza").length;
+      const qazaRemaining = Math.max(0, allMissed - allQaza);
+      if (qazaRemaining > 0) {
+        parts.push(`\nQaza remaining: ${qazaRemaining} prayers`);
+      }
+
+      return parts.join("\n");
+    },
+    {
+      name: "get_salat_records",
+      description:
+        "Fetch the user's salat (prayer) tracking data. Shows which prayers were completed, missed, or late. Returns streak info, completion rates, jamaah stats, and qaza (makeup prayer) debt. Use when the user asks about their prayer history, streak, missed prayers, or salat progress.",
+      schema: z.object({
+        period: z.enum(["today", "week", "month", "year"]).optional().describe("Time period (default: today)"),
+        date: z.string().optional().describe("Specific date in YYYY-MM-DD format"),
+      }),
+    },
+  );
+
+  const getRamadanProgress = tool(
+    async ({ hijri_year }) => {
+      let query = supabase
+        .from("ramadan_tracker")
+        .select("*")
+        .eq("user_id", userId)
+        .order("day_number", { ascending: true });
+
+      if (hijri_year) {
+        query = query.eq("hijri_year", hijri_year);
+      } else {
+        query = query.limit(30);
+      }
+
+      const { data, error } = await query;
+      if (error) return `Error fetching Ramadan data: ${error.message}`;
+      if (!data?.length) return "No Ramadan tracking data found.";
+
+      const totalFasted = data.filter((r) => r.fasted).length;
+      const totalTaraweeh = data.filter((r) => r.taraweeh).length;
+      const quranPages = data.reduce((sum, r) => sum + (r.quran_pages || 0), 0);
+      const sadaqahDays = data.filter((r) => r.sadaqah_given).length;
+      const itikaafDays = data.filter((r) => r.itikaf).length;
+      const laylatalQadrDays = data.filter((r) => r.laylatul_qadr_worship).length;
+      const year = data[0].hijri_year;
+
+      return [
+        `Ramadan Progress (${year} AH):`,
+        `  Days tracked: ${data.length}`,
+        `  Days fasted: ${totalFasted}/${data.length}`,
+        `  Taraweeh prayed: ${totalTaraweeh}/${data.length}`,
+        `  Quran pages read: ${quranPages} (${Math.round((quranPages / 604) * 100)}% of full Quran)`,
+        `  Sadaqah given: ${sadaqahDays} days`,
+        `  I'tikaf: ${itikaafDays} days`,
+        `  Laylatul Qadr worship: ${laylatalQadrDays} nights`,
+      ].join("\n");
+    },
+    {
+      name: "get_ramadan_progress",
+      description:
+        "Fetch the user's Ramadan tracking progress. Shows fasting days, taraweeh attendance, Quran reading progress, sadaqah, i'tikaf, and Laylatul Qadr worship. Use when the user asks about their Ramadan progress, fasting, or taraweeh.",
+      schema: z.object({
+        hijri_year: z.number().optional().describe("Hijri year (e.g., 1447). Omit for most recent."),
+      }),
+    },
+  );
+
+  return [getZakatRecords, getZakatPayments, getSadaqahRecords, getTasbihSessions, getSalatRecords, getRamadanProgress, getUserSummary];
 }

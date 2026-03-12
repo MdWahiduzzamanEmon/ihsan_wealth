@@ -38,6 +38,12 @@ export const PROFILE_PAGE_TEXTS: Record<TransLang, {
   startDhikr: string;
   counts: string;
   back: string;
+  salatTracker: string;
+  noSalatYet: string;
+  currentStreak: string;
+  completionRate: string;
+  onTimeRate: string;
+  jamaahRate: string;
 }> = {
   en: {
     title: "My Profile",
@@ -77,6 +83,12 @@ export const PROFILE_PAGE_TEXTS: Record<TransLang, {
     startDhikr: "Start Dhikr",
     counts: "counts",
     back: "Back",
+    salatTracker: "Salat Tracker",
+    noSalatYet: "No prayer tracking data yet. Start tracking your salat!",
+    currentStreak: "Current Streak",
+    completionRate: "Completion",
+    onTimeRate: "On-Time",
+    jamaahRate: "Jamaah",
   },
   bn: {
     title: "আমার প্রোফাইল",
@@ -116,6 +128,12 @@ export const PROFILE_PAGE_TEXTS: Record<TransLang, {
     startDhikr: "যিকর শুরু করুন",
     counts: "গণনা",
     back: "পিছনে",
+    salatTracker: "সালাত ট্র্যাকার",
+    noSalatYet: "এখনো নামাজ ট্র্যাকিং ডেটা নেই। আপনার নামাজ ট্র্যাক করা শুরু করুন!",
+    currentStreak: "বর্তমান ধারা",
+    completionRate: "সম্পন্নের হার",
+    onTimeRate: "সময়মতো",
+    jamaahRate: "জামাআত",
   },
   ur: {
     title: "میری پروفائل",
@@ -155,6 +173,12 @@ export const PROFILE_PAGE_TEXTS: Record<TransLang, {
     startDhikr: "ذکر شروع کریں",
     counts: "شمار",
     back: "واپس",
+    salatTracker: "نماز ٹریکر",
+    noSalatYet: "ابھی تک نماز ٹریکنگ ڈیٹا نہیں۔ اپنی نمازیں ٹریک کرنا شروع کریں!",
+    currentStreak: "موجودہ تسلسل",
+    completionRate: "تکمیل",
+    onTimeRate: "وقت پر",
+    jamaahRate: "جماعت",
   },
   ar: {
     title: "ملفي الشخصي",
@@ -194,6 +218,12 @@ export const PROFILE_PAGE_TEXTS: Record<TransLang, {
     startDhikr: "ابدأ الذكر",
     counts: "عدد",
     back: "رجوع",
+    salatTracker: "متتبع الصلاة",
+    noSalatYet: "لا توجد بيانات تتبع صلاة بعد. ابدأ بتتبع صلواتك!",
+    currentStreak: "التسلسل الحالي",
+    completionRate: "الإكمال",
+    onTimeRate: "في الوقت",
+    jamaahRate: "الجماعة",
   },
   tr: {
     title: "Profilim",
@@ -233,6 +263,12 @@ export const PROFILE_PAGE_TEXTS: Record<TransLang, {
     startDhikr: "Zikre Basla",
     counts: "sayi",
     back: "Geri",
+    salatTracker: "Namaz Takipçisi",
+    noSalatYet: "Henüz namaz takip verisi yok. Namazlarınızı takip etmeye başlayın!",
+    currentStreak: "Mevcut Seri",
+    completionRate: "Tamamlanma",
+    onTimeRate: "Vaktinde",
+    jamaahRate: "Cemaat",
   },
   ms: {
     title: "Profil Saya",
@@ -272,6 +308,12 @@ export const PROFILE_PAGE_TEXTS: Record<TransLang, {
     startDhikr: "Mula Zikir",
     counts: "kiraan",
     back: "Kembali",
+    salatTracker: "Penjejak Solat",
+    noSalatYet: "Belum ada data jejak solat. Mula jejak solat anda!",
+    currentStreak: "Rangkaian Semasa",
+    completionRate: "Penyelesaian",
+    onTimeRate: "Tepat Waktu",
+    jamaahRate: "Jemaah",
   },
   id: {
     title: "Profil Saya",
@@ -311,5 +353,11 @@ export const PROFILE_PAGE_TEXTS: Record<TransLang, {
     startDhikr: "Mulai Zikir",
     counts: "hitungan",
     back: "Kembali",
+    salatTracker: "Pelacak Shalat",
+    noSalatYet: "Belum ada data pelacakan shalat. Mulai lacak shalat Anda!",
+    currentStreak: "Rangkaian Saat Ini",
+    completionRate: "Penyelesaian",
+    onTimeRate: "Tepat Waktu",
+    jamaahRate: "Jamaah",
   },
 };

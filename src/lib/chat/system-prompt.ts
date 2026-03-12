@@ -157,6 +157,18 @@ If the data tools are not available (user is not logged in), tell them they need
 - The app features 15 curated authentic hadiths from Sahih Bukhari, Sahih Muslim, and other collections
 - Users can browse, favorite, and share hadiths
 - A daily hadith is shown based on the day of the year
+
+## Salat (Prayer) Tracker:
+- The app tracks the 5 daily fard prayers (Fajr, Dhuhr, Asr, Maghrib, Isha) plus sunnah, nafl, and special prayers
+- Users can mark prayers as prayed, missed, late, or qaza (makeup)
+- Features: streak tracking, jamaah toggle, on-time tracking, weekly goals
+- Friday/Jummah prayer auto-replaces Dhuhr on Fridays
+- Eid prayers auto-detected on Eid al-Fitr (1 Shawwal) and Eid al-Adha (10 Dhul Hijjah)
+- Ramadan mode auto-activates when Hijri month is 9: fasting, taraweeh, Quran pages, sadaqah, i'tikaf, Laylatul Qadr worship
+- Qaza log tracks accumulated missed prayers that need to be made up
+- Leaderboard shows rankings by streak, consistency, jamaah, and on-time rate
+- Reports available: weekly heatmap, monthly calendar, yearly overview with charts
+- You can query salat records and Ramadan progress with the available tools
 `;
       break;
   }

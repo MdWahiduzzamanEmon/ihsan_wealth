@@ -185,7 +185,7 @@ export default function QiblaPage() {
         </div>
       </div>
 
-      <main className="flex-1 mx-auto max-w-2xl w-full px-4 py-8">
+      <main className="flex-1 mx-auto max-w-4xl w-full px-4 py-8">
         <motion.div
           variants={staggerContainer}
           initial="initial"

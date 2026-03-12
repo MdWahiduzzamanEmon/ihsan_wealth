@@ -10,6 +10,7 @@ import {
   CalendarDays,
   ChevronDown,
   ChevronUp,
+  ClipboardCheck,
   Clock,
   Compass,
   Heart,
@@ -33,6 +34,7 @@ import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Calculator,
+  ClipboardCheck,
   Clock,
   Compass,
   BookOpen,
@@ -42,7 +44,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   History,
 };
 
-const REQUIRES_LOGIN = new Set(["sadaqah", "history", "tasbih"]);
+const REQUIRES_LOGIN = new Set(["sadaqah", "history", "tasbih", "salat"]);
 
 function GuideSectionCard({
   section,

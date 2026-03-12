@@ -341,3 +341,58 @@ export function getYearEvents(
   }
   return result;
 }
+
+// ─── Salat Tracker Convenience Helpers ───
+
+/** Check if a given date is Friday (for Jummah prayer) */
+export function isFriday(date: Date = new Date()): boolean {
+  return date.getDay() === 5;
+}
+
+/** Check if the Hijri date falls in Ramadan (month 9) */
+export function isRamadan(date: Date = new Date(), countryCode?: string): boolean {
+  const adjustment = countryCode ? getHijriAdjustment(countryCode) : 0;
+  const hijri = gregorianToHijri(date, adjustment);
+  return hijri.month === 9;
+}
+
+/** Get Ramadan day number (1-30) or null if not Ramadan */
+export function getRamadanDayNumber(date: Date = new Date(), countryCode?: string): number | null {
+  const adjustment = countryCode ? getHijriAdjustment(countryCode) : 0;
+  const hijri = gregorianToHijri(date, adjustment);
+  if (hijri.month !== 9) return null;
+  return hijri.day;
+}
+
+/** Check if it's an Eid day (Eid al-Fitr: 1 Shawwal, Eid al-Adha: 10 Dhul Hijjah) */
+export function isEidDay(date: Date = new Date(), countryCode?: string): "eid_al_fitr" | "eid_al_adha" | null {
+  const adjustment = countryCode ? getHijriAdjustment(countryCode) : 0;
+  const hijri = gregorianToHijri(date, adjustment);
+  if (hijri.month === 10 && hijri.day === 1) return "eid_al_fitr";
+  if (hijri.month === 12 && hijri.day === 10) return "eid_al_adha";
+  return null;
+}
+
+/** Check if it's a Laylatul Qadr candidate night (odd nights 21-29 of Ramadan) */
+export function isLaylatalQadrNight(date: Date = new Date(), countryCode?: string): boolean {
+  const dayNum = getRamadanDayNumber(date, countryCode);
+  if (dayNum === null) return false;
+  return dayNum >= 21 && dayNum % 2 === 1; // 21, 23, 25, 27, 29
+}
+
+/** Get the current Hijri date context for salat tracker */
+export function getSalatDateContext(date: Date = new Date(), countryCode?: string) {
+  const adjustment = countryCode ? getHijriAdjustment(countryCode) : 0;
+  const hijri = gregorianToHijri(date, adjustment);
+  return {
+    hijri,
+    isFriday: date.getDay() === 5,
+    isRamadan: hijri.month === 9,
+    ramadanDayNumber: hijri.month === 9 ? hijri.day : null,
+    isLaylatalQadr: hijri.month === 9 && hijri.day >= 21 && hijri.day % 2 === 1,
+    isLastTenNights: hijri.month === 9 && hijri.day >= 21,
+    eidDay: (hijri.month === 10 && hijri.day === 1) ? "eid_al_fitr" as const
+      : (hijri.month === 12 && hijri.day === 10) ? "eid_al_adha" as const
+      : null,
+  };
+}
