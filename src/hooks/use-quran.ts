@@ -60,7 +60,7 @@ export function useChapters() {
   return { chapters, loading, error };
 }
 
-export function useVerses(surahId: number, lang: TransLang) {
+export function useVerses(surahId: number, lang: TransLang, enabled: boolean = true) {
   const [verses, setVerses] = useState<Verse[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -106,10 +106,11 @@ export function useVerses(surahId: number, lang: TransLang) {
   );
 
   useEffect(() => {
+    if (!enabled) return;
     setVerses([]);
     setCurrentPage(1);
     fetchPage(1);
-  }, [fetchPage]);
+  }, [fetchPage, enabled]);
 
   const loadMore = useCallback(() => {
     if (currentPage < totalPages && !loadingMore) {

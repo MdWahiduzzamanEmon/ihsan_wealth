@@ -13,6 +13,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/quran", priority: 0.8, changeFrequency: "monthly" as const },
     { path: "/qibla", priority: 0.6, changeFrequency: "monthly" as const },
     { path: "/sadaqah", priority: 0.6, changeFrequency: "monthly" as const },
+    { path: "/tasbih", priority: 0.6, changeFrequency: "monthly" as const },
+    { path: "/hadith", priority: 0.7, changeFrequency: "daily" as const },
     { path: "/history", priority: 0.5, changeFrequency: "weekly" as const },
     { path: "/auth/login", priority: 0.4, changeFrequency: "yearly" as const },
     { path: "/auth/register", priority: 0.4, changeFrequency: "yearly" as const },

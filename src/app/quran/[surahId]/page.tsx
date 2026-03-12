@@ -21,7 +21,7 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
   const { surahId } = use(params);
   const surahNum = parseInt(surahId, 10);
 
-  const [formData] = useLocalStorage<ZakatFormData>("zakat-calculator-data", DEFAULT_FORM_DATA);
+  const [formData, , isFormLoaded] = useLocalStorage<ZakatFormData>("zakat-calculator-data", DEFAULT_FORM_DATA);
   const lang = getLangFromCountry(formData.country) as TransLang;
   const t = QURAN_TEXTS[lang];
   const isRtl = lang === "ar" || lang === "ur";
@@ -29,7 +29,7 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
   // Instant chapter info from localStorage (no network wait)
   const [cachedChapter] = useState(() => getChapterFromCache(surahNum));
   const { chapters } = useChapters();
-  const { verses, loading, loadingMore, hasMore, loadMore, currentPage, totalPages } = useVerses(surahNum, lang);
+  const { verses, loading, loadingMore, hasMore, loadMore, currentPage, totalPages } = useVerses(surahNum, lang, isFormLoaded);
 
   // Use cached chapter immediately, upgrade to fresh data when available
   const chapter = useMemo(

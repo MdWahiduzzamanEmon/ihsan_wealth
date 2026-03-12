@@ -1,6 +1,5 @@
 // ─── Hijri (Islamic) Calendar Utilities ───
-// Based on the Kuwaiti/Umm al-Qura algorithm approximation
-// using the Islamic epoch (July 16, 622 CE Julian / July 19, 622 CE Gregorian)
+// Uses Intl.DateTimeFormat with the Islamic Umm al-Qura calendar for accuracy
 
 export interface HijriDate {
   year: number;
@@ -46,91 +45,96 @@ export function getHijriDayName(dayOfWeek: number): { arabic: string; english: s
   return HIJRI_DAYS[dayOfWeek];
 }
 
-// ─── Conversion Algorithms ───
-// Uses the well-known astronomical approximation based on lunar month cycles
+// ─── Intl-based Conversion ───
 
-// Julian Day Number from Gregorian date
-function gregorianToJDN(year: number, month: number, day: number): number {
-  if (month <= 2) {
-    year -= 1;
-    month += 12;
-  }
-  const A = Math.floor(year / 100);
-  const B = 2 - A + Math.floor(A / 4);
-  return Math.floor(365.25 * (year + 4716)) + Math.floor(30.6001 * (month + 1)) + day + B - 1524.5;
-}
+const hijriFormatter = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
+  day: "numeric",
+  month: "numeric",
+  year: "numeric",
+});
 
-// Gregorian date from Julian Day Number
-function jdnToGregorian(jdn: number): { year: number; month: number; day: number } {
-  const z = Math.floor(jdn + 0.5);
-  const a = Math.floor((z - 1867216.25) / 36524.25);
-  const A = z + 1 + a - Math.floor(a / 4);
-  const B = A + 1524;
-  const C = Math.floor((B - 122.1) / 365.25);
-  const D = Math.floor(365.25 * C);
-  const E = Math.floor((B - D) / 30.6001);
-
-  const day = B - D - Math.floor(30.6001 * E);
-  const month = E < 14 ? E - 1 : E - 13;
-  const year = month > 2 ? C - 4716 : C - 4715;
-
+function parseHijriParts(date: Date): HijriDate {
+  const parts = hijriFormatter.formatToParts(date);
+  const day = parseInt(parts.find((p) => p.type === "day")?.value || "1");
+  const month = parseInt(parts.find((p) => p.type === "month")?.value || "1");
+  const year = parseInt(parts.find((p) => p.type === "year")?.value || "1");
   return { year, month, day };
 }
 
-// Hijri from Julian Day Number (Kuwaiti algorithm)
-function jdnToHijri(jdn: number): HijriDate {
-  const jd = Math.floor(jdn) + 0.5;
-  const epoch = 1948439.5; // Julian day of Hijri epoch (July 16, 622 CE Julian)
-  const y = 30;
-  const shift1 = 8.01 / 60.0;
-
-  let z = jd - epoch;
-  const cyc = Math.floor(z / 10631.0);
-  z = z - 10631 * cyc;
-  const j = Math.floor((z - shift1) / 325.0 / 11.0) + 1;
-  z = z - Math.floor(325.0 * j / 11.0 - shift1);
-  const m = Math.min(12, Math.ceil((z - 29) / 29.5) + 1);
-  const adjustedM = Math.max(1, m);
-  const d = Math.ceil(z - 29.5001 * (adjustedM - 1) - 0.99);
-
-  const year = y * cyc + j;
-  return { year, month: adjustedM, day: Math.max(1, d) };
-}
-
-// Julian Day Number from Hijri date
-function hijriToJDN(year: number, month: number, day: number): number {
-  return (
-    Math.floor((11 * year + 3) / 30) +
-    354 * year +
-    30 * month -
-    Math.floor((month - 1) / 2) +
-    day +
-    1948440 -
-    385
-  );
-}
-
 export function gregorianToHijri(date: Date): HijriDate {
-  const jdn = gregorianToJDN(date.getFullYear(), date.getMonth() + 1, date.getDate());
-  return jdnToHijri(jdn);
+  return parseHijriParts(date);
 }
 
 export function hijriToGregorian(hijri: HijriDate): Date {
-  const jdn = hijriToJDN(hijri.year, hijri.month, hijri.day);
-  const g = jdnToGregorian(jdn);
-  return new Date(g.year, g.month - 1, g.day);
+  // Binary search: find the Gregorian date whose Hijri representation matches
+  // Start with an approximate Gregorian date
+  const approxDays = Math.round((hijri.year - 1) * 354.36667 + (hijri.month - 1) * 29.53 + hijri.day);
+  const epoch = new Date(622, 6, 19); // Hijri epoch approx
+  const approxDate = new Date(epoch.getTime() + approxDays * 86400000);
+
+  // Search in a window around the approximate date
+  // First, get close by checking the year/month
+  const candidate = new Date(approxDate);
+
+  // Coarse adjustment: check if we're in the right year
+  let h = parseHijriParts(candidate);
+  const yearDiff = hijri.year - h.year;
+  if (Math.abs(yearDiff) > 1) {
+    candidate.setDate(candidate.getDate() + yearDiff * 354);
+    h = parseHijriParts(candidate);
+  }
+
+  // Fine adjustment: binary search within ±200 days
+  let lo = new Date(candidate.getTime() - 200 * 86400000);
+  let hi = new Date(candidate.getTime() + 200 * 86400000);
+
+  for (let i = 0; i < 20; i++) {
+    const mid = new Date((lo.getTime() + hi.getTime()) / 2);
+    mid.setHours(12, 0, 0, 0); // Normalize to noon
+    h = parseHijriParts(mid);
+
+    const cmp = compareHijri(h, hijri);
+    if (cmp === 0) return mid;
+    if (cmp < 0) {
+      lo = new Date(mid.getTime() + 86400000);
+    } else {
+      hi = new Date(mid.getTime() - 86400000);
+    }
+  }
+
+  // Linear scan fallback near lo
+  for (let d = -5; d <= 5; d++) {
+    const test = new Date(lo.getTime() + d * 86400000);
+    test.setHours(12, 0, 0, 0);
+    h = parseHijriParts(test);
+    if (h.year === hijri.year && h.month === hijri.month && h.day === hijri.day) {
+      return test;
+    }
+  }
+
+  return lo; // Best approximation
+}
+
+function compareHijri(a: HijriDate, b: HijriDate): number {
+  if (a.year !== b.year) return a.year - b.year;
+  if (a.month !== b.month) return a.month - b.month;
+  return a.day - b.day;
 }
 
 export function getDaysInHijriMonth(year: number, month: number): number {
-  // Calculate by finding the JDN of the first of next month minus first of this month
-  const jdn1 = hijriToJDN(year, month, 1);
-  let jdn2: number;
-  if (month === 12) {
-    jdn2 = hijriToJDN(year + 1, 1, 1);
-  } else {
-    jdn2 = hijriToJDN(year, month + 1, 1);
+  // Find the Gregorian date of the 1st of this Hijri month
+  const first = hijriToGregorian({ year, month, day: 1 });
+
+  // Find the Gregorian date of the 1st of the next Hijri month
+  let nextMonth = month + 1;
+  let nextYear = year;
+  if (nextMonth > 12) {
+    nextMonth = 1;
+    nextYear = year + 1;
   }
-  return jdn2 - jdn1;
+  const nextFirst = hijriToGregorian({ year: nextYear, month: nextMonth, day: 1 });
+
+  return Math.round((nextFirst.getTime() - first.getTime()) / 86400000);
 }
 
 // ─── Islamic Events ───

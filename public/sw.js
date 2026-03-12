@@ -1,5 +1,5 @@
 // Change this version on every deploy to trigger SW update
-const SW_VERSION = "mmn6l1e4";
+const SW_VERSION = "mmn78xmh";
 const CACHE_NAME = "ihsanwealth-v" + SW_VERSION;
 
 self.addEventListener("install", (event) => {

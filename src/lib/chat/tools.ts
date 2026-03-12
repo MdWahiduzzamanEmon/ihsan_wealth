@@ -219,5 +219,48 @@ export function createSupabaseTools(supabase: SupabaseClient, userId: string) {
     },
   );
 
-  return [getZakatRecords, getZakatPayments, getSadaqahRecords, getUserSummary];
+  const getTasbihSessions = tool(
+    async ({ limit, date }) => {
+      let query = supabase
+        .from("tasbih_sessions")
+        .select("id, dhikr_type, custom_text, target_count, completed_count, completed_at, date")
+        .eq("user_id", userId)
+        .order("completed_at", { ascending: false })
+        .limit(limit || 20);
+
+      if (date) {
+        query = query.eq("date", date);
+      }
+
+      const { data, error } = await query;
+      if (error) return `Error fetching tasbih sessions: ${error.message}`;
+      if (!data?.length) return "No tasbih sessions found. The user hasn't used the Tasbih Counter yet.";
+
+      const totalByType: Record<string, number> = {};
+      let grandTotal = 0;
+
+      const lines = data.map((s) => {
+        totalByType[s.dhikr_type] = (totalByType[s.dhikr_type] || 0) + s.completed_count;
+        grandTotal += s.completed_count;
+        const status = s.completed_count >= s.target_count ? "✓ Completed" : `${s.completed_count}/${s.target_count}`;
+        return `${s.date}: ${s.dhikr_type} — ${status} (${s.completed_count} counts)`;
+      });
+
+      const summary = Object.entries(totalByType)
+        .map(([type, total]) => `${type}: ${total}`)
+        .join(", ");
+
+      return `Total Dhikr: ${grandTotal}\nBy Type: ${summary}\n\nRecent Sessions:\n${lines.join("\n")}`;
+    },
+    {
+      name: "get_tasbih_sessions",
+      description: "Fetch the user's tasbih (dhikr counting) session history. Shows which dhikr they counted, targets, completion status, and totals. Use when the user asks about their dhikr history or tasbih stats.",
+      schema: z.object({
+        limit: z.number().optional().describe("Number of sessions to return (default 20, max 50)"),
+        date: z.string().optional().describe("Filter by specific date in YYYY-MM-DD format"),
+      }),
+    },
+  );
+
+  return [getZakatRecords, getZakatPayments, getSadaqahRecords, getTasbihSessions, getUserSummary];
 }

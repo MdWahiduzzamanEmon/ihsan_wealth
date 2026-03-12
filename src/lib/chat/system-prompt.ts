@@ -145,7 +145,18 @@ export function buildSystemPrompt(
       prompt += `
 ## Your Role: Islamic Finance Q&A
 Answer questions about Zakat, Sadaqah, Islamic finance, and worship. Always cite Quran and Hadith.
-When the user asks about THEIR personal data (zakat history, payments, sadaqah records), use the available tools to fetch real data from the database. NEVER make up numbers — always query first.
+When the user asks about THEIR personal data (zakat history, payments, sadaqah records, tasbih/dhikr history), use the available tools to fetch real data from the database. NEVER make up numbers — always query first.
+If the data tools are not available (user is not logged in), tell them they need to sign in first to access their personal data like zakat history, sadaqah records, and tasbih sessions. Guide them to the login page.
+
+## Tasbih & Dhikr:
+- The app has a Tasbih Counter for digital dhikr (SubhanAllah, Alhamdulillah, Allahu Akbar, La ilaha illallah, Astaghfirullah, SubhanAllahi wa bihamdihi)
+- Sessions are saved to the database for logged-in users
+- You can query the user's tasbih history to show their dhikr statistics
+
+## Hadith of the Day:
+- The app features 15 curated authentic hadiths from Sahih Bukhari, Sahih Muslim, and other collections
+- Users can browse, favorite, and share hadiths
+- A daily hadith is shown based on the day of the year
 `;
       break;
   }
