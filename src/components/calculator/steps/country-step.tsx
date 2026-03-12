@@ -16,7 +16,6 @@ import { t, biDesc } from "@/lib/form-translations";
 import { formatCurrency } from "@/lib/format";
 import { NISAB_GOLD_GRAMS, NISAB_SILVER_GRAMS } from "@/lib/constants";
 import { MapPin, Globe, ChevronDown } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 
 interface CountryStepProps {
   formData: ZakatFormData;
@@ -42,28 +41,7 @@ export function CountryStep({ formData, onChange, prices, pricesLoading, detecte
       initial="initial"
       animate="animate"
     >
-      {/* Auto-detected banner */}
-      {detectedInfo && (
-        <motion.div
-          variants={staggerItem}
-          className="flex items-center gap-3 rounded-xl border-2 border-emerald-200 bg-emerald-50/80 p-4"
-        >
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
-            <MapPin className="h-5 w-5 text-emerald-600" />
-          </div>
-          <div className="flex-1">
-            <p className="text-sm font-medium text-emerald-800">
-              <span className="font-arabic text-emerald-600 ml-1">تم الكشف</span> &mdash; Location Detected
-            </p>
-            <p className="text-xs text-emerald-600">
-              We detected you are in <strong>{detectedInfo.flag} {detectedInfo.name}</strong>. Currency set to <strong>{detectedInfo.currency}</strong>.
-            </p>
-          </div>
-          {formData.country === detectedCountry && (
-            <Badge className="bg-emerald-600 text-white">Auto-selected</Badge>
-          )}
-        </motion.div>
-      )}
+      {/* Auto-detected inline hint (shown inside the country selector below) */}
 
       {/* Country Selection - Collapsible */}
       <motion.div variants={staggerItem}>
@@ -90,6 +68,12 @@ export function CountryStep({ formData, onChange, prices, pricesLoading, detecte
               )}
             </div>
             <div className="flex items-center gap-2">
+              {detectedInfo && formData.country === detectedCountry && (
+                <span className="flex items-center gap-1 text-[10px] text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
+                  <MapPin className="h-2.5 w-2.5" />
+                  {t(lang, "autoSelected")}
+                </span>
+              )}
               <span className="text-xs text-muted-foreground">{countryOpen ? "Collapse" : "Change country"}</span>
               <ChevronDown className={cn(
                 "h-4 w-4 text-emerald-600 transition-transform duration-200",

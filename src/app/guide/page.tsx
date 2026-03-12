@@ -78,7 +78,7 @@ function GuideSectionCard({
         className="w-full text-left"
         dir={isRtl ? "rtl" : "ltr"}
       >
-        <div className="flex items-start gap-4 p-5 sm:p-6">
+        <div className="flex items-center gap-4 p-5 sm:p-6">
           {/* Number + Icon */}
           <div className="flex shrink-0 flex-col items-center gap-2">
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
@@ -108,7 +108,7 @@ function GuideSectionCard({
           </div>
 
           {/* Expand toggle */}
-          <div className="shrink-0 mt-1">
+          <div className="shrink-0">
             {isExpanded ? (
               <ChevronUp className="h-5 w-5 text-emerald-400" />
             ) : (

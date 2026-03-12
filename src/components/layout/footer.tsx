@@ -161,7 +161,7 @@ export function Footer({ countryCode = "US" }: FooterProps) {
           {/* Developer credit with social links */}
           <div className="flex items-center gap-3">
             <p className="text-[11px] text-emerald-400/60">
-              &copy; {new Date().getFullYear()} IhsanWealth. {extra.builtWithCareBy}{" "}
+              &copy; {new Date().getFullYear()} IhsanWealth. Built with care by{" "}
               <a
                 href="https://github.com/MdWahiduzzamanEmon"
                 target="_blank"

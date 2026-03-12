@@ -1,7 +1,7 @@
 {
-  "name": "IhsanWealth - Zakat Calculator",
+  "name": "IhsanWealth — Islamic Companion",
   "short_name": "IhsanWealth",
-  "description": "Professional Zakat Calculator with live gold & silver prices",
+  "description": "Your complete Islamic companion — Zakat calculator, Quran, prayer times, Qibla, duas, Hijri calendar, Sadaqah tracker & more.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#065f46",
@@ -33,7 +33,7 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["finance", "lifestyle"],
+  "categories": ["finance", "lifestyle", "education"],
   "lang": "en",
   "dir": "ltr"
 }
