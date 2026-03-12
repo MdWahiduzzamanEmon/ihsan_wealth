@@ -13,6 +13,7 @@ import {
   User,
   X,
   ChevronDown,
+  HeartHandshake,
 } from "lucide-react";
 import { PRIMARY_NAV_FEATURES, MORE_NAV_FEATURES, ALL_NAV_FEATURES } from "@/lib/app-features";
 import { getLangFromCountry, type TransLang } from "@/lib/islamic-content";
@@ -153,6 +154,20 @@ export function Header({ countryCode = "US" }: HeaderProps) {
 
           {/* Right side */}
           <div className="flex items-center gap-1.5">
+            {/* Sadaqah Jariyah button - BD only */}
+            {countryCode === "BD" && (
+              <button
+                onClick={() => {
+                  closeMenus();
+                  document.getElementById("support-sadaqah")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-amber-500/20 to-amber-400/10 border border-amber-400/30 hover:border-amber-400/50 hover:from-amber-500/30 hover:to-amber-400/20 px-2.5 py-1 text-xs font-medium text-amber-300 transition-all"
+              >
+                <HeartHandshake className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">সদকা</span>
+              </button>
+            )}
+
             {isAuthenticated ? (
               <div className="flex items-center gap-1.5">
                 <Link href="/profile" onClick={closeMenus}>
@@ -215,6 +230,21 @@ export function Header({ countryCode = "US" }: HeaderProps) {
                 </Link>
               );
             })}
+            {/* Sadaqah Jariyah - BD only in mobile menu */}
+            {countryCode === "BD" && (
+              <button
+                onClick={() => {
+                  closeMenus();
+                  setTimeout(() => {
+                    document.getElementById("support-sadaqah")?.scrollIntoView({ behavior: "smooth" });
+                  }, 100);
+                }}
+                className="flex flex-col items-center gap-1 rounded-lg px-2 py-2.5 text-[11px] bg-gradient-to-b from-amber-500/15 to-amber-400/5 border border-amber-400/20 text-amber-300 hover:bg-amber-500/20 transition-colors"
+              >
+                <HeartHandshake className="h-4 w-4 shrink-0" />
+                সদকা
+              </button>
+            )}
           </nav>
         </div>
       )}

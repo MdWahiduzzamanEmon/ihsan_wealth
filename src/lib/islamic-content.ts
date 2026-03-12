@@ -707,6 +707,10 @@ export const HISTORY_PAGE_TEXTS: Record<TransLang, {
   category: string;
   add: string;
   calculated: string;
+  deleteTitle: string;
+  deleteDescription: string;
+  deleteConfirm: string;
+  deleteCancel: string;
 }> = {
   en: {
     signInRequired: "Sign In Required",
@@ -739,6 +743,10 @@ export const HISTORY_PAGE_TEXTS: Record<TransLang, {
     category: "Category",
     add: "Add",
     calculated: "Calculated",
+    deleteTitle: "Delete Zakat Record",
+    deleteDescription: "Are you sure you want to delete this Zakat record? This action cannot be undone.",
+    deleteConfirm: "Delete",
+    deleteCancel: "Cancel",
   },
   bn: {
     signInRequired: "সাইন ইন প্রয়োজন",
@@ -771,6 +779,10 @@ export const HISTORY_PAGE_TEXTS: Record<TransLang, {
     category: "ক্যাটাগরি",
     add: "যোগ করুন",
     calculated: "গণনা করা হয়েছে",
+    deleteTitle: "যাকাত রেকর্ড মুছুন",
+    deleteDescription: "আপনি কি নিশ্চিত যে এই যাকাত রেকর্ড মুছতে চান? এই কাজটি পূর্বাবস্থায় ফেরানো যাবে না।",
+    deleteConfirm: "মুছুন",
+    deleteCancel: "বাতিল",
   },
   ur: {
     signInRequired: "سائن ان ضروری ہے",
@@ -803,6 +815,10 @@ export const HISTORY_PAGE_TEXTS: Record<TransLang, {
     category: "زمرہ",
     add: "شامل کریں",
     calculated: "حساب لگایا گیا",
+    deleteTitle: "زکوٰۃ ریکارڈ حذف کریں",
+    deleteDescription: "کیا آپ واقعی اس زکوٰۃ ریکارڈ کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں ہو سکتا۔",
+    deleteConfirm: "حذف کریں",
+    deleteCancel: "منسوخ",
   },
   ar: {
     signInRequired: "يجب تسجيل الدخول",
@@ -835,6 +851,10 @@ export const HISTORY_PAGE_TEXTS: Record<TransLang, {
     category: "الفئة",
     add: "إضافة",
     calculated: "تم الحساب",
+    deleteTitle: "حذف سجل الزكاة",
+    deleteDescription: "هل أنت متأكد من حذف سجل الزكاة هذا؟ لا يمكن التراجع عن هذا الإجراء.",
+    deleteConfirm: "حذف",
+    deleteCancel: "إلغاء",
   },
   tr: {
     signInRequired: "Giris Gerekli",
@@ -867,6 +887,10 @@ export const HISTORY_PAGE_TEXTS: Record<TransLang, {
     category: "Kategori",
     add: "Ekle",
     calculated: "Hesaplandi",
+    deleteTitle: "Zekat Kaydini Sil",
+    deleteDescription: "Bu zekat kaydini silmek istediginizden emin misiniz? Bu islem geri alinamaz.",
+    deleteConfirm: "Sil",
+    deleteCancel: "Iptal",
   },
   ms: {
     signInRequired: "Log Masuk Diperlukan",
@@ -899,6 +923,10 @@ export const HISTORY_PAGE_TEXTS: Record<TransLang, {
     category: "Kategori",
     add: "Tambah",
     calculated: "Dikira",
+    deleteTitle: "Padam Rekod Zakat",
+    deleteDescription: "Adakah anda pasti mahu memadamkan rekod zakat ini? Tindakan ini tidak boleh dibatalkan.",
+    deleteConfirm: "Padam",
+    deleteCancel: "Batal",
   },
   id: {
     signInRequired: "Perlu Masuk",
@@ -931,6 +959,10 @@ export const HISTORY_PAGE_TEXTS: Record<TransLang, {
     category: "Kategori",
     add: "Tambah",
     calculated: "Dihitung",
+    deleteTitle: "Hapus Catatan Zakat",
+    deleteDescription: "Apakah Anda yakin ingin menghapus catatan zakat ini? Tindakan ini tidak dapat dibatalkan.",
+    deleteConfirm: "Hapus",
+    deleteCancel: "Batal",
   },
 };
 

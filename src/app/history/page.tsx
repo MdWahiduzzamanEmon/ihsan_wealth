@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useAuth } from "@/components/providers/auth-provider";
@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { recordToCertificateData } from "@/components/dashboard/zakat-certificate";
 import { CertificatePreviewModal } from "@/components/dashboard/certificate-preview-modal";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Legend
@@ -42,6 +43,8 @@ export default function HistoryPage() {
   const [showPaymentForm, setShowPaymentForm] = useState<string | null>(null);
   const [paymentData, setPaymentData] = useState({ amount: "", recipient: "", category: "poor", notes: "" });
   const [certificateRecord, setCertificateRecord] = useState<ZakatRecord | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<ZakatRecord | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -59,11 +62,15 @@ export default function HistoryPage() {
     ? records.filter((r) => r.year === selectedYear)
     : records;
 
-  const handleDelete = async (id: string) => {
-    if (await deleteRecord(id)) {
-      setRecords((prev) => prev.filter((r) => r.id !== id));
+  const handleConfirmDelete = useCallback(async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    if (await deleteRecord(deleteTarget.id)) {
+      setRecords((prev) => prev.filter((r) => r.id !== deleteTarget.id));
     }
-  };
+    setIsDeleting(false);
+    setDeleteTarget(null);
+  }, [deleteTarget, deleteRecord]);
 
   const handleMarkPaid = async (id: string) => {
     if (await markPaid(id)) {
@@ -394,7 +401,7 @@ export default function HistoryPage() {
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={() => handleDelete(record.id)}
+                            onClick={() => setDeleteTarget(record)}
                             className="text-red-500 hover:text-red-700 hover:bg-red-50 gap-1"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
@@ -506,6 +513,18 @@ export default function HistoryPage() {
           elementId={`history-cert-${certificateRecord.id}`}
         />
       )}
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title={t.deleteTitle}
+        description={t.deleteDescription}
+        confirmLabel={t.deleteConfirm}
+        cancelLabel={t.deleteCancel}
+        variant="danger"
+        loading={isDeleting}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
 
       <Footer countryCode={formData.country} />
     </div>

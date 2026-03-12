@@ -6,6 +6,7 @@ import { Github } from "lucide-react";
 import { FOOTER_DUA, UI_TEXTS, FOOTER_LINKS_TEXTS, FOOTER_EXTRA_TEXTS, getLangFromCountry } from "@/lib/islamic-content";
 import { useVisitorCount } from "@/hooks/use-visitor-count";
 import { GRID_FEATURES } from "@/lib/app-features";
+import { SupportBanner } from "@/components/layout/support-banner";
 
 function LinkedInIcon({ className }: { className?: string }) {
   return (
@@ -146,6 +147,9 @@ export function Footer({ countryCode = "US" }: FooterProps) {
             </div>
           </div>
         </div>
+
+        {/* Sadaqah Jariyah support - BD only */}
+        {countryCode === "BD" && <SupportBanner />}
 
         {/* Disclaimer */}
         <div className="rounded-xl bg-white/[0.03] border border-emerald-700/20 px-5 py-4 mb-8">
