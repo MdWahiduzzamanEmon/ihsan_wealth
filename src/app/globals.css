@@ -128,6 +128,15 @@
   }
 }
 
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Arabic font utility */
 .font-arabic {
   font-family: var(--font-amiri), "Amiri", "Traditional Arabic", "Scheherazade New", serif;

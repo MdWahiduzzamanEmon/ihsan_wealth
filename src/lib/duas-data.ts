@@ -6,6 +6,8 @@ export type DuaCategory =
   | "protection"
   | "forgiveness"
   | "gratitude"
+  | "daily-life"
+  | "health"
   | "general";
 
 export interface Dua {
@@ -20,10 +22,12 @@ export interface Dua {
 
 export const DUA_CATEGORIES: { id: DuaCategory; label: string; labelAr: string; emoji: string }[] = [
   { id: "morning-evening", label: "Morning / Evening", labelAr: "الصباح والمساء", emoji: "🌅" },
+  { id: "daily-life", label: "Daily Life", labelAr: "الحياة اليومية", emoji: "🏠" },
   { id: "meals", label: "Meals", labelAr: "الطعام", emoji: "🍽" },
   { id: "prayer", label: "Prayer", labelAr: "الصلاة", emoji: "🕌" },
   { id: "travel", label: "Travel", labelAr: "السفر", emoji: "✈" },
   { id: "protection", label: "Protection", labelAr: "الحماية", emoji: "🛡" },
+  { id: "health", label: "Health & Healing", labelAr: "الصحة والشفاء", emoji: "🩺" },
   { id: "forgiveness", label: "Forgiveness", labelAr: "المغفرة", emoji: "🤲" },
   { id: "gratitude", label: "Gratitude", labelAr: "الشكر", emoji: "💚" },
   { id: "general", label: "General", labelAr: "عامة", emoji: "📿" },
@@ -269,6 +273,219 @@ export const DUAS: Dua[] = [
     },
     source: "Quran 113:1-5 (Surah Al-Falaq)",
     category: "protection",
+  },
+
+  // ── Daily Life ────────────────────────────────────────
+  {
+    id: "daily-entering-bathroom",
+    arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ",
+    transliteration: "Allahumma inni a'udhu bika minal-khubuthi wal-khaba'ith.",
+    translation: "O Allah, I seek refuge in You from evil male and female jinn.",
+    translations: {
+      bn: "হে আল্লাহ, আমি আপনার কাছে পুরুষ ও নারী জিন থেকে আশ্রয় চাই।",
+    },
+    source: "Al-Bukhari 1:142, Muslim 1:375",
+    category: "daily-life",
+  },
+  {
+    id: "daily-leaving-bathroom",
+    arabic: "غُفْرَانَكَ",
+    transliteration: "Ghufranaka.",
+    translation: "I seek Your forgiveness.",
+    translations: {
+      bn: "আমি আপনার ক্ষমা চাই।",
+    },
+    source: "Abu Dawud 1:30, At-Tirmidhi 1:5",
+    category: "daily-life",
+  },
+  {
+    id: "daily-looking-mirror",
+    arabic: "اللَّهُمَّ أَنْتَ حَسَّنْتَ خَلْقِي فَحَسِّنْ خُلُقِي",
+    transliteration: "Allahumma Anta hassanta khalqi fahassin khuluqi.",
+    translation: "O Allah, as You have made my outward form beautiful, make my character beautiful too.",
+    translations: {
+      bn: "হে আল্লাহ, আপনি আমার আকৃতি সুন্দর করেছেন, তাই আমার চরিত্রও সুন্দর করে দিন।",
+    },
+    source: "Ahmad 1:403, Ibn Hibban",
+    category: "daily-life",
+  },
+  {
+    id: "daily-wearing-new-clothes",
+    arabic: "اللَّهُمَّ لَكَ الْحَمْدُ أَنْتَ كَسَوْتَنِيهِ، أَسْأَلُكَ مِنْ خَيْرِهِ وَخَيْرِ مَا صُنِعَ لَهُ، وَأَعُوذُ بِكَ مِنْ شَرِّهِ وَشَرِّ مَا صُنِعَ لَهُ",
+    transliteration: "Allahumma lakal-hamdu Anta kasawtaneehi, as'aluka min khayrihi wa khayri ma suni'a lah, wa a'udhu bika min sharrihi wa sharri ma suni'a lah.",
+    translation: "O Allah, all praise is for You. You have clothed me with it. I ask You for its good and the good for which it was made, and I seek refuge from its evil and the evil for which it was made.",
+    translations: {
+      bn: "হে আল্লাহ, সকল প্রশংসা আপনার। আপনি আমাকে এটি পরিধান করিয়েছেন। আমি এর কল্যাণ ও যে কল্যাণের জন্য এটি তৈরি হয়েছে তা চাই, এবং এর অনিষ্ট ও যে অনিষ্টের জন্য এটি তৈরি হয়েছে তা থেকে আশ্রয় চাই।",
+    },
+    source: "Abu Dawud 4:41, At-Tirmidhi 4:280",
+    category: "daily-life",
+  },
+  {
+    id: "daily-when-it-rains",
+    arabic: "اللَّهُمَّ صَيِّبًا نَافِعًا",
+    transliteration: "Allahumma sayyiban nafi'a.",
+    translation: "O Allah, let it be a beneficial rain.",
+    translations: {
+      bn: "হে আল্লাহ, এটিকে উপকারী বৃষ্টি বানান।",
+    },
+    source: "Al-Bukhari 2:32",
+    category: "daily-life",
+  },
+  {
+    id: "daily-after-sneezing",
+    arabic: "الْحَمْدُ لِلَّهِ",
+    transliteration: "Alhamdulillah.",
+    translation: "All praise is for Allah.",
+    translations: {
+      bn: "সকল প্রশংসা আল্লাহর।",
+    },
+    source: "Al-Bukhari 7:125",
+    category: "daily-life",
+  },
+  {
+    id: "daily-reply-to-sneezer",
+    arabic: "يَرْحَمُكَ اللَّهُ",
+    transliteration: "Yarhamukallah.",
+    translation: "May Allah have mercy on you.",
+    translations: {
+      bn: "আল্লাহ আপনার উপর রহম করুন।",
+    },
+    source: "Al-Bukhari 7:125",
+    category: "daily-life",
+  },
+  {
+    id: "daily-when-angry",
+    arabic: "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ",
+    transliteration: "A'udhu billahi minash-shaytanir-rajeem.",
+    translation: "I seek refuge in Allah from the accursed Satan.",
+    translations: {
+      bn: "আমি বিতাড়িত শয়তান থেকে আল্লাহর আশ্রয় চাই।",
+    },
+    source: "Al-Bukhari 7:99, Muslim 4:2015",
+    category: "daily-life",
+  },
+  {
+    id: "daily-in-distress",
+    arabic: "لَا إِلَٰهَ إِلَّا اللَّهُ الْعَظِيمُ الْحَلِيمُ، لَا إِلَٰهَ إِلَّا اللَّهُ رَبُّ الْعَرْشِ الْعَظِيمِ، لَا إِلَٰهَ إِلَّا اللَّهُ رَبُّ السَّمَاوَاتِ وَرَبُّ الْأَرْضِ وَرَبُّ الْعَرْشِ الْكَرِيمِ",
+    transliteration: "La ilaha illallahul-'Adheemul-Haleem. La ilaha illallahu Rabbul-'Arshil-'Adheem. La ilaha illallahu Rabbus-samawati wa Rabbul-ardi wa Rabbul-'Arshil-Kareem.",
+    translation: "None has the right to be worshipped except Allah, the Mighty, the Forbearing. None has the right to be worshipped except Allah, Lord of the Magnificent Throne. None has the right to be worshipped except Allah, Lord of the heavens, Lord of the earth, and Lord of the Noble Throne.",
+    translations: {
+      bn: "আল্লাহ ছাড়া কোনো ইলাহ নেই, তিনি মহান ও সহনশীল। আল্লাহ ছাড়া কোনো ইলাহ নেই, তিনি মহান আরশের রব। আল্লাহ ছাড়া কোনো ইলাহ নেই, তিনি আসমানসমূহের রব, জমিনের রব এবং সম্মানিত আরশের রব।",
+    },
+    source: "Al-Bukhari 8:154, Muslim 4:2092",
+    category: "daily-life",
+  },
+  {
+    id: "daily-before-drinking-water",
+    arabic: "بِسْمِ اللَّهِ",
+    transliteration: "Bismillah.",
+    translation: "In the name of Allah.",
+    translations: {
+      bn: "আল্লাহর নামে।",
+    },
+    source: "Muslim 3:1599",
+    category: "daily-life",
+  },
+  {
+    id: "daily-after-drinking-water",
+    arabic: "الْحَمْدُ لِلَّهِ الَّذِي سَقَانَا عَذْبًا فُرَاتًا بِرَحْمَتِهِ وَلَمْ يَجْعَلْهُ مِلْحًا أُجَاجًا بِذُنُوبِنَا",
+    transliteration: "Alhamdu lillahil-ladhi saqana 'adhban furatan birahmatihi wa lam yaj'alhu milhan ujajan bidhunubina.",
+    translation: "All praise is for Allah who gave us sweet and fresh water to drink by His mercy and did not make it salty and bitter due to our sins.",
+    translations: {
+      bn: "সকল প্রশংসা আল্লাহর যিনি তাঁর রহমতে আমাদের মিষ্টি ও সুপেয় পানি পান করিয়েছেন এবং আমাদের গুনাহর কারণে তা লবণাক্ত ও তিক্ত করেননি।",
+    },
+    source: "Tabarani",
+    category: "daily-life",
+  },
+  {
+    id: "daily-entering-market",
+    arabic: "لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ حَيٌّ لَا يَمُوتُ بِيَدِهِ الْخَيْرُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ",
+    transliteration: "La ilaha illallahu wahdahu la shareeka lah, lahul-mulku wa lahul-hamdu, yuhyi wa yumeetu, wa Huwa Hayyun la yamootu, biyadihil-khayr, wa Huwa 'ala kulli shay'in Qadeer.",
+    translation: "None has the right to be worshipped except Allah, alone, without partner. To Him belongs all sovereignty and praise. He gives life and causes death, and He is living and does not die. In His hand is all good, and He is over all things omnipotent.",
+    translations: {
+      bn: "আল্লাহ ছাড়া কোনো ইলাহ নেই, তিনি একক, তাঁর কোনো শরীক নেই। সকল সার্বভৌমত্ব ও প্রশংসা তাঁরই। তিনি জীবন দেন ও মৃত্যু দেন এবং তিনি চিরঞ্জীব, মৃত্যুহীন। তাঁর হাতেই সকল কল্যাণ এবং তিনি সকল কিছুর উপর ক্ষমতাবান।",
+    },
+    source: "At-Tirmidhi 5:291, Ibn Majah 2:752",
+    category: "daily-life",
+  },
+  {
+    id: "daily-before-sleeping",
+    arabic: "بِاسْمِكَ رَبِّي وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، فَإِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا، وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا بِمَا تَحْفَظُ بِهِ عِبَادَكَ الصَّالِحِينَ",
+    transliteration: "Bismika Rabbi wada'tu janbi, wa bika arfa'uh. Fa in amsakta nafsi farhamha, wa in arsaltaha fahfadhha bima tahfadhu bihi 'ibadakas-saliheen.",
+    translation: "In Your name my Lord, I lie down and in Your name I rise, so if You should take my soul then have mercy upon it, and if You should return it then protect it in the manner You protect Your righteous servants.",
+    translations: {
+      bn: "হে আমার রব, আপনার নামে আমি শুয়ে পড়লাম এবং আপনার নামেই উঠব। যদি আপনি আমার প্রাণ নিয়ে নেন তবে তার প্রতি দয়া করুন, আর যদি ফিরিয়ে দেন তবে তাকে সেভাবে রক্ষা করুন যেভাবে আপনি আপনার নেককার বান্দাদের রক্ষা করেন।",
+    },
+    source: "Al-Bukhari 11:126, Muslim 4:2083",
+    category: "daily-life",
+  },
+
+  // ── Health & Healing ─────────────────────────────────
+  {
+    id: "health-visiting-sick",
+    arabic: "أَسْأَلُ اللَّهَ الْعَظِيمَ رَبَّ الْعَرْشِ الْعَظِيمِ أَنْ يَشْفِيَكَ",
+    transliteration: "As'alullaha al-'Adheema Rabbal-'Arshil-'Adheemi an yashfiyak.",
+    translation: "I ask Allah the Mighty, the Lord of the Magnificent Throne, to cure you. (Recite 7 times)",
+    translations: {
+      bn: "আমি মহান আল্লাহর কাছে, মহান আরশের রবের কাছে প্রার্থনা করি যেন তিনি আপনাকে সুস্থ করেন। (৭ বার পড়ুন)",
+    },
+    source: "Abu Dawud 3:187, At-Tirmidhi",
+    category: "health",
+  },
+  {
+    id: "health-dua-for-cure",
+    arabic: "اللَّهُمَّ رَبَّ النَّاسِ أَذْهِبِ الْبَأْسَ، اشْفِهِ وَأَنْتَ الشَّافِي، لَا شِفَاءَ إِلَّا شِفَاؤُكَ، شِفَاءً لَا يُغَادِرُ سَقَمًا",
+    transliteration: "Allahumma Rabban-nas, adhhibil-ba's, ishfihi wa Antash-Shafi, la shifa'a illa shifa'uk, shifa'an la yughadiru saqama.",
+    translation: "O Allah, Lord of mankind, remove the affliction. Cure him, for You are the One who cures. There is no cure except Your cure — a cure that leaves no illness behind.",
+    translations: {
+      bn: "হে আল্লাহ, মানবজাতির রব, কষ্ট দূর করুন। তাকে সুস্থ করুন, কেননা আপনিই আরোগ্যদানকারী। আপনার আরোগ্য ছাড়া কোনো আরোগ্য নেই — এমন আরোগ্য যা কোনো রোগ অবশিষ্ট রাখে না।",
+    },
+    source: "Al-Bukhari 7:131, Muslim 4:1721",
+    category: "health",
+  },
+  {
+    id: "health-dua-for-pain",
+    arabic: "أَعُوذُ بِعِزَّةِ اللَّهِ وَقُدْرَتِهِ مِنْ شَرِّ مَا أَجِدُ وَأُحَاذِرُ",
+    transliteration: "A'udhu bi'izzatillahi wa qudratihi min sharri ma ajidu wa uhadhir.",
+    translation: "I seek refuge in the might and power of Allah from the evil of what I feel and fear. (Place hand on area of pain and recite 7 times)",
+    translations: {
+      bn: "আমি আল্লাহর ইজ্জত ও কুদরতের আশ্রয় চাই, আমি যা অনুভব করছি ও যা আশঙ্কা করছি তার অনিষ্ট থেকে। (ব্যথার স্থানে হাত রেখে ৭ বার পড়ুন)",
+    },
+    source: "Muslim 4:1728",
+    category: "health",
+  },
+  {
+    id: "health-ruqyah",
+    arabic: "بِسْمِ اللَّهِ أَرْقِيكَ، مِنْ كُلِّ شَيْءٍ يُؤْذِيكَ، مِنْ شَرِّ كُلِّ نَفْسٍ أَوْ عَيْنِ حَاسِدٍ اللَّهُ يَشْفِيكَ، بِسْمِ اللَّهِ أَرْقِيكَ",
+    transliteration: "Bismillahi arqeek, min kulli shay'in yu'dheek, min sharri kulli nafsin aw 'ayni hasidin Allahu yashfeek, bismillahi arqeek.",
+    translation: "In the name of Allah I perform ruqyah for you, from everything that is harming you, from the evil of every soul or envious eye. May Allah heal you, in the name of Allah I perform ruqyah for you.",
+    translations: {
+      bn: "আল্লাহর নামে আমি আপনার জন্য ঝাড়ফুঁক করছি, সব কিছু থেকে যা আপনাকে কষ্ট দিচ্ছে, প্রতিটি আত্মা বা হিংসুকের চোখের অনিষ্ট থেকে। আল্লাহ আপনাকে সুস্থ করুন, আল্লাহর নামে আমি আপনার জন্য ঝাড়ফুঁক করছি।",
+    },
+    source: "Muslim 4:1718",
+    category: "health",
+  },
+  {
+    id: "health-general-wellbeing",
+    arabic: "اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي، لَا إِلَٰهَ إِلَّا أَنْتَ",
+    transliteration: "Allahumma 'afini fi badani, Allahumma 'afini fi sam'i, Allahumma 'afini fi basari, la ilaha illa Anta.",
+    translation: "O Allah, grant me health in my body. O Allah, grant me health in my hearing. O Allah, grant me health in my sight. None has the right to be worshipped but You. (Recite 3 times)",
+    translations: {
+      bn: "হে আল্লাহ, আমার শরীরে সুস্থতা দান করুন। হে আল্লাহ, আমার শ্রবণশক্তিতে সুস্থতা দান করুন। হে আল্লাহ, আমার দৃষ্টিশক্তিতে সুস্থতা দান করুন। আপনি ছাড়া কোনো ইলাহ নেই। (৩ বার পড়ুন)",
+    },
+    source: "Abu Dawud 4:324",
+    category: "health",
+  },
+  {
+    id: "health-patience-illness",
+    arabic: "إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ، اللَّهُمَّ أْجُرْنِي فِي مُصِيبَتِي وَأَخْلِفْ لِي خَيْرًا مِنْهَا",
+    transliteration: "Inna lillahi wa inna ilayhi raji'oon. Allahumma-jurni fi museebati wa akhlif li khayran minha.",
+    translation: "To Allah we belong and to Him we shall return. O Allah, reward me in my affliction and replace it for me with something better.",
+    translations: {
+      bn: "নিশ্চয়ই আমরা আল্লাহর এবং তাঁর কাছেই ফিরে যাব। হে আল্লাহ, আমার বিপদে আমাকে সওয়াব দান করুন এবং এর বিনিময়ে আমাকে এর চেয়ে উত্তম কিছু দান করুন।",
+    },
+    source: "Muslim 2:632",
+    category: "health",
   },
 
   // ── Forgiveness ────────────────────────────────────────

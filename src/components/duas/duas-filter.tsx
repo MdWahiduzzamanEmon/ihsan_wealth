@@ -17,10 +17,12 @@ const FILTER_TEXTS: Record<TransLang, {
     favorites: "Favorites",
     categories: {
       "morning-evening": "Morning / Evening",
+      "daily-life": "Daily Life",
       meals: "Meals",
       prayer: "Prayer",
       travel: "Travel",
       protection: "Protection",
+      health: "Health & Healing",
       forgiveness: "Forgiveness",
       gratitude: "Gratitude",
       general: "General",
@@ -32,10 +34,12 @@ const FILTER_TEXTS: Record<TransLang, {
     favorites: "পছন্দের",
     categories: {
       "morning-evening": "সকাল / সন্ধ্যা",
+      "daily-life": "দৈনন্দিন জীবন",
       meals: "খাবার",
       prayer: "নামায",
       travel: "ভ্রমণ",
       protection: "সুরক্ষা",
+      health: "স্বাস্থ্য ও আরোগ্য",
       forgiveness: "ক্ষমা",
       gratitude: "কৃতজ্ঞতা",
       general: "সাধারণ",
@@ -47,10 +51,12 @@ const FILTER_TEXTS: Record<TransLang, {
     favorites: "پسندیدہ",
     categories: {
       "morning-evening": "صبح / شام",
+      "daily-life": "روزمرہ زندگی",
       meals: "کھانا",
       prayer: "نماز",
       travel: "سفر",
       protection: "حفاظت",
+      health: "صحت اور شفاء",
       forgiveness: "مغفرت",
       gratitude: "شکر",
       general: "عمومی",
@@ -62,10 +68,12 @@ const FILTER_TEXTS: Record<TransLang, {
     favorites: "المفضلة",
     categories: {
       "morning-evening": "الصباح والمساء",
+      "daily-life": "الحياة اليومية",
       meals: "الطعام",
       prayer: "الصلاة",
       travel: "السفر",
       protection: "الحماية",
+      health: "الصحة والشفاء",
       forgiveness: "المغفرة",
       gratitude: "الشكر",
       general: "عامة",
@@ -77,10 +85,12 @@ const FILTER_TEXTS: Record<TransLang, {
     favorites: "Favoriler",
     categories: {
       "morning-evening": "Sabah / Aksam",
+      "daily-life": "Günlük Hayat",
       meals: "Yemek",
       prayer: "Namaz",
       travel: "Seyahat",
       protection: "Korunma",
+      health: "Saglik ve Sifa",
       forgiveness: "Bagislanma",
       gratitude: "Sukur",
       general: "Genel",
@@ -92,10 +102,12 @@ const FILTER_TEXTS: Record<TransLang, {
     favorites: "Kegemaran",
     categories: {
       "morning-evening": "Pagi / Petang",
+      "daily-life": "Kehidupan Harian",
       meals: "Makan",
       prayer: "Solat",
       travel: "Perjalanan",
       protection: "Perlindungan",
+      health: "Kesihatan & Penyembuhan",
       forgiveness: "Keampunan",
       gratitude: "Kesyukuran",
       general: "Umum",
@@ -107,10 +119,12 @@ const FILTER_TEXTS: Record<TransLang, {
     favorites: "Favorit",
     categories: {
       "morning-evening": "Pagi / Sore",
+      "daily-life": "Kehidupan Sehari-hari",
       meals: "Makan",
       prayer: "Sholat",
       travel: "Perjalanan",
       protection: "Perlindungan",
+      health: "Kesehatan & Penyembuhan",
       forgiveness: "Ampunan",
       gratitude: "Syukur",
       general: "Umum",
@@ -163,13 +177,13 @@ export function DuasFilter({
         )}
       </div>
 
-      {/* Category pills + Favorites toggle */}
-      <div className="flex flex-wrap gap-2">
+      {/* Category pills - horizontal scroll on mobile, wrap on desktop */}
+      <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-hide sm:flex-wrap sm:overflow-visible sm:pb-0">
         {/* All pill */}
         <button
           onClick={() => onCategoryChange("all")}
           className={cn(
-            "rounded-full px-4 py-1.5 text-sm font-medium transition-all",
+            "rounded-full px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-medium transition-all whitespace-nowrap shrink-0",
             activeCategory === "all"
               ? "bg-emerald-700 text-white shadow-md shadow-emerald-200"
               : "bg-white text-gray-600 border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50"
@@ -184,12 +198,13 @@ export function DuasFilter({
             key={cat.id}
             onClick={() => onCategoryChange(cat.id)}
             className={cn(
-              "rounded-full px-4 py-1.5 text-sm font-medium transition-all flex items-center gap-1.5",
+              "rounded-full px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0",
               activeCategory === cat.id
                 ? "bg-emerald-700 text-white shadow-md shadow-emerald-200"
                 : "bg-white text-gray-600 border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50"
             )}
           >
+            <span>{cat.emoji}</span>
             <span>{t.categories[cat.id] || cat.label}</span>
           </button>
         ))}
@@ -198,7 +213,7 @@ export function DuasFilter({
         <button
           onClick={onToggleFavorites}
           className={cn(
-            "rounded-full px-4 py-1.5 text-sm font-medium transition-all flex items-center gap-1.5 ml-auto",
+            "rounded-full px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0 sm:ml-auto",
             showFavorites
               ? "bg-rose-500 text-white shadow-md shadow-rose-200"
               : "bg-white text-gray-600 border border-gray-200 hover:border-rose-300 hover:bg-rose-50"
