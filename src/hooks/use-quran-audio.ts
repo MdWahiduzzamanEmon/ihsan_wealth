@@ -2,12 +2,26 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { DEFAULT_RECITER_ID } from "@/lib/quran-config";
+import type { Verse } from "@/lib/quran-config";
 
 const AUDIO_CDN_BASE = "https://verses.quran.com/";
+
+// Map TransLang to BCP-47 speech synthesis language tags
+const LANG_TO_SPEECH: Record<string, string> = {
+  en: "en-US",
+  bn: "bn-BD",
+  ur: "ur-PK",
+  ar: "ar-SA",
+  tr: "tr-TR",
+  ms: "ms-MY",
+  id: "id-ID",
+};
 
 interface UseQuranAudioOptions {
   surahId: number;
   totalVerses: number;
+  verses: Verse[];
+  lang: string;
 }
 
 interface UseQuranAudioReturn {
@@ -28,12 +42,20 @@ interface UseQuranAudioReturn {
   prevVerse: () => void;
   isFullSurahMode: boolean;
   audioLoading: boolean;
+  translationEnabled: boolean;
+  setTranslationEnabled: (v: boolean) => void;
+  isSpeakingTranslation: boolean;
 }
 
 // Cache audio URLs per reciter+chapter to avoid re-fetching
 const audioUrlCache = new Map<string, Map<number, string>>();
 
-export function useQuranAudio({ surahId, totalVerses }: UseQuranAudioOptions): UseQuranAudioReturn {
+// Strip HTML tags from translation text
+function stripHtml(text: string): string {
+  return text.replace(/<[^>]*>/g, "");
+}
+
+export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAudioOptions): UseQuranAudioReturn {
   const [currentVerseNumber, setCurrentVerseNumber] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -41,6 +63,20 @@ export function useQuranAudio({ surahId, totalVerses }: UseQuranAudioOptions): U
   const [currentTime, setCurrentTime] = useState(0);
   const [isFullSurahMode, setIsFullSurahMode] = useState(false);
   const [audioLoading, setAudioLoading] = useState(false);
+  const [isSpeakingTranslation, setIsSpeakingTranslation] = useState(false);
+
+  const [translationEnabled, setTranslationEnabledState] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("quran-translation-audio");
+      return saved === "true";
+    }
+    return false;
+  });
+
+  const setTranslationEnabled = useCallback((v: boolean) => {
+    setTranslationEnabledState(v);
+    try { localStorage.setItem("quran-translation-audio", String(v)); } catch {}
+  }, []);
 
   const [reciterId, setReciterIdState] = useState(() => {
     if (typeof window !== "undefined") {
@@ -53,6 +89,14 @@ export function useQuranAudio({ surahId, totalVerses }: UseQuranAudioOptions): U
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const fullSurahRef = useRef(false);
   const animFrameRef = useRef<number | null>(null);
+  const translationEnabledRef = useRef(translationEnabled);
+  const versesRef = useRef(verses);
+  const langRef = useRef(lang);
+
+  // Keep refs in sync
+  useEffect(() => { translationEnabledRef.current = translationEnabled; }, [translationEnabled]);
+  useEffect(() => { versesRef.current = verses; }, [verses]);
+  useEffect(() => { langRef.current = lang; }, [lang]);
 
   // Initialize audio element once
   useEffect(() => {
@@ -64,6 +108,9 @@ export function useQuranAudio({ surahId, totalVerses }: UseQuranAudioOptions): U
     return () => {
       audio.pause();
       audio.src = "";
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     };
   }, []);
@@ -84,9 +131,7 @@ export function useQuranAudio({ surahId, totalVerses }: UseQuranAudioOptions): U
 
         if (data.audio_files) {
           for (const file of data.audio_files) {
-            // verse_key is like "2:3" — extract verse number
             const verseNum = parseInt(file.verse_key.split(":")[1], 10);
-            // The API returns relative URLs like "Alafasy/mp3/002003.mp3"
             const fullUrl = file.url.startsWith("http")
               ? file.url
               : `${AUDIO_CDN_BASE}${file.url}`;
@@ -118,11 +163,118 @@ export function useQuranAudio({ surahId, totalVerses }: UseQuranAudioOptions): U
     animFrameRef.current = requestAnimationFrame(update);
   }, []);
 
+  // Speak translation text using Web Speech API
+  const speakTranslation = useCallback(
+    (verseNumber: number): Promise<void> => {
+      return new Promise((resolve) => {
+        if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+          resolve();
+          return;
+        }
+
+        const verse = versesRef.current.find((v) => v.verse_number === verseNumber);
+        const translationText = verse?.translations?.[0]?.text;
+        if (!translationText) {
+          resolve();
+          return;
+        }
+
+        const cleanText = stripHtml(translationText);
+        if (!cleanText) {
+          resolve();
+          return;
+        }
+
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        const speechLang = LANG_TO_SPEECH[langRef.current] || "en-US";
+        utterance.lang = speechLang;
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+
+        // Try to find a matching voice
+        const voices = window.speechSynthesis.getVoices();
+        const langPrefix = speechLang.split("-")[0];
+        const matchingVoice = voices.find(
+          (v) => v.lang.startsWith(langPrefix) || v.lang === speechLang
+        );
+        if (matchingVoice) {
+          utterance.voice = matchingVoice;
+        }
+
+        setIsSpeakingTranslation(true);
+
+        utterance.onend = () => {
+          setIsSpeakingTranslation(false);
+          resolve();
+        };
+        utterance.onerror = () => {
+          setIsSpeakingTranslation(false);
+          resolve();
+        };
+
+        // Small pause before speaking translation
+        setTimeout(() => {
+          window.speechSynthesis.speak(utterance);
+        }, 400);
+
+        // Safety timeout (max 60 seconds per verse translation)
+        setTimeout(() => {
+          if (window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+          }
+          setIsSpeakingTranslation(false);
+          resolve();
+        }, 60000);
+      });
+    },
+    []
+  );
+
+  // What happens after Arabic audio ends
+  const onArabicEnded = useCallback(
+    async (verseNumber: number) => {
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+
+      // If translation is enabled, speak it before advancing
+      if (translationEnabledRef.current) {
+        await speakTranslation(verseNumber);
+      }
+
+      // Now advance or stop
+      if (fullSurahRef.current) {
+        const nextNum = verseNumber + 1;
+        if (nextNum <= totalVerses) {
+          // playVerseInternal will be called — we need to reference it but it's not defined yet
+          // So we dispatch a custom event
+          window.dispatchEvent(new CustomEvent("quran-advance", { detail: { nextNum } }));
+        } else {
+          fullSurahRef.current = false;
+          setIsFullSurahMode(false);
+          setIsPlaying(false);
+          setCurrentVerseNumber(null);
+          setProgress(0);
+        }
+      } else {
+        setIsPlaying(false);
+        setProgress(100);
+      }
+    },
+    [totalVerses, speakTranslation]
+  );
+
   // Play a specific verse
   const playVerseInternal = useCallback(
     async (verseNumber: number) => {
       const audio = audioRef.current;
       if (!audio) return;
+
+      // Cancel any ongoing TTS
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      setIsSpeakingTranslation(false);
 
       setAudioLoading(true);
       setCurrentVerseNumber(verseNumber);
@@ -156,43 +308,45 @@ export function useQuranAudio({ surahId, totalVerses }: UseQuranAudioOptions): U
     [fetchAudioUrls, startProgressTracking, reciterId]
   );
 
-  // Handle verse end — auto-advance in full surah mode
+  // Listen for advance events (from onArabicEnded)
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.nextNum) {
+        playVerseInternal(detail.nextNum);
+      }
+    };
+    window.addEventListener("quran-advance", handler);
+    return () => window.removeEventListener("quran-advance", handler);
+  }, [playVerseInternal]);
+
+  // Handle Arabic audio end
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const onEnded = () => {
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-
-      if (fullSurahRef.current && currentVerseNumber !== null) {
-        const nextNum = currentVerseNumber + 1;
-        if (nextNum <= totalVerses) {
-          playVerseInternal(nextNum);
-        } else {
-          // Surah complete
-          fullSurahRef.current = false;
-          setIsFullSurahMode(false);
-          setIsPlaying(false);
-          setCurrentVerseNumber(null);
-          setProgress(0);
-        }
-      } else {
-        // Single verse mode — just stop
-        setIsPlaying(false);
-        setProgress(100);
+    const handler = () => {
+      if (currentVerseNumber !== null) {
+        onArabicEnded(currentVerseNumber);
       }
     };
 
-    audio.onended = onEnded;
+    audio.onended = handler;
     return () => {
       audio.onended = null;
     };
-  }, [currentVerseNumber, totalVerses, playVerseInternal]);
+  }, [currentVerseNumber, onArabicEnded]);
 
   const playVerse = useCallback(
     (verseNumber: number) => {
       const audio = audioRef.current;
       if (!audio) return;
+
+      // Cancel any TTS
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      setIsSpeakingTranslation(false);
 
       // If same verse is playing, toggle pause/resume
       if (currentVerseNumber === verseNumber && isPlaying) {
@@ -230,12 +384,21 @@ export function useQuranAudio({ surahId, totalVerses }: UseQuranAudioOptions): U
     const audio = audioRef.current;
     if (audio) {
       audio.pause();
-      setIsPlaying(false);
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     }
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.pause();
+    }
+    setIsPlaying(false);
+    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
   }, []);
 
   const resume = useCallback(() => {
+    // If TTS was paused, resume it
+    if (typeof window !== "undefined" && "speechSynthesis" in window && window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+      setIsPlaying(true);
+      return;
+    }
     const audio = audioRef.current;
     if (audio && audio.src) {
       audio.play().then(() => {
@@ -251,9 +414,13 @@ export function useQuranAudio({ surahId, totalVerses }: UseQuranAudioOptions): U
       audio.pause();
       audio.src = "";
     }
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
     fullSurahRef.current = false;
     setIsFullSurahMode(false);
     setIsPlaying(false);
+    setIsSpeakingTranslation(false);
     setCurrentVerseNumber(null);
     setProgress(0);
     setCurrentTime(0);
@@ -277,11 +444,9 @@ export function useQuranAudio({ surahId, totalVerses }: UseQuranAudioOptions): U
         localStorage.setItem("quran-reciter-id", String(id));
       } catch {}
 
-      // If currently playing, restart with new reciter
       if (currentVerseNumber !== null && isPlaying) {
         const audio = audioRef.current;
         if (audio) audio.pause();
-        // Need to use the new ID directly since state hasn't updated yet
         const fetchAndPlay = async () => {
           const cacheKey = `${id}-${surahId}`;
           let urlMap = audioUrlCache.get(cacheKey);
@@ -348,5 +513,8 @@ export function useQuranAudio({ surahId, totalVerses }: UseQuranAudioOptions): U
     prevVerse,
     isFullSurahMode,
     audioLoading,
+    translationEnabled,
+    setTranslationEnabled,
+    isSpeakingTranslation,
   };
 }

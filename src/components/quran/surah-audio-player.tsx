@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Pause, SkipBack, SkipForward, X, ChevronDown, Mic2, Loader2 } from "lucide-react";
+import { Play, Pause, SkipBack, SkipForward, X, ChevronDown, Mic2, Loader2, Languages } from "lucide-react";
 import { RECITERS } from "@/lib/quran-config";
 import { useState, useRef, useCallback } from "react";
 
@@ -16,6 +16,9 @@ interface SurahAudioPlayerProps {
   reciterId: number;
   isFullSurahMode: boolean;
   audioLoading: boolean;
+  translationEnabled: boolean;
+  isSpeakingTranslation: boolean;
+  onToggleTranslation: () => void;
   onPlayFullSurah: () => void;
   onPause: () => void;
   onResume: () => void;
@@ -54,6 +57,9 @@ export function SurahAudioPlayer({
   reciterId,
   isFullSurahMode,
   audioLoading,
+  translationEnabled,
+  isSpeakingTranslation,
+  onToggleTranslation,
   onPlayFullSurah,
   onPause,
   onResume,
@@ -203,8 +209,27 @@ export function SurahAudioPlayer({
                       {t.playing || "Playing"} Full
                     </span>
                   )}
+                  {isSpeakingTranslation && (
+                    <span className="ml-1 rounded-full bg-blue-500/20 px-1.5 py-0.5 text-[10px] text-blue-300 font-medium animate-pulse">
+                      Translation
+                    </span>
+                  )}
                 </div>
               </div>
+
+              {/* Translation toggle */}
+              <button
+                onClick={onToggleTranslation}
+                className={`rounded-lg p-1.5 transition-colors border ${
+                  translationEnabled
+                    ? "text-blue-300 bg-blue-500/20 border-blue-400/50"
+                    : "text-emerald-400 hover:text-white hover:bg-white/10 border-transparent"
+                }`}
+                aria-label={translationEnabled ? "Disable translation audio" : "Enable translation audio"}
+                title={translationEnabled ? "Translation: ON" : "Translation: OFF"}
+              >
+                <Languages className="h-4 w-4" />
+              </button>
 
               {/* Reciter selector */}
               <button

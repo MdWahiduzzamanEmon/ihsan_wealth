@@ -43,6 +43,8 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
   const audio = useQuranAudio({
     surahId: surahNum,
     totalVerses: chapter?.verses_count || 0,
+    verses,
+    lang,
   });
 
   // Auto-scroll to currently playing verse
@@ -244,6 +246,9 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
           onSetReciter={audio.setReciter}
           onNextVerse={audio.nextVerse}
           onPrevVerse={audio.prevVerse}
+          translationEnabled={audio.translationEnabled}
+          isSpeakingTranslation={audio.isSpeakingTranslation}
+          onToggleTranslation={() => audio.setTranslationEnabled(!audio.translationEnabled)}
           t={t}
         />
       )}
