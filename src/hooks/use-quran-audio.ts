@@ -3,7 +3,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { DEFAULT_RECITER_ID } from "@/lib/quran-config";
 import type { Verse } from "@/lib/quran-config";
-import { getBestVoice, preloadVoices, LANG_TO_SPEECH } from "@/lib/voice-utils";
 
 const AUDIO_CDN_BASE = "https://verses.quran.com/";
 
@@ -77,6 +76,7 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
   });
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const ttsAudioRef = useRef<HTMLAudioElement | null>(null);
   const fullSurahRef = useRef(false);
   const animFrameRef = useRef<number | null>(null);
   const translationEnabledRef = useRef(translationEnabled);
@@ -88,20 +88,22 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
   useEffect(() => { versesRef.current = verses; }, [verses]);
   useEffect(() => { langRef.current = lang; }, [lang]);
 
-  // Initialize audio element once and preload voices
+  // Initialize audio elements once
   useEffect(() => {
     if (typeof window === "undefined") return;
-    preloadVoices();
     const audio = new Audio();
     audio.preload = "auto";
     audioRef.current = audio;
 
+    const ttsAudio = new Audio();
+    ttsAudio.preload = "auto";
+    ttsAudioRef.current = ttsAudio;
+
     return () => {
       audio.pause();
       audio.src = "";
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
+      ttsAudio.pause();
+      ttsAudio.src = "";
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     };
   }, []);
@@ -154,11 +156,17 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
     animFrameRef.current = requestAnimationFrame(update);
   }, []);
 
-  // Speak translation text using Web Speech API
+  // Language code mapping for TTS API
+  const langToTtsCode: Record<string, string> = {
+    en: "en", bn: "bn", ur: "ur", ar: "ar", tr: "tr", ms: "ms", id: "id",
+  };
+
+  // Speak translation using server-side TTS API (proper voice, not browser TTS)
   const speakTranslation = useCallback(
     (verseNumber: number): Promise<void> => {
       return new Promise((resolve) => {
-        if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+        const ttsAudio = ttsAudioRef.current;
+        if (!ttsAudio) {
           resolve();
           return;
         }
@@ -176,40 +184,38 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
           return;
         }
 
-        window.speechSynthesis.cancel();
+        // Stop any previous TTS playback
+        ttsAudio.pause();
+        ttsAudio.src = "";
 
-        const utterance = new SpeechSynthesisUtterance(cleanText);
-        const speechLang = LANG_TO_SPEECH[langRef.current] || "en-US";
-        utterance.lang = speechLang;
-        utterance.rate = 0.9;
-        utterance.pitch = 1;
-
-        // Use shared voice selection for consistent, high-quality voice
-        const voice = getBestVoice(langRef.current);
-        if (voice) {
-          utterance.voice = voice;
-        }
+        const ttsLang = langToTtsCode[langRef.current] || "en";
+        const ttsUrl = `/api/tts?lang=${ttsLang}&text=${encodeURIComponent(cleanText)}`;
 
         setIsSpeakingTranslation(true);
 
-        utterance.onend = () => {
+        ttsAudio.onended = () => {
           setIsSpeakingTranslation(false);
           resolve();
         };
-        utterance.onerror = () => {
+        ttsAudio.onerror = () => {
           setIsSpeakingTranslation(false);
           resolve();
         };
 
         // Small pause before speaking translation
         setTimeout(() => {
-          window.speechSynthesis.speak(utterance);
+          ttsAudio.src = ttsUrl;
+          ttsAudio.play().catch(() => {
+            setIsSpeakingTranslation(false);
+            resolve();
+          });
         }, 400);
 
         // Safety timeout (max 60 seconds per verse translation)
         setTimeout(() => {
-          if (window.speechSynthesis.speaking) {
-            window.speechSynthesis.cancel();
+          if (!ttsAudio.paused) {
+            ttsAudio.pause();
+            ttsAudio.src = "";
           }
           setIsSpeakingTranslation(false);
           resolve();
@@ -258,9 +264,8 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
       if (!audio) return;
 
       // Cancel any ongoing TTS
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
+      const tts = ttsAudioRef.current;
+      if (tts) { tts.pause(); tts.src = ""; }
       setIsSpeakingTranslation(false);
 
       setAudioLoading(true);
@@ -330,9 +335,8 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
       if (!audio) return;
 
       // Cancel any TTS
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
+      const tts = ttsAudioRef.current;
+      if (tts) { tts.pause(); tts.src = ""; }
       setIsSpeakingTranslation(false);
 
       // If same verse is playing, toggle pause/resume
@@ -372,17 +376,19 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
     if (audio) {
       audio.pause();
     }
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.pause();
+    const tts = ttsAudioRef.current;
+    if (tts && !tts.paused) {
+      tts.pause();
     }
     setIsPlaying(false);
     if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
   }, []);
 
   const resume = useCallback(() => {
-    // If TTS was paused, resume it
-    if (typeof window !== "undefined" && "speechSynthesis" in window && window.speechSynthesis.paused) {
-      window.speechSynthesis.resume();
+    // If TTS audio was paused, resume it
+    const tts = ttsAudioRef.current;
+    if (tts && tts.src && tts.paused && isSpeakingTranslation) {
+      tts.play().catch(() => {});
       setIsPlaying(true);
       return;
     }
@@ -393,7 +399,7 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
         startProgressTracking();
       }).catch(() => {});
     }
-  }, [startProgressTracking]);
+  }, [startProgressTracking, isSpeakingTranslation]);
 
   const stop = useCallback(() => {
     const audio = audioRef.current;
@@ -401,8 +407,10 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
       audio.pause();
       audio.src = "";
     }
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
+    const tts = ttsAudioRef.current;
+    if (tts) {
+      tts.pause();
+      tts.src = "";
     }
     fullSurahRef.current = false;
     setIsFullSurahMode(false);

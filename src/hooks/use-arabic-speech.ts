@@ -1,80 +1,75 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { getBestVoice, preloadVoices } from "@/lib/voice-utils";
+import { useState, useCallback, useEffect, useRef } from "react";
 
 interface UseArabicSpeechOptions {
-  rate?: number;
-  pitch?: number;
   lang?: string;
 }
 
 /**
- * Reusable hook for Arabic text-to-speech.
- * Works for Quran verses, duas, or any Arabic text.
- * Uses shared voice selection for consistent quality across the app.
+ * Reusable hook for text-to-speech using server-side TTS API.
+ * Provides consistent, high-quality voice across the app (same voice for Duas & Quran translation).
  */
 export function useArabicSpeech(options: UseArabicSpeechOptions = {}) {
-  const { rate = 0.8, pitch = 1, lang = "ar" } = options;
+  const { lang = "ar" } = options;
   const [speaking, setSpeaking] = useState(false);
   const [loading, setLoading] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Preload voices and cancel speech on unmount
+  // Initialize audio element and clean up on unmount
   useEffect(() => {
-    preloadVoices();
+    const audio = new Audio();
+    audioRef.current = audio;
     return () => {
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
+      audio.pause();
+      audio.src = "";
     };
   }, []);
 
   const speak = useCallback(
     (text: string) => {
-      if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+      const audio = audioRef.current;
+      if (!audio) return;
 
       // If already speaking, stop
       if (speaking) {
-        window.speechSynthesis.cancel();
+        audio.pause();
+        audio.src = "";
         setSpeaking(false);
         return;
       }
 
       setLoading(true);
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang === "ar" ? "ar-SA" : lang;
-      utterance.rate = rate;
-      utterance.pitch = pitch;
+      const ttsUrl = `/api/tts?lang=${lang}&text=${encodeURIComponent(text)}`;
+      audio.src = ttsUrl;
 
-      // Use shared voice selection for consistent quality
-      const voice = getBestVoice(lang);
-      if (voice) {
-        utterance.voice = voice;
-      }
-
-      utterance.onstart = () => {
+      audio.oncanplaythrough = () => {
         setLoading(false);
         setSpeaking(true);
       };
-      utterance.onend = () => setSpeaking(false);
-      utterance.onerror = () => {
+      audio.onended = () => setSpeaking(false);
+      audio.onerror = () => {
         setLoading(false);
         setSpeaking(false);
       };
 
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utterance);
+      audio.play().catch(() => {
+        setLoading(false);
+        setSpeaking(false);
+      });
 
-      // Fallback timeout in case onstart doesn't fire
-      setTimeout(() => setLoading(false), 1000);
+      // Fallback timeout in case oncanplaythrough doesn't fire
+      setTimeout(() => setLoading(false), 3000);
     },
-    [speaking, lang, rate, pitch]
+    [speaking, lang]
   );
 
   const stop = useCallback(() => {
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
+    const audio = audioRef.current;
+    if (audio) {
+      audio.pause();
+      audio.src = "";
       setSpeaking(false);
     }
   }, []);
