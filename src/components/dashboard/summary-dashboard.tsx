@@ -20,7 +20,7 @@ import {
 } from "recharts";
 import {
   CheckCircle, XCircle, FileText, RotateCcw, Save, Loader2,
-  Wheat, Heart, TrendingUp, LogIn
+  Wheat, Heart, TrendingUp, LogIn, Trash2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -31,6 +31,7 @@ interface SummaryDashboardProps {
   nisabBasis: "gold" | "silver";
   countryCode: string;
   onReset: () => void;
+  onRecalculate?: () => void;
   formData?: ZakatFormData;
   prices?: MetalPrices | null;
 }
@@ -46,7 +47,7 @@ const ZAKAT_RECIPIENTS = [
   { name: "Ibn as-Sabil (Travelers)", arabic: "ابن السبيل", color: "#84cc16" },
 ];
 
-export function SummaryDashboard({ result, currency, nisabBasis, countryCode, onReset, formData, prices }: SummaryDashboardProps) {
+export function SummaryDashboard({ result, currency, nisabBasis, countryCode, onReset, onRecalculate, formData, prices }: SummaryDashboardProps) {
   const positiveBreakdown = result.breakdown.filter((b) => b.amount > 0);
   const lang = getLangFromCountry(countryCode);
   const texts = UI_TEXTS[lang];
@@ -397,8 +398,13 @@ export function SummaryDashboard({ result, currency, nisabBasis, countryCode, on
         <Button variant="outline" onClick={() => setShowCertificateModal(true)} className="gap-2">
           <FileText className="h-4 w-4" /> View Certificate
         </Button>
-        <Button variant="outline" onClick={onReset} className="gap-2">
-          <RotateCcw className="h-4 w-4" /> Recalculate
+        {onRecalculate && (
+          <Button variant="outline" onClick={onRecalculate} className="gap-2">
+            <RotateCcw className="h-4 w-4" /> Edit & Recalculate
+          </Button>
+        )}
+        <Button variant="outline" onClick={onReset} className="gap-2 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700">
+          <Trash2 className="h-4 w-4" /> Clear & Start New
         </Button>
       </motion.div>
 

@@ -30,29 +30,37 @@ export function SectionCard({
 }: SectionCardProps) {
   return (
     <motion.div variants={slideUp} initial="initial" animate="animate">
-      <Card className={className}>
-        <CardHeader>
+      <Card className={`border-gray-200/80 shadow-sm ${className}`}>
+        <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-emerald-800">
+            <CardTitle className="flex items-center gap-2.5 text-emerald-800">
               {Icon && iconBg ? (
-                <div className={`h-6 w-6 rounded-full ${iconBg} flex items-center justify-center`}>
-                  <Icon className={`h-3.5 w-3.5 ${iconColor}`} />
+                <div className={`h-8 w-8 rounded-xl ${iconBg} flex items-center justify-center shadow-sm`}>
+                  <Icon className={`h-4 w-4 ${iconColor}`} />
                 </div>
               ) : Icon ? (
-                <Icon className={`h-5 w-5 ${iconColor}`} />
+                <div className="h-8 w-8 rounded-xl bg-emerald-100 flex items-center justify-center">
+                  <Icon className={`h-4 w-4 ${iconColor}`} />
+                </div>
               ) : null}
-              {title}
-              {titleAr && (
-                <span className="font-arabic text-base text-emerald-600/50 font-normal">
-                  {titleAr}
-                </span>
-              )}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2">
+                <span>{title}</span>
+                {titleAr && (
+                  <span className="font-arabic text-sm sm:text-base text-emerald-600/50 font-normal">
+                    {titleAr}
+                  </span>
+                )}
+              </div>
             </CardTitle>
             {badge}
           </div>
-          {description && <CardDescription>{description}</CardDescription>}
+          {description && (
+            <CardDescription className="text-gray-400 mt-1 leading-relaxed">
+              {description}
+            </CardDescription>
+          )}
         </CardHeader>
-        <CardContent>{children}</CardContent>
+        <CardContent className="pt-0">{children}</CardContent>
       </Card>
     </motion.div>
   );

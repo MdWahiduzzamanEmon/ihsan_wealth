@@ -16,9 +16,9 @@ export const QURAN_API_BASE = "https://api.quran.com/api/v4";
 // Reciters for audio playback
 export const RECITERS = [
   { id: 7, name: "Mishary Alafasy", nameAr: "مشاري العفاسي" },
-  { id: 1, name: "Abdul Basit (Murattal)", nameAr: "عبد الباسط - مرتل" },
-  { id: 2, name: "Abdul Basit (Mujawwad)", nameAr: "عبد الباسط - مجود" },
-  { id: 5, name: "Abu Bakr Al-Shatri", nameAr: "أبو بكر الشاطري" },
+  { id: 1, name: "Abdul Basit (Mujawwad)", nameAr: "عبد الباسط - مجود" },
+  { id: 2, name: "Abdul Basit (Murattal)", nameAr: "عبد الباسط - مرتل" },
+  { id: 4, name: "Abu Bakr Al-Shatri", nameAr: "أبو بكر الشاطري" },
 ];
 export const DEFAULT_RECITER_ID = 7;
 

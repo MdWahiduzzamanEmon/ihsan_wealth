@@ -3,10 +3,11 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { DEFAULT_RECITER_ID } from "@/lib/quran-config";
 
+const AUDIO_CDN_BASE = "https://verses.quran.com/";
+
 interface UseQuranAudioOptions {
   surahId: number;
   totalVerses: number;
-  verses: { verse_number: number; verse_key: string; audio_url?: string }[];
 }
 
 interface UseQuranAudioReturn {
@@ -26,15 +27,20 @@ interface UseQuranAudioReturn {
   nextVerse: () => void;
   prevVerse: () => void;
   isFullSurahMode: boolean;
+  audioLoading: boolean;
 }
 
-export function useQuranAudio({ surahId, totalVerses, verses }: UseQuranAudioOptions): UseQuranAudioReturn {
+// Cache audio URLs per reciter+chapter to avoid re-fetching
+const audioUrlCache = new Map<string, Map<number, string>>();
+
+export function useQuranAudio({ surahId, totalVerses }: UseQuranAudioOptions): UseQuranAudioReturn {
   const [currentVerseNumber, setCurrentVerseNumber] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [isFullSurahMode, setIsFullSurahMode] = useState(false);
+  const [audioLoading, setAudioLoading] = useState(false);
 
   const [reciterId, setReciterIdState] = useState(() => {
     if (typeof window !== "undefined") {
@@ -62,31 +68,39 @@ export function useQuranAudio({ surahId, totalVerses, verses }: UseQuranAudioOpt
     };
   }, []);
 
-  // Build audio URL for a verse
-  const getAudioUrl = useCallback(
-    (verseNumber: number) => {
-      // Check if verse object has audio_url from API
-      const verse = verses.find((v) => v.verse_number === verseNumber);
-      if (verse?.audio_url) return verse.audio_url;
+  // Fetch all audio URLs for a chapter from the API (batched, cached)
+  const fetchAudioUrls = useCallback(
+    async (recId: number): Promise<Map<number, string>> => {
+      const cacheKey = `${recId}-${surahId}`;
+      const cached = audioUrlCache.get(cacheKey);
+      if (cached) return cached;
 
-      // Fallback: construct CDN URL
-      // quran.com CDN pattern: https://cdn.islamic.network/quran/audio/{bitrate}/{reciter_folder}/{surah_verse}.mp3
-      // Or use verses.quran.com CDN
-      const paddedSurah = String(surahId).padStart(3, "0");
-      const paddedVerse = String(verseNumber).padStart(3, "0");
+      try {
+        const res = await fetch(
+          `/api/quran?path=recitations/${recId}/by_chapter/${surahId}`
+        );
+        const data = await res.json();
+        const urlMap = new Map<number, string>();
 
-      // Map reciter IDs to CDN folder names
-      const reciterFolders: Record<number, string> = {
-        7: "Alafasy_128kbps",
-        1: "AbdulBaset/Murattal_192kbps",
-        2: "AbdulBaset/Mujawwad_128kbps",
-        5: "Abu_Bakr_Ash-Shaatree_128kbps",
-      };
+        if (data.audio_files) {
+          for (const file of data.audio_files) {
+            // verse_key is like "2:3" — extract verse number
+            const verseNum = parseInt(file.verse_key.split(":")[1], 10);
+            // The API returns relative URLs like "Alafasy/mp3/002003.mp3"
+            const fullUrl = file.url.startsWith("http")
+              ? file.url
+              : `${AUDIO_CDN_BASE}${file.url}`;
+            urlMap.set(verseNum, fullUrl);
+          }
+        }
 
-      const folder = reciterFolders[reciterId] || "Alafasy_128kbps";
-      return `https://cdn.islamic.network/quran/audio/128/${folder}/${paddedSurah}${paddedVerse}.mp3`;
+        audioUrlCache.set(cacheKey, urlMap);
+        return urlMap;
+      } catch {
+        return new Map();
+      }
     },
-    [surahId, verses, reciterId]
+    [surahId]
   );
 
   // Progress tracking
@@ -106,42 +120,40 @@ export function useQuranAudio({ surahId, totalVerses, verses }: UseQuranAudioOpt
 
   // Play a specific verse
   const playVerseInternal = useCallback(
-    (verseNumber: number) => {
+    async (verseNumber: number) => {
       const audio = audioRef.current;
       if (!audio) return;
 
-      const url = getAudioUrl(verseNumber);
-      audio.src = url;
+      setAudioLoading(true);
       setCurrentVerseNumber(verseNumber);
       setProgress(0);
       setCurrentTime(0);
       setDuration(0);
 
-      audio.onloadedmetadata = () => {
-        setDuration(audio.duration);
-      };
+      try {
+        const urlMap = await fetchAudioUrls(reciterId);
+        const url = urlMap.get(verseNumber);
 
-      audio.play().then(() => {
+        if (!url) {
+          setAudioLoading(false);
+          return;
+        }
+
+        audio.src = url;
+
+        audio.onloadedmetadata = () => {
+          setDuration(audio.duration);
+        };
+
+        await audio.play();
         setIsPlaying(true);
+        setAudioLoading(false);
         startProgressTracking();
-      }).catch(() => {
-        // Try alternative CDN if first fails
-        const altUrl = `/api/quran?path=recitations/${reciterId}/by_ayah/${surahId}:${verseNumber}`;
-        fetch(altUrl)
-          .then((r) => r.json())
-          .then((data) => {
-            if (data.audio_files?.[0]?.url) {
-              audio.src = data.audio_files[0].url;
-              audio.play().then(() => {
-                setIsPlaying(true);
-                startProgressTracking();
-              }).catch(() => {});
-            }
-          })
-          .catch(() => {});
-      });
+      } catch {
+        setAudioLoading(false);
+      }
     },
-    [getAudioUrl, startProgressTracking, reciterId, surahId]
+    [fetchAudioUrls, startProgressTracking, reciterId]
   );
 
   // Handle verse end — auto-advance in full surah mode
@@ -266,16 +278,44 @@ export function useQuranAudio({ surahId, totalVerses, verses }: UseQuranAudioOpt
       } catch {}
 
       // If currently playing, restart with new reciter
-      const audio = audioRef.current;
-      if (audio && currentVerseNumber !== null && isPlaying) {
-        audio.pause();
-        // Will re-trigger with new reciterId on next render
-        setTimeout(() => {
-          if (currentVerseNumber) playVerseInternal(currentVerseNumber);
-        }, 100);
+      if (currentVerseNumber !== null && isPlaying) {
+        const audio = audioRef.current;
+        if (audio) audio.pause();
+        // Need to use the new ID directly since state hasn't updated yet
+        const fetchAndPlay = async () => {
+          const cacheKey = `${id}-${surahId}`;
+          let urlMap = audioUrlCache.get(cacheKey);
+          if (!urlMap) {
+            try {
+              const res = await fetch(`/api/quran?path=recitations/${id}/by_chapter/${surahId}`);
+              const data = await res.json();
+              urlMap = new Map<number, string>();
+              if (data.audio_files) {
+                for (const file of data.audio_files) {
+                  const verseNum = parseInt(file.verse_key.split(":")[1], 10);
+                  const fullUrl = file.url.startsWith("http") ? file.url : `${AUDIO_CDN_BASE}${file.url}`;
+                  urlMap.set(verseNum, fullUrl);
+                }
+              }
+              audioUrlCache.set(cacheKey, urlMap);
+            } catch {
+              return;
+            }
+          }
+          const url = urlMap.get(currentVerseNumber!);
+          if (url && audio) {
+            audio.src = url;
+            try {
+              await audio.play();
+              setIsPlaying(true);
+              startProgressTracking();
+            } catch {}
+          }
+        };
+        fetchAndPlay();
       }
     },
-    [currentVerseNumber, isPlaying, playVerseInternal]
+    [currentVerseNumber, isPlaying, surahId, startProgressTracking]
   );
 
   const nextVerse = useCallback(() => {
@@ -307,5 +347,6 @@ export function useQuranAudio({ surahId, totalVerses, verses }: UseQuranAudioOpt
     nextVerse,
     prevVerse,
     isFullSurahMode,
+    audioLoading,
   };
 }

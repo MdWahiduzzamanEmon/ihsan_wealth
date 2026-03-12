@@ -113,6 +113,13 @@ export function CalculatorWizard() {
   };
 
   const handleReset = () => {
+    setFormData({ ...DEFAULT_FORM_DATA, country: formData.country, currency: formData.currency });
+    setShowResults(false);
+    setCurrentStep(0);
+    scrollToTop();
+  };
+
+  const handleRecalculate = () => {
     setShowResults(false);
     setCurrentStep(0);
     scrollToTop();
@@ -140,6 +147,7 @@ export function CalculatorWizard() {
       nisabBasis={formData.nisabBasis}
       countryCode={formData.country}
       onReset={handleReset}
+      onRecalculate={handleRecalculate}
       formData={formData}
       prices={prices}
     />

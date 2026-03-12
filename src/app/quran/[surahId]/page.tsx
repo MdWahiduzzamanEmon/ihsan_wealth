@@ -3,12 +3,12 @@
 import { use, useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowLeft, BookOpenText, Loader2 } from "lucide-react";
+import { ArrowLeft, BookOpenText, Loader2, Play, Mic2 } from "lucide-react";
 import { useChapters, useVerses, getChapterFromCache } from "@/hooks/use-quran";
 import { useQuranAudio } from "@/hooks/use-quran-audio";
 import { VerseDisplay } from "@/components/quran/verse-display";
 import { SurahAudioPlayer } from "@/components/quran/surah-audio-player";
-import { QURAN_TEXTS } from "@/lib/quran-config";
+import { QURAN_TEXTS, RECITERS } from "@/lib/quran-config";
 import { getLangFromCountry, type TransLang } from "@/lib/islamic-content";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
@@ -43,7 +43,6 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
   const audio = useQuranAudio({
     surahId: surahNum,
     totalVerses: chapter?.verses_count || 0,
-    verses,
   });
 
   // Auto-scroll to currently playing verse
@@ -103,6 +102,29 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
                     {chapter.revelation_place === "makkah" ? t.meccan : t.medinan}
                   </span>
                   <span>{chapter.verses_count} {t.verses}</span>
+                </div>
+
+                {/* Play Surah + Reciter — inline buttons */}
+                <div className="flex items-center justify-center gap-2 mt-4">
+                  <button
+                    onClick={() => audio.playFullSurah(audio.currentVerseNumber || 1)}
+                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 px-5 py-2.5 text-white text-sm font-semibold shadow-lg shadow-emerald-900/20 hover:from-emerald-700 hover:to-emerald-800 transition-all active:scale-95"
+                  >
+                    <Play className="h-4 w-4 fill-current" />
+                    {t.playFullSurah}
+                  </button>
+                  <button
+                    onClick={() => {
+                      const idx = RECITERS.findIndex((r) => r.id === audio.reciterId);
+                      const next = RECITERS[(idx + 1) % RECITERS.length];
+                      audio.setReciter(next.id);
+                    }}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white px-3 py-2 text-xs font-medium text-emerald-700 hover:bg-emerald-50 transition-colors"
+                    title={t.selectReciter}
+                  >
+                    <Mic2 className="h-3.5 w-3.5" />
+                    {RECITERS.find((r) => r.id === audio.reciterId)?.name?.split(" ")[0] || "Alafasy"}
+                  </button>
                 </div>
               </>
             ) : (
@@ -213,6 +235,7 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
           currentTime={audio.currentTime}
           reciterId={audio.reciterId}
           isFullSurahMode={audio.isFullSurahMode}
+          audioLoading={audio.audioLoading}
           onPlayFullSurah={() => audio.playFullSurah(audio.currentVerseNumber || 1)}
           onPause={audio.pause}
           onResume={audio.resume}
