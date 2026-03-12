@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     template: "%s | IhsanWealth",
   },
   description:
-    "Your complete Islamic companion — Zakat calculator with live gold & silver prices, Holy Quran with Tafhimul Quran tafsir, accurate prayer times, Qibla finder, 30+ duas, Hijri calendar, Sadaqah tracker and more. Free, no login required.",
+    "Your complete Islamic companion — Zakat calculator with live gold & silver prices, Holy Quran with Tafhimul Quran tafsir, accurate prayer times, Qibla finder, 30+ duas, Hijri calendar, Sadaqah tracker and more. Completely free.",
   keywords: [
     "Zakat calculator",
     "Islamic finance",

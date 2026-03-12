@@ -51,6 +51,8 @@ export const QURAN_TEXTS: Record<TransLang, {
   playFullSurah: string;
   nowPlaying: string;
   verse: string;
+  readFullTafsir: string;
+  showLess: string;
 }> = {
   en: {
     pageTitle: "The Holy Quran",
@@ -80,6 +82,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     playFullSurah: "Play Surah",
     nowPlaying: "Now Playing",
     verse: "Verse",
+    readFullTafsir: "Read full tafsir",
+    showLess: "Show less",
   },
   bn: {
     pageTitle: "পবিত্র কুরআন",
@@ -109,6 +113,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     playFullSurah: "সূরা চালান",
     nowPlaying: "চলছে",
     verse: "আয়াত",
+    readFullTafsir: "সম্পূর্ণ তাফসীর পড়ুন",
+    showLess: "সংক্ষেপে দেখুন",
   },
   ur: {
     pageTitle: "قرآن مجید",
@@ -138,6 +144,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     playFullSurah: "سورت چلائیں",
     nowPlaying: "چل رہا ہے",
     verse: "آیت",
+    readFullTafsir: "مکمل تفسیر پڑھیں",
+    showLess: "کم دکھائیں",
   },
   ar: {
     pageTitle: "القرآن الكريم",
@@ -167,6 +175,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     playFullSurah: "تشغيل السورة",
     nowPlaying: "قيد التشغيل",
     verse: "آية",
+    readFullTafsir: "اقرأ التفسير كاملاً",
+    showLess: "عرض أقل",
   },
   tr: {
     pageTitle: "Kuran-i Kerim",
@@ -196,6 +206,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     playFullSurah: "Sureyi Oynat",
     nowPlaying: "Su an caliniyor",
     verse: "Ayet",
+    readFullTafsir: "Tefsirin tamamini oku",
+    showLess: "Daha az goster",
   },
   ms: {
     pageTitle: "Al-Quran Al-Karim",
@@ -225,6 +237,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     playFullSurah: "Main Surah",
     nowPlaying: "Sedang dimainkan",
     verse: "Ayat",
+    readFullTafsir: "Baca tafsir penuh",
+    showLess: "Tunjukkan kurang",
   },
   id: {
     pageTitle: "Al-Quran Al-Karim",
@@ -254,6 +268,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     playFullSurah: "Putar Surah",
     nowPlaying: "Sedang diputar",
     verse: "Ayat",
+    readFullTafsir: "Baca tafsir lengkap",
+    showLess: "Tampilkan lebih sedikit",
   },
 };
 

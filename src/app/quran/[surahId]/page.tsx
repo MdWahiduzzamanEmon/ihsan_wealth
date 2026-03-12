@@ -54,6 +54,31 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
     else verseRefs.current.delete(verseNumber);
   }, []);
 
+  // Auto-load next page when audio plays beyond loaded verses
+  const autoLoadTriggered = useRef(false);
+  useEffect(() => {
+    if (!audio.currentVerseNumber || !audio.isPlaying || !hasMore || loadingMore) return;
+    const lastLoadedVerse = verses.length > 0 ? verses[verses.length - 1].verse_number : 0;
+    // When audio is within 2 verses of the end of loaded verses, pre-load next page
+    if (audio.currentVerseNumber >= lastLoadedVerse - 1 && !autoLoadTriggered.current) {
+      autoLoadTriggered.current = true;
+      loadMore();
+    }
+  }, [audio.currentVerseNumber, audio.isPlaying, verses, hasMore, loadingMore, loadMore]);
+
+  // Reset auto-load trigger when new verses arrive
+  useEffect(() => {
+    autoLoadTriggered.current = false;
+  }, [verses.length]);
+
+  // Track the last played verse so "Play Full Surah" can resume
+  const lastPlayedVerse = useRef<number>(1);
+  useEffect(() => {
+    if (audio.currentVerseNumber) {
+      lastPlayedVerse.current = audio.currentVerseNumber;
+    }
+  }, [audio.currentVerseNumber]);
+
   useEffect(() => {
     if (audio.currentVerseNumber && audio.isPlaying) {
       const el = verseRefs.current.get(audio.currentVerseNumber);
@@ -71,74 +96,68 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
       <Header countryCode={formData.country} />
 
       <main className="flex-1">
-        <div className="mx-auto max-w-3xl px-4 py-8 pb-32">
+        <div className="mx-auto max-w-3xl px-4 py-6 pb-32">
           {/* Back link */}
           <Link
             href="/quran"
-            className="inline-flex items-center gap-1.5 text-sm text-emerald-600 hover:text-emerald-800 transition-colors mb-6"
+            className="inline-flex items-center gap-1.5 text-sm text-emerald-600 hover:text-emerald-800 transition-colors mb-4"
           >
             <ArrowLeft className="h-4 w-4" />
             {t.backToList}
           </Link>
 
-          {/* Surah header — shows instantly from cache */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-lg shadow-emerald-200 mb-4">
-              <BookOpenText className="h-7 w-7 text-white" />
-            </div>
-
-            {chapter ? (
-              <>
-                <h1 className="text-2xl font-bold text-emerald-900 mb-1">
-                  {chapter.name_simple}
-                </h1>
-                <p className="font-arabic text-2xl text-amber-600/80 mb-2" dir="rtl">
-                  {chapter.name_arabic}
-                </p>
-                <div className="flex items-center justify-center gap-3 text-xs text-gray-400">
-                  <span className={`inline-flex items-center rounded-full px-2 py-0.5 font-medium ${
-                    chapter.revelation_place === "makkah"
-                      ? "bg-amber-50 text-amber-600"
-                      : "bg-emerald-50 text-emerald-600"
-                  }`}>
-                    {chapter.revelation_place === "makkah" ? t.meccan : t.medinan}
-                  </span>
-                  <span>{chapter.verses_count} {t.verses}</span>
-                </div>
-
-                {/* Play Surah + Reciter — inline buttons */}
-                <div className="flex items-center justify-center gap-2 mt-4">
-                  <button
-                    onClick={() => audio.playFullSurah(audio.currentVerseNumber || 1)}
-                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 px-5 py-2.5 text-white text-sm font-semibold shadow-lg shadow-emerald-900/20 hover:from-emerald-700 hover:to-emerald-800 transition-all active:scale-95"
-                  >
-                    <Play className="h-4 w-4 fill-current" />
-                    {t.playFullSurah}
-                  </button>
-                  <button
-                    onClick={() => {
-                      const idx = RECITERS.findIndex((r) => r.id === audio.reciterId);
-                      const next = RECITERS[(idx + 1) % RECITERS.length];
-                      audio.setReciter(next.id);
-                    }}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white px-3 py-2 text-xs font-medium text-emerald-700 hover:bg-emerald-50 transition-colors"
-                    title={t.selectReciter}
-                  >
-                    <Mic2 className="h-3.5 w-3.5" />
-                    {RECITERS.find((r) => r.id === audio.reciterId)?.name?.split(" ")[0] || "Alafasy"}
-                  </button>
-                </div>
-              </>
-            ) : (
-              <h1 className="text-2xl font-bold text-emerald-900">
-                Surah {surahNum}
+          {/* Surah header */}
+          {chapter ? (
+            <div className="text-center mb-6">
+              <h1 className="text-xl font-bold text-emerald-900 mb-1">
+                {chapter.name_simple}
               </h1>
-            )}
-          </div>
+              <p className="font-arabic text-2xl text-amber-600/80 mb-2" dir="rtl">
+                {chapter.name_arabic}
+              </p>
+              <div className="flex items-center justify-center gap-3 text-xs text-gray-400">
+                <span className={`inline-flex items-center rounded-full px-2 py-0.5 font-medium ${
+                  chapter.revelation_place === "makkah"
+                    ? "bg-amber-50 text-amber-600"
+                    : "bg-emerald-50 text-emerald-600"
+                }`}>
+                  {chapter.revelation_place === "makkah" ? t.meccan : t.medinan}
+                </span>
+                <span>{chapter.verses_count} {t.verses}</span>
+              </div>
 
-          {/* Bismillah — show immediately if chapter is known */}
+              {/* Play Surah + Reciter */}
+              <div className="flex items-center justify-center gap-2 mt-4">
+                <button
+                  onClick={() => audio.playFullSurah(audio.currentVerseNumber || lastPlayedVerse.current)}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 px-4 py-2 text-white text-sm font-semibold shadow-sm hover:from-emerald-700 hover:to-emerald-800 transition-all active:scale-95"
+                >
+                  <Play className="h-3.5 w-3.5 fill-current" />
+                  {t.playFullSurah}
+                </button>
+                <button
+                  onClick={() => {
+                    const idx = RECITERS.findIndex((r) => r.id === audio.reciterId);
+                    const next = RECITERS[(idx + 1) % RECITERS.length];
+                    audio.setReciter(next.id);
+                  }}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white px-3 py-2 text-xs font-medium text-emerald-700 hover:bg-emerald-50 transition-colors"
+                  title={t.selectReciter}
+                >
+                  <Mic2 className="h-3.5 w-3.5" />
+                  {RECITERS.find((r) => r.id === audio.reciterId)?.name?.split(" ")[0] || "Alafasy"}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <h1 className="text-xl font-bold text-emerald-900 text-center mb-6">
+              Surah {surahNum}
+            </h1>
+          )}
+
+          {/* Bismillah */}
           {showBismillah && (
-            <div className="text-center mb-8 py-4 rounded-xl bg-emerald-50/50 border border-emerald-100">
+            <div className="text-center mb-6 py-3 rounded-xl bg-emerald-50/50 border border-emerald-100">
               <p className="font-arabic text-2xl text-emerald-800" dir="rtl">
                 {t.bismillah}
               </p>
@@ -174,7 +193,7 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
           {/* Verses */}
           {!loading && verses.length > 0 && (
             <motion.div
-              className="space-y-4"
+              className="space-y-3"
               variants={staggerContainer}
               initial="initial"
               animate="animate"
@@ -238,7 +257,7 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
           reciterId={audio.reciterId}
           isFullSurahMode={audio.isFullSurahMode}
           audioLoading={audio.audioLoading}
-          onPlayFullSurah={() => audio.playFullSurah(audio.currentVerseNumber || 1)}
+          onPlayFullSurah={() => audio.playFullSurah(audio.currentVerseNumber || lastPlayedVerse.current)}
           onPause={audio.pause}
           onResume={audio.resume}
           onStop={audio.stop}

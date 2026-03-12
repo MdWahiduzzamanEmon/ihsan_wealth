@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, BookOpen, Loader2, Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { ChevronDown, ChevronUp, BookOpen, Loader2, Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { staggerItem } from "@/lib/animations";
 import type { Verse, QURAN_TEXTS } from "@/lib/quran-config";
 import { HAS_MAUDUDI_FOOTNOTES, TAFSIR_IDS } from "@/lib/quran-config";
@@ -26,27 +26,65 @@ function stripHtml(text: string): string {
 }
 
 function formatPlainText(text: string): string {
+  // If already has HTML structure, enhance it
   if (text.includes("<p>") || text.includes("<div>")) {
-    return text;
+    // Ensure existing HTML paragraphs are properly spaced
+    return text
+      .replace(/<br\s*\/?>\s*<br\s*\/?>/g, "</p><p>")  // double <br> → paragraph break
+      .replace(/(<\/p>)\s*(<p>)/g, "$1\n$2");           // clean up
   }
 
   const cleaned = text.trim();
   if (!cleaned) return "";
 
-  const sentences = cleaned.split(/(?<=[.!?।])\s+/);
+  // Split on double newlines first (explicit paragraph breaks)
+  const rawParagraphs = cleaned.split(/\n\s*\n/);
+  if (rawParagraphs.length > 1) {
+    return rawParagraphs
+      .map((p) => p.trim())
+      .filter(Boolean)
+      .map((p) => `<p>${p.replace(/\n/g, " ")}</p>`)
+      .join("");
+  }
 
+  // Split on single newlines
+  const lines = cleaned.split(/\n/).map((l) => l.trim()).filter(Boolean);
+  if (lines.length > 1) {
+    return lines.map((l) => `<p>${l}</p>`).join("");
+  }
+
+  // For long continuous text: split into readable paragraphs
+  // Use sentence boundaries, grouping ~3-4 sentences per paragraph
+  const sentences = cleaned.split(/(?<=[.!?।])\s+/);
   if (sentences.length <= 3) {
     return `<p>${cleaned}</p>`;
   }
 
+  // Try to create natural paragraph breaks at topic shifts
+  // (after sentences ending with certain patterns, or just every 3-4 sentences)
   const paragraphs: string[] = [];
-  for (let i = 0; i < sentences.length; i += 3) {
-    const group = sentences.slice(i, i + 3).join(" ");
-    paragraphs.push(group);
+  let current: string[] = [];
+
+  for (let i = 0; i < sentences.length; i++) {
+    current.push(sentences[i]);
+    const isNaturalBreak =
+      current.length >= 3 && (
+        current.length >= 4 ||
+        sentences[i].endsWith(":") ||
+        (i + 1 < sentences.length && /^(However|Moreover|Furthermore|Therefore|Thus|Hence|In fact|On the other hand|Meanwhile|Subsequently|Finally|Consequently|In addition|Nevertheless|তবে|অতএব|এছাড়া|কিন্তু|অর্থাৎ|فلذلك|لذا|ومع|لكن)/i.test(sentences[i + 1]))
+      );
+
+    if (isNaturalBreak || i === sentences.length - 1) {
+      paragraphs.push(current.join(" "));
+      current = [];
+    }
   }
 
   return paragraphs.map((p) => `<p>${p}</p>`).join("");
 }
+
+/** Threshold (in chars) above which tafsir content is initially collapsed */
+const TAFSIR_COLLAPSE_THRESHOLD = 600;
 
 const LANG_TO_TTS: Record<string, string> = {
   en: "en", bn: "bn", ur: "ur", ar: "ar", tr: "tr", ms: "ms", id: "id",
@@ -208,13 +246,17 @@ export function VerseDisplay({ verse, lang, t, isCurrentlyPlaying, onPlayVerse }
     }
   }, [tafsirPlaying, tafsirTexts, playChunk, stopTafsirAudio]);
 
+  const [tafsirExpanded, setTafsirExpanded] = useState(false);
+  const totalTafsirLength = tafsirTexts.reduce((sum, t2) => sum + stripHtml(t2).length, 0);
+  const isLongTafsir = totalTafsirLength > TAFSIR_COLLAPSE_THRESHOLD;
+
   return (
     <motion.div
       variants={staggerItem}
-      className={`rounded-xl border p-5 shadow-sm transition-all duration-300 ${
+      className={`rounded-xl border p-4 sm:p-5 shadow-sm transition-all duration-300 ${
         isCurrentlyPlaying
           ? "border-emerald-400 bg-emerald-50/50 ring-2 ring-emerald-400/20 border-l-4 border-l-emerald-500"
-          : "border-emerald-100 bg-white"
+          : "border-emerald-100 bg-white hover:shadow-md"
       }`}
     >
       {/* Verse number badge + key + audio */}
@@ -244,9 +286,9 @@ export function VerseDisplay({ verse, lang, t, isCurrentlyPlaying, onPlayVerse }
       </div>
 
       {/* Arabic text */}
-      <div className="mb-4">
+      <div className="mb-4 rounded-lg bg-emerald-50/40 px-4 py-3">
         <p
-          className="font-arabic text-2xl leading-[2.2] text-emerald-950"
+          className="font-arabic text-xl sm:text-2xl leading-[2.2] text-emerald-950 text-center"
           dir="rtl"
           lang="ar"
         >
@@ -256,7 +298,7 @@ export function VerseDisplay({ verse, lang, t, isCurrentlyPlaying, onPlayVerse }
 
       {/* Translation */}
       {cleanTranslation && (
-        <div className="pt-4 border-t border-emerald-50">
+        <div className="pt-3 border-t border-emerald-100/60">
           <p className="text-sm text-gray-600 leading-relaxed">
             {cleanTranslation}
           </p>
@@ -286,9 +328,9 @@ export function VerseDisplay({ verse, lang, t, isCurrentlyPlaying, onPlayVerse }
                 transition={{ duration: 0.3, ease: "easeInOut" }}
                 className="overflow-hidden"
               >
-                <div className="mt-3 rounded-xl bg-gradient-to-b from-amber-50/60 to-emerald-50/40 border border-amber-200/40 p-5">
+                <div className="mt-3 rounded-xl bg-gradient-to-b from-[#faf7f0] via-[#faf8f2] to-[#f5f3ec] border border-amber-200/50 shadow-inner overflow-hidden">
                   {/* Tafsir header with listen button */}
-                  <div className="flex items-center gap-2 mb-4 pb-3 border-b border-amber-200/30">
+                  <div className="flex items-center gap-2 px-4 sm:px-5 py-3 border-b border-amber-200/30 bg-amber-50/40">
                     <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-100">
                       <BookOpen className="h-3.5 w-3.5 text-amber-700" />
                     </div>
@@ -323,36 +365,70 @@ export function VerseDisplay({ verse, lang, t, isCurrentlyPlaying, onPlayVerse }
                     )}
                   </div>
 
-                  {tafsirLoading ? (
-                    <div className="flex items-center justify-center gap-2 text-sm text-amber-600 py-6">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      {t.loading}
-                    </div>
-                  ) : (
-                    <div className="space-y-5">
-                      {tafsirTexts.map((text, i) => (
-                        <div key={i}>
-                          {/* Numbered footnote badge */}
-                          {footnoteIds.length > 1 && (
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="inline-flex items-center justify-center h-5 w-5 rounded-full bg-amber-200/80 text-amber-800 text-[10px] font-bold">
-                                {i + 1}
-                              </span>
-                              <div className="h-px flex-1 bg-amber-200/40" />
-                            </div>
-                          )}
+                  {/* Tafsir body */}
+                  <div className="px-4 sm:px-5 py-4">
+                    {tafsirLoading ? (
+                      <div className="flex items-center justify-center gap-2 text-sm text-amber-600 py-6">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        {t.loading}
+                      </div>
+                    ) : (
+                      <>
+                        <div
+                          className={`space-y-4 transition-all duration-300 ${
+                            isLongTafsir && !tafsirExpanded ? "max-h-[280px] overflow-hidden relative" : ""
+                          }`}
+                        >
+                          {tafsirTexts.map((text, i) => (
+                            <div key={i}>
+                              {/* Numbered footnote badge */}
+                              {footnoteIds.length > 1 && (
+                                <div className="flex items-center gap-2 mb-3">
+                                  <span className="inline-flex items-center justify-center h-5 w-5 rounded-full bg-amber-200/80 text-amber-800 text-[10px] font-bold shrink-0">
+                                    {i + 1}
+                                  </span>
+                                  <div className="h-px flex-1 bg-amber-200/40" />
+                                </div>
+                              )}
 
-                          {/* Tafsir content */}
-                          <div
-                            className="tafsir-content text-[13px] text-gray-700 leading-[1.85] [&_p]:mb-3 [&_p:last-child]:mb-0 [&_h1]:text-sm [&_h1]:font-bold [&_h1]:text-emerald-800 [&_h1]:mb-2 [&_h2]:text-[13px] [&_h2]:font-semibold [&_h2]:text-emerald-700 [&_h2]:mb-2"
-                            dangerouslySetInnerHTML={{
-                              __html: formatPlainText(text),
-                            }}
-                          />
+                              {/* Tafsir content — book-like typography */}
+                              <div
+                                className="tafsir-content font-serif text-[13.5px] sm:text-[14.5px] text-gray-800 leading-[2] sm:leading-[2.1] tracking-[0.01em] [&_p]:mb-4 [&_p]:text-justify [&_p:last-child]:mb-0 [&_p:first-child]:first-letter:text-xl [&_p:first-child]:first-letter:font-bold [&_p:first-child]:first-letter:text-amber-700 [&_p:first-child]:first-letter:float-left [&_p:first-child]:first-letter:mr-1 [&_p:first-child]:first-letter:leading-none [&_h1]:text-base [&_h1]:font-bold [&_h1]:text-emerald-800 [&_h1]:mb-3 [&_h1]:mt-5 [&_h1]:pb-1.5 [&_h1]:border-b [&_h1]:border-amber-200/40 [&_h2]:text-sm [&_h2]:font-semibold [&_h2]:text-emerald-700 [&_h2]:mb-2 [&_h2]:mt-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:space-y-2 [&_ol]:my-3 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-2 [&_ul]:my-3 [&_li]:text-[13px] [&_li]:leading-relaxed [&_blockquote]:border-l-3 [&_blockquote]:border-amber-300/60 [&_blockquote]:pl-4 [&_blockquote]:py-1 [&_blockquote]:italic [&_blockquote]:text-amber-800/80 [&_blockquote]:my-3 [&_strong]:text-gray-900 [&_em]:text-amber-800/90"
+                                dangerouslySetInnerHTML={{
+                                  __html: formatPlainText(text),
+                                }}
+                              />
+                            </div>
+                          ))}
+
+                          {/* Fade gradient overlay when collapsed */}
+                          {isLongTafsir && !tafsirExpanded && (
+                            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-amber-50/95 via-amber-50/70 to-transparent pointer-events-none" />
+                          )}
                         </div>
-                      ))}
-                    </div>
-                  )}
+
+                        {/* Show more/less toggle */}
+                        {isLongTafsir && (
+                          <button
+                            onClick={() => setTafsirExpanded(!tafsirExpanded)}
+                            className="mt-3 w-full flex items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-medium text-amber-700 bg-amber-100/60 hover:bg-amber-100 border border-amber-200/40 transition-colors"
+                          >
+                            {tafsirExpanded ? (
+                              <>
+                                <ChevronUp className="h-3.5 w-3.5" />
+                                {t.showLess}
+                              </>
+                            ) : (
+                              <>
+                                <ChevronDown className="h-3.5 w-3.5" />
+                                {t.readFullTafsir}
+                              </>
+                            )}
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
               </motion.div>
             )}

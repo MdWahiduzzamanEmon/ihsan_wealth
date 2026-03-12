@@ -1417,13 +1417,13 @@ export const GUIDE_SECTIONS: GuideSection[] = [
       source: "Sahih al-Bukhari 5027",
     },
     description: {
-      en: "Start each day with authentic prophetic wisdom. Our curated collection of 15 hadiths from Sahih Bukhari, Sahih Muslim, and other authentic collections rotates daily. Browse all hadiths, save your favorites, share with others, and read the Arabic text alongside translations in your language. No login required — favorites sync when you sign in.",
-      bn: "প্রতিদিন প্রামাণিক নবী প্রজ্ঞা দিয়ে শুরু করুন। সহীহ বুখারী, সহীহ মুসলিম এবং অন্যান্য প্রামাণিক সংকলন থেকে আমাদের সংগৃহীত ১৫টি হাদিস প্রতিদিন পরিবর্তন হয়। সব হাদিস ব্রাউজ করুন, পছন্দের সংরক্ষণ করুন, অন্যদের সাথে শেয়ার করুন এবং আপনার ভাষায় অনুবাদের পাশাপাশি আরবী পাঠ পড়ুন। লগইন প্রয়োজন নেই — সাইন ইন করলে পছন্দ সিঙ্ক হয়।",
-      ur: "ہر دن مستند نبوی حکمت سے شروع کریں۔ صحیح بخاری، صحیح مسلم اور دیگر مستند مجموعوں سے ہماری منتخب ۱۵ احادیث روزانہ بدلتی ہیں۔ تمام احادیث براؤز کریں، پسندیدہ محفوظ کریں، دوسروں کے ساتھ شیئر کریں اور اپنی زبان میں ترجمے کے ساتھ عربی متن پڑھیں۔ لاگ ان ضروری نہیں — سائن ان کرنے پر پسندیدہ سنک ہو جاتے ہیں۔",
-      ar: "ابدأ كل يوم بحكمة نبوية أصيلة. مجموعتنا المختارة من ١٥ حديثاً من صحيح البخاري وصحيح مسلم ومجموعات أخرى موثوقة تتغير يومياً. تصفح جميع الأحاديث، احفظ المفضلة، شاركها مع الآخرين، واقرأ النص العربي مع الترجمة بلغتك. لا يلزم تسجيل الدخول — تتزامن المفضلة عند تسجيل الدخول.",
-      tr: "Her gune otantik peygamber hikmetiyle baslayin. Sahih Buhari, Sahih Muslim ve diger guvenir koleksiyonlardan secilmis 15 hadisimiz her gun degisir. Tum hadislere gozatin, favorilerinizi kaydedin, baskalariya paylasin ve dilinizde tercumesiyle birlikte Arapca metni okuyun. Giris gerekmez — giris yaptiginizda favoriler senkronize olur.",
-      ms: "Mulakan setiap hari dengan hikmah nabawi yang sahih. Koleksi 15 hadis pilihan kami dari Sahih Bukhari, Sahih Muslim dan koleksi sahih lain bertukar setiap hari. Layari semua hadis, simpan kegemaran, kongsi dengan orang lain, dan baca teks Arab bersama terjemahan dalam bahasa anda. Tidak perlu log masuk — kegemaran disegerakkan apabila anda log masuk.",
-      id: "Mulai setiap hari dengan hikmah Nabi yang autentik. Koleksi 15 hadis pilihan kami dari Sahih Bukhari, Sahih Muslim dan koleksi sahih lainnya bergilir setiap hari. Jelajahi semua hadis, simpan favorit, bagikan ke orang lain, dan baca teks Arab bersama terjemahan dalam bahasa Anda. Tidak perlu masuk — favorit disinkronkan saat Anda masuk.",
+      en: "Start each day with authentic prophetic wisdom. Our curated collection of 15 hadiths from Sahih Bukhari, Sahih Muslim, and other authentic collections rotates daily. Browse all hadiths, save your favorites, share with others, and read the Arabic text alongside translations in your language. Sign in to save favorites and sync across devices.",
+      bn: "প্রতিদিন প্রামাণিক নবী প্রজ্ঞা দিয়ে শুরু করুন। সহীহ বুখারী, সহীহ মুসলিম এবং অন্যান্য প্রামাণিক সংকলন থেকে আমাদের সংগৃহীত ১৫টি হাদিস প্রতিদিন পরিবর্তন হয়। সব হাদিস ব্রাউজ করুন, পছন্দের সংরক্ষণ করুন, অন্যদের সাথে শেয়ার করুন এবং আপনার ভাষায় অনুবাদের পাশাপাশি আরবী পাঠ পড়ুন। পছন্দ সংরক্ষণ ও ডিভাইস জুড়ে সিঙ্ক করতে সাইন ইন করুন।",
+      ur: "ہر دن مستند نبوی حکمت سے شروع کریں۔ صحیح بخاری، صحیح مسلم اور دیگر مستند مجموعوں سے ہماری منتخب ۱۵ احادیث روزانہ بدلتی ہیں۔ تمام احادیث براؤز کریں، پسندیدہ محفوظ کریں، دوسروں کے ساتھ شیئر کریں اور اپنی زبان میں ترجمے کے ساتھ عربی متن پڑھیں۔ پسندیدہ محفوظ اور سنک کرنے کے لیے سائن ان کریں۔",
+      ar: "ابدأ كل يوم بحكمة نبوية أصيلة. مجموعتنا المختارة من ١٥ حديثاً من صحيح البخاري وصحيح مسلم ومجموعات أخرى موثوقة تتغير يومياً. تصفح جميع الأحاديث، احفظ المفضلة، شاركها مع الآخرين، واقرأ النص العربي مع الترجمة بلغتك. سجل الدخول لحفظ المفضلة ومزامنتها عبر الأجهزة.",
+      tr: "Her gune otantik peygamber hikmetiyle baslayin. Sahih Buhari, Sahih Muslim ve diger guvenir koleksiyonlardan secilmis 15 hadisimiz her gun degisir. Tum hadislere gozatin, favorilerinizi kaydedin, baskalariya paylasin ve dilinizde tercumesiyle birlikte Arapca metni okuyun. Favorileri kaydetmek ve cihazlar arasi senkronize etmek icin giris yapin.",
+      ms: "Mulakan setiap hari dengan hikmah nabawi yang sahih. Koleksi 15 hadis pilihan kami dari Sahih Bukhari, Sahih Muslim dan koleksi sahih lain bertukar setiap hari. Layari semua hadis, simpan kegemaran, kongsi dengan orang lain, dan baca teks Arab bersama terjemahan dalam bahasa anda. Log masuk untuk menyimpan kegemaran dan segerakkan merentas peranti.",
+      id: "Mulai setiap hari dengan hikmah Nabi yang autentik. Koleksi 15 hadis pilihan kami dari Sahih Bukhari, Sahih Muslim dan koleksi sahih lainnya bergilir setiap hari. Jelajahi semua hadis, simpan favorit, bagikan ke orang lain, dan baca teks Arab bersama terjemahan dalam bahasa Anda. Masuk untuk menyimpan favorit dan menyinkronkan antar perangkat.",
     },
     steps: {
       en: [
@@ -1486,13 +1486,13 @@ export const GUIDE_SECTIONS: GuideSection[] = [
     tips: {
       en: [
         "A new hadith is highlighted every day — check back daily for fresh inspiration",
-        "No login required to browse and read hadiths",
+        "Browse and read hadiths freely — sign in to save favorites",
         "Favorites are saved locally and sync to the cloud when you sign in",
         "Share hadiths directly via WhatsApp, Telegram, or any messaging app",
       ],
       bn: [
         "প্রতিদিন একটি নতুন হাদিস হাইলাইট হয় — নতুন অনুপ্রেরণার জন্য প্রতিদিন দেখুন",
-        "হাদিস ব্রাউজ ও পড়তে লগইন প্রয়োজন নেই",
+        "হাদিস স্বাধীনভাবে ব্রাউজ ও পড়ুন — পছন্দ সংরক্ষণে সাইন ইন করুন",
         "পছন্দগুলি স্থানীয়ভাবে সংরক্ষিত হয় এবং সাইন ইন করলে ক্লাউডে সিঙ্ক হয়",
         "হোয়াটসঅ্যাপ, টেলিগ্রাম বা যেকোনো মেসেজিং অ্যাপের মাধ্যমে সরাসরি হাদিস শেয়ার করুন",
       ],

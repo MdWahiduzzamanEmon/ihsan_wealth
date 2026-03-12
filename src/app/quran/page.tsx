@@ -41,21 +41,21 @@ export default function QuranPage() {
       <Header countryCode={formData.country} />
 
       <main className="flex-1">
-        <div className="mx-auto max-w-5xl px-4 py-8">
+        <div className="mx-auto max-w-5xl px-4 py-6">
           {/* Hero */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-lg shadow-emerald-200 mb-4">
-              <BookOpenText className="h-7 w-7 text-white" />
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-lg shadow-emerald-200 mb-3">
+              <BookOpenText className="h-6 w-6 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-emerald-900 mb-1">{t.pageTitle}</h1>
-            <p className="font-arabic text-xl text-amber-600/70 mb-2" dir="rtl">
+            <h1 className="text-2xl font-bold text-emerald-900 mb-1">{t.pageTitle}</h1>
+            <p className="font-arabic text-lg text-amber-600/70 mb-1.5" dir="rtl">
               القرآن الكريم
             </p>
             <p className="text-sm text-gray-500 max-w-lg mx-auto">{t.subtitle}</p>
           </div>
 
           {/* Search */}
-          <div className="relative max-w-md mx-auto mb-8">
+          <div className="relative max-w-md mx-auto mb-6">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               type="text"
@@ -68,20 +68,20 @@ export default function QuranPage() {
 
           {/* Loading skeleton */}
           {loading && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {Array.from({ length: 8 }).map((_, i) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {Array.from({ length: 12 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-28 rounded-xl bg-emerald-50/50 animate-pulse"
+                  className="h-20 rounded-lg bg-emerald-50/50 animate-pulse"
                 />
               ))}
             </div>
           )}
 
-          {/* Surah grid */}
+          {/* Surah grid — 3 columns on desktop for density */}
           {!loading && filteredChapters.length > 0 && (
             <motion.div
-              className="grid grid-cols-1 md:grid-cols-2 gap-4"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
               variants={staggerContainer}
               initial="initial"
               animate="animate"
