@@ -138,6 +138,10 @@ export const TASBIH_TEXTS: Record<TransLang, {
   loading: string;
   loadingRecords: string;
   back: string;
+  deleteTitle: string;
+  deleteDescription: string;
+  deleteConfirm: string;
+  deleteCancel: string;
 }> = {
   en: {
     title: "Tasbih Counter",
@@ -162,6 +166,10 @@ export const TASBIH_TEXTS: Record<TransLang, {
     loading: "Loading...",
     loadingRecords: "Loading your tasbih records...",
     back: "Back",
+    deleteTitle: "Delete Session",
+    deleteDescription: "Are you sure you want to delete this tasbih session? This action cannot be undone.",
+    deleteConfirm: "Delete",
+    deleteCancel: "Cancel",
   },
   bn: {
     title: "তাসবিহ কাউন্টার",
@@ -186,6 +194,10 @@ export const TASBIH_TEXTS: Record<TransLang, {
     loading: "লোড হচ্ছে...",
     loadingRecords: "আপনার তাসবিহ রেকর্ড লোড হচ্ছে...",
     back: "ফিরে যান",
+    deleteTitle: "সেশন মুছুন",
+    deleteDescription: "আপনি কি এই তাসবিহ সেশন মুছে ফেলতে চান? এটি পূর্বাবস্থায় ফেরানো যাবে না।",
+    deleteConfirm: "মুছুন",
+    deleteCancel: "বাতিল",
   },
   ur: {
     title: "تسبیح کاؤنٹر",
@@ -210,6 +222,10 @@ export const TASBIH_TEXTS: Record<TransLang, {
     loading: "لوڈ ہو رہا ہے...",
     loadingRecords: "آپ کے تسبیح ریکارڈ لوڈ ہو رہے ہیں...",
     back: "واپس",
+    deleteTitle: "سیشن حذف کریں",
+    deleteDescription: "کیا آپ واقعی اس تسبیح سیشن کو حذف کرنا چاہتے ہیں؟ یہ واپس نہیں ہو سکتا۔",
+    deleteConfirm: "حذف کریں",
+    deleteCancel: "منسوخ",
   },
   ar: {
     title: "عدّاد التسبيح",
@@ -234,6 +250,10 @@ export const TASBIH_TEXTS: Record<TransLang, {
     loading: "جارٍ التحميل...",
     loadingRecords: "جارٍ تحميل سجلات التسبيح...",
     back: "رجوع",
+    deleteTitle: "حذف الجلسة",
+    deleteDescription: "هل أنت متأكد أنك تريد حذف جلسة التسبيح هذه؟ لا يمكن التراجع عن هذا الإجراء.",
+    deleteConfirm: "حذف",
+    deleteCancel: "إلغاء",
   },
   tr: {
     title: "Tesbih Sayaci",
@@ -258,6 +278,10 @@ export const TASBIH_TEXTS: Record<TransLang, {
     loading: "Yukleniyor...",
     loadingRecords: "Tesbih kayitlariniz yukleniyor...",
     back: "Geri",
+    deleteTitle: "Oturumu Sil",
+    deleteDescription: "Bu tesbih oturumunu silmek istediginizden emin misiniz? Bu islem geri alinamaz.",
+    deleteConfirm: "Sil",
+    deleteCancel: "Iptal",
   },
   ms: {
     title: "Pembilang Tasbih",
@@ -282,6 +306,10 @@ export const TASBIH_TEXTS: Record<TransLang, {
     loading: "Memuatkan...",
     loadingRecords: "Memuatkan rekod tasbih anda...",
     back: "Kembali",
+    deleteTitle: "Padam Sesi",
+    deleteDescription: "Adakah anda pasti mahu memadamkan sesi tasbih ini? Tindakan ini tidak boleh dibatalkan.",
+    deleteConfirm: "Padam",
+    deleteCancel: "Batal",
   },
   id: {
     title: "Penghitung Tasbih",
@@ -306,5 +334,9 @@ export const TASBIH_TEXTS: Record<TransLang, {
     loading: "Memuat...",
     loadingRecords: "Memuat catatan tasbih Anda...",
     back: "Kembali",
+    deleteTitle: "Hapus Sesi",
+    deleteDescription: "Apakah Anda yakin ingin menghapus sesi tasbih ini? Tindakan ini tidak dapat dibatalkan.",
+    deleteConfirm: "Hapus",
+    deleteCancel: "Batal",
   },
 };

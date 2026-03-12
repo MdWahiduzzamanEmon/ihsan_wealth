@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useSupabase } from "@/hooks/use-supabase";
+import { useAuth } from "@/components/providers/auth-provider";
 import type { ZakatFormData, ZakatResult } from "@/types/zakat";
 import type { MetalPrices } from "@/hooks/use-metal-prices";
 
@@ -41,9 +41,9 @@ export interface ZakatPayment {
 }
 
 export function useZakatRecords() {
+  const { user, supabase } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const supabase = useSupabase();
 
   const saveRecord = useCallback(async (
     formData: ZakatFormData,
@@ -57,13 +57,13 @@ export function useZakatRecords() {
     const currentYear = year || new Date().getFullYear();
 
     try {
-      const { data: { session: sess } } = await supabase.auth.getSession();
-      if (!sess?.user) throw new Error("Please sign in to save your calculation");
+      if (!user) throw new Error("Please sign in to save your calculation");
 
+      await supabase.auth.getSession();
       const { data, error: dbError } = await supabase
         .from("zakat_records")
         .upsert({
-          user_id: sess.user.id,
+          user_id: user.id,
           year: currentYear,
           year_type: "gregorian",
           currency: formData.currency,
@@ -95,7 +95,7 @@ export function useZakatRecords() {
     } finally {
       setLoading(false);
     }
-  }, [supabase]);
+  }, [supabase, user]);
 
   const fetchRecords = useCallback(async (filters?: {
     year?: number;
@@ -104,6 +104,7 @@ export function useZakatRecords() {
     setLoading(true);
     setError(null);
     try {
+      await supabase.auth.getSession();
       let query = supabase
         .from("zakat_records")
         .select("*")
@@ -125,6 +126,7 @@ export function useZakatRecords() {
   }, [supabase]);
 
   const deleteRecord = useCallback(async (id: string) => {
+    await supabase.auth.getSession();
     const { error: dbError } = await supabase
       .from("zakat_records")
       .delete()
@@ -134,6 +136,7 @@ export function useZakatRecords() {
   }, [supabase]);
 
   const markPaid = useCallback(async (id: string) => {
+    await supabase.auth.getSession();
     const { error: dbError } = await supabase
       .from("zakat_records")
       .update({ is_paid: true, paid_at: new Date().toISOString() })
@@ -149,20 +152,21 @@ export function useZakatRecords() {
     category: string;
     notes?: string;
   }) => {
-    const { data: { session: sess } } = await supabase.auth.getSession();
-    if (!sess?.user) return null;
+    if (!user) return null;
 
+    await supabase.auth.getSession();
     const { data, error: dbError } = await supabase
       .from("zakat_payments")
-      .insert({ ...payment, user_id: sess.user.id })
+      .insert({ ...payment, user_id: user.id })
       .select()
       .single();
 
     if (dbError) setError(dbError.message);
     return data as ZakatPayment | null;
-  }, [supabase]);
+  }, [supabase, user]);
 
   const fetchPayments = useCallback(async (recordId: string) => {
+    await supabase.auth.getSession();
     const { data, error: dbError } = await supabase
       .from("zakat_payments")
       .select("*")

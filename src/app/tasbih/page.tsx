@@ -1,13 +1,15 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useAuth } from "@/components/providers/auth-provider";
-import { useTasbihHistory } from "@/hooks/use-tasbih-history";
+import { useTasbihHistory, type TasbihSession } from "@/hooks/use-tasbih-history";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { TasbihCounter } from "@/components/tasbih/tasbih-counter";
 import { DHIKR_PRESETS, TASBIH_TEXTS } from "@/lib/tasbih-data";
 import { fadeIn, staggerContainer, staggerItem } from "@/lib/animations";
@@ -22,11 +24,21 @@ export default function TasbihPage() {
   const lang = getLangFromCountry(formData.country) as TransLang;
   const t = TASBIH_TEXTS[lang];
   const isRtl = lang === "ar" || lang === "ur";
+  const [deleteTarget, setDeleteTarget] = useState<TasbihSession | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const getPresetLabel = (type: string) => {
     const preset = DHIKR_PRESETS.find((p) => p.id === type);
     return preset ? preset.transliteration : type;
   };
+
+  const handleConfirmDelete = useCallback(async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    await deleteSession(deleteTarget.id);
+    setIsDeleting(false);
+    setDeleteTarget(null);
+  }, [deleteTarget, deleteSession]);
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20" dir={isRtl ? "rtl" : "ltr"}>
@@ -154,7 +166,7 @@ export default function TasbihPage() {
                           </div>
                         </div>
                         <button
-                          onClick={() => deleteSession(session.id)}
+                          onClick={() => setDeleteTarget(session)}
                           className="rounded-full p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors"
                           aria-label="Delete"
                         >
@@ -170,6 +182,18 @@ export default function TasbihPage() {
         </div>
       </main>
       <Footer countryCode={formData.country} />
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title={t.deleteTitle}
+        description={t.deleteDescription}
+        confirmLabel={t.deleteConfirm}
+        cancelLabel={t.deleteCancel}
+        variant="danger"
+        loading={isDeleting}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

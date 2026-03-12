@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/components/providers/auth-provider";
 
 /**
- * Reusable hook that returns a stable Supabase browser client.
- * Use this in all client components instead of calling createClient() directly.
+ * Returns the shared Supabase browser client from AuthProvider.
+ * This ensures all hooks use the same client instance with proper auth state.
  */
 export function useSupabase() {
-  return useMemo(() => createClient(), []);
+  const { supabase } = useAuth();
+  return supabase;
 }

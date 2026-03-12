@@ -1,7 +1,8 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { User, Session } from "@supabase/supabase-js";
 
 interface AuthContextType {
@@ -12,15 +13,16 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   isAuthenticated: boolean;
+  supabase: SupabaseClient;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const supabase = useMemo(() => createClient(), []);
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -45,7 +47,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       options: { data: { name } },
     });
     if (error) return { error: error.message, confirmed: false };
-    // If email confirmation is disabled, user is auto-confirmed
     const confirmed = !!data.session;
     return { error: null, confirmed };
   }, [supabase]);
@@ -68,6 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signIn,
       signOut,
       isAuthenticated: !!user,
+      supabase,
     }}>
       {children}
     </AuthContext.Provider>

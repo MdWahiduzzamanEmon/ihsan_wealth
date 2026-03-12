@@ -1,5 +1,5 @@
 // Change this version on every deploy to trigger SW update
-const SW_VERSION = "mmn78xmh";
+const SW_VERSION = "mmnre94i";
 const CACHE_NAME = "ihsanwealth-v" + SW_VERSION;
 
 self.addEventListener("install", (event) => {
@@ -29,6 +29,9 @@ self.addEventListener("fetch", (event) => {
 
   // Only handle http/https requests - ignore chrome-extension://, etc.
   if (url.protocol !== "http:" && url.protocol !== "https:") return;
+
+  // Never cache Supabase API requests (auth, DB queries, etc.)
+  if (url.hostname.includes("supabase")) return;
 
   // Network-first for all page navigations and API calls
   // This ensures users always get the latest code

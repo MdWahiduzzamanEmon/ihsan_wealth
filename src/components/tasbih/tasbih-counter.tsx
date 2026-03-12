@@ -99,8 +99,8 @@ export function TasbihCounter({ lang, onSessionComplete }: TasbihCounterProps) {
               ☽
             </span>
             <div className="text-left">
-              <p className="font-arabic text-lg text-gray-800">{selectedPreset.arabic}</p>
-              <p className="text-xs text-gray-500">{selectedPreset.transliteration}</p>
+              <p className="text-sm font-semibold text-gray-800">{selectedPreset.transliteration}</p>
+              <p className="text-xs text-gray-500">{selectedPreset.translations[lang]}</p>
             </div>
           </div>
           {showPresets ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
@@ -127,10 +127,14 @@ export function TasbihCounter({ lang, onSessionComplete }: TasbihCounterProps) {
                   >
                     <span className={`inline-flex h-7 w-7 items-center justify-center rounded-md ${preset.iconBg} text-xs`}>☽</span>
                     <div className="flex-1 min-w-0">
-                      <p className="font-arabic text-base truncate">{preset.arabic}</p>
-                      <p className="text-xs text-gray-500">{preset.translations[lang]}</p>
+                      <p className="text-sm font-medium truncate">{preset.transliteration}</p>
+                      <p className="text-xs text-gray-500 truncate">
+                        <span className="font-arabic">{preset.arabic}</span>
+                        <span className="mx-1">·</span>
+                        {preset.translations[lang]}
+                      </p>
                     </div>
-                    <span className="text-xs text-gray-400">{preset.defaultTarget}x</span>
+                    <span className="text-xs text-gray-400 shrink-0">{preset.defaultTarget}x</span>
                   </button>
                 ))}
               </div>

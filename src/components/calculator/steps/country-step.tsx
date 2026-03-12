@@ -54,12 +54,12 @@ export function CountryStep({ formData, onChange, prices, pricesLoading, detecte
           {/* Current selection + toggle */}
           <button
             onClick={() => setCountryOpen(!countryOpen)}
-            className="w-full flex items-center justify-between rounded-lg border-2 border-emerald-200 bg-emerald-50/50 p-3 hover:bg-emerald-50 transition-colors"
+            className="w-full flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50/50 px-3 py-2.5 hover:bg-emerald-50 transition-colors"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               {selectedCountry && (
                 <>
-                  <span className="text-2xl">{selectedCountry.flag}</span>
+                  <span className="text-xl">{selectedCountry.flag}</span>
                   <div className="text-left">
                     <p className="text-sm font-semibold text-emerald-800">{selectedCountry.name}</p>
                     <p className="text-xs text-emerald-600">{selectedCountry.currency} ({selectedCountry.currencySymbol})</p>
@@ -69,12 +69,11 @@ export function CountryStep({ formData, onChange, prices, pricesLoading, detecte
             </div>
             <div className="flex items-center gap-2">
               {detectedInfo && formData.country === detectedCountry && (
-                <span className="flex items-center gap-1 text-[10px] text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
+                <span className="flex items-center gap-1 text-[10px] text-emerald-600 bg-emerald-100 px-1.5 py-0.5 rounded-full">
                   <MapPin className="h-2.5 w-2.5" />
-                  {t(lang, "autoSelected")}
+                  <span className="hidden sm:inline">{t(lang, "autoSelected")}</span>
                 </span>
               )}
-              <span className="text-xs text-muted-foreground">{countryOpen ? "Collapse" : "Change country"}</span>
               <ChevronDown className={cn(
                 "h-4 w-4 text-emerald-600 transition-transform duration-200",
                 countryOpen && "rotate-180"
@@ -91,7 +90,7 @@ export function CountryStep({ formData, onChange, prices, pricesLoading, detecte
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-4">
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-1.5 mt-3">
                   {COUNTRIES.map((country) => (
                     <button
                       key={country.code}
@@ -100,24 +99,22 @@ export function CountryStep({ formData, onChange, prices, pricesLoading, detecte
                         setCountryOpen(false);
                       }}
                       className={cn(
-                        "relative flex items-center gap-2 rounded-lg border-2 p-3 text-left transition-all hover:border-emerald-300 hover:bg-emerald-50/50",
+                        "relative flex flex-col items-center gap-0.5 rounded-md px-1 py-2 text-center transition-all",
                         formData.country === country.code
-                          ? "border-emerald-600 bg-emerald-50 shadow-sm"
-                          : "border-muted",
+                          ? "bg-emerald-100 font-semibold"
+                          : "hover:bg-gray-50",
                         detectedCountry === country.code && formData.country !== country.code
-                          && "ring-2 ring-emerald-200 ring-offset-1"
+                          && "bg-emerald-50/60"
                       )}
                     >
-                      {detectedCountry === country.code && (
-                        <div className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-emerald-500 flex items-center justify-center">
-                          <MapPin className="h-2.5 w-2.5 text-white" />
+                      {detectedCountry === country.code && formData.country !== country.code && (
+                        <div className="absolute top-0.5 right-0.5">
+                          <MapPin className="h-2.5 w-2.5 text-emerald-500" />
                         </div>
                       )}
-                      <span className="text-xl">{country.flag}</span>
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-medium">{country.name}</p>
-                        <p className="text-xs text-muted-foreground">{country.currency}</p>
-                      </div>
+                      <span className="text-xl leading-none">{country.flag}</span>
+                      <p className="truncate text-[10px] w-full leading-tight mt-0.5">{country.name}</p>
+                      <p className="text-[9px] text-muted-foreground leading-none">{country.currency}</p>
                     </button>
                   ))}
                 </div>
@@ -220,40 +217,6 @@ export function CountryStep({ formData, onChange, prices, pricesLoading, detecte
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <button
-              onClick={() => onChange({ nisabBasis: "silver" as NisabBasis })}
-              className={cn(
-                "rounded-xl border-2 p-4 text-left transition-all",
-                formData.nisabBasis === "silver"
-                  ? "border-gray-400 bg-gray-50 shadow-sm"
-                  : "border-muted hover:border-gray-300"
-              )}
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <div className="h-3 w-3 rounded-full bg-gray-400" />
-                <Label className="font-semibold text-gray-700">
-                  Silver Nisab <span className="font-arabic text-xs text-gray-400">{isLocal ? t(lang, "silverNisab") : "نصاب الفضة"}</span>
-                </Label>
-                {formData.nisabBasis === "silver" && (
-                  <span className="ml-auto text-xs font-medium text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
-                    {isLocal ? t(lang, "selected") : "Selected"}
-                  </span>
-                )}
-              </div>
-              {pricesLoading && !prices ? (
-                <div className="h-6 w-28 rounded bg-gray-200 animate-pulse" />
-              ) : prices ? (
-                <p className="text-lg font-bold text-gray-900">
-                  {formatCurrency(nisabSilver, formData.currency)}
-                </p>
-              ) : (
-                <p className="text-sm text-red-400">{isLocal ? t(lang, "priceUnavailable") : "Price unavailable"}</p>
-              )}
-              <p className="text-xs text-muted-foreground mt-1">
-                {(isLocal ? t(lang, "basedOnSilver") : "Based on {amount}g of silver (recommended by majority scholars)").replace("{amount}", String(NISAB_SILVER_GRAMS))}
-              </p>
-            </button>
-
-            <button
               onClick={() => onChange({ nisabBasis: "gold" as NisabBasis })}
               className={cn(
                 "rounded-xl border-2 p-4 text-left transition-all",
@@ -284,6 +247,40 @@ export function CountryStep({ formData, onChange, prices, pricesLoading, detecte
               )}
               <p className="text-xs text-muted-foreground mt-1">
                 {(isLocal ? t(lang, "basedOnGold") : "Based on {amount}g of pure gold").replace("{amount}", String(NISAB_GOLD_GRAMS))}
+              </p>
+            </button>
+
+            <button
+              onClick={() => onChange({ nisabBasis: "silver" as NisabBasis })}
+              className={cn(
+                "rounded-xl border-2 p-4 text-left transition-all",
+                formData.nisabBasis === "silver"
+                  ? "border-gray-400 bg-gray-50 shadow-sm"
+                  : "border-muted hover:border-gray-300"
+              )}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <div className="h-3 w-3 rounded-full bg-gray-400" />
+                <Label className="font-semibold text-gray-700">
+                  Silver Nisab <span className="font-arabic text-xs text-gray-400">{isLocal ? t(lang, "silverNisab") : "نصاب الفضة"}</span>
+                </Label>
+                {formData.nisabBasis === "silver" && (
+                  <span className="ml-auto text-xs font-medium text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
+                    {isLocal ? t(lang, "selected") : "Selected"}
+                  </span>
+                )}
+              </div>
+              {pricesLoading && !prices ? (
+                <div className="h-6 w-28 rounded bg-gray-200 animate-pulse" />
+              ) : prices ? (
+                <p className="text-lg font-bold text-gray-900">
+                  {formatCurrency(nisabSilver, formData.currency)}
+                </p>
+              ) : (
+                <p className="text-sm text-red-400">{isLocal ? t(lang, "priceUnavailable") : "Price unavailable"}</p>
+              )}
+              <p className="text-xs text-muted-foreground mt-1">
+                {(isLocal ? t(lang, "basedOnSilver") : "Based on {amount}g of silver (recommended by majority scholars)").replace("{amount}", String(NISAB_SILVER_GRAMS))}
               </p>
             </button>
           </div>

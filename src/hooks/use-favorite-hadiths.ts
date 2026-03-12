@@ -1,45 +1,33 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useSupabase } from "@/hooks/use-supabase";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 
 export function useFavoriteHadiths() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, supabase } = useAuth();
   const [localFavorites, setLocalFavorites] = useLocalStorage<string[]>("favorite-hadiths", []);
   const [dbFavorites, setDbFavorites] = useState<string[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const supabase = useSupabase();
-  const prevUserId = useRef<string | null>(null);
+  const fetchId = useRef(0);
 
-  // Fetch favorites from Supabase when authenticated
   useEffect(() => {
     if (!isAuthenticated || !user) {
       setDbFavorites(null);
-      prevUserId.current = null;
       return;
     }
 
-    if (prevUserId.current === user.id) return;
-    prevUserId.current = user.id;
-
-    let cancelled = false;
+    const id = ++fetchId.current;
     setIsLoading(true);
 
     (async () => {
       try {
-        const { data: { session: resolvedSession } } = await supabase.auth.getSession();
-        if (!resolvedSession) {
-          if (!cancelled) setIsLoading(false);
-          return;
-        }
-
+        await supabase.auth.getSession();
         const { data, error } = await supabase
           .from("favorite_hadiths")
           .select("hadith_id");
 
-        if (cancelled) return;
+        if (id !== fetchId.current) return;
 
         if (error) {
           console.error("Failed to fetch favorite hadiths:", error.message);
@@ -51,13 +39,11 @@ export function useFavoriteHadiths() {
         }
       } catch (err) {
         console.error("Failed to fetch favorite hadiths:", err);
-        if (!cancelled) setDbFavorites(null);
+        if (id === fetchId.current) setDbFavorites(null);
       } finally {
-        if (!cancelled) setIsLoading(false);
+        if (id === fetchId.current) setIsLoading(false);
       }
     })();
-
-    return () => { cancelled = true; };
   }, [isAuthenticated, user, supabase, setLocalFavorites]);
 
   const favorites = dbFavorites ?? localFavorites;
@@ -77,20 +63,18 @@ export function useFavoriteHadiths() {
       setDbFavorites(newFavorites);
 
       try {
-        const { data: { session: sess } } = await supabase.auth.getSession();
-        if (!sess?.user) return;
-
+        await supabase.auth.getSession();
         if (isFavorited) {
           const { error } = await supabase
             .from("favorite_hadiths")
             .delete()
-            .eq("user_id", sess.user.id)
+            .eq("user_id", user.id)
             .eq("hadith_id", hadithId);
           if (error) console.error("Failed to remove favorite hadith:", error.message);
         } else {
           const { error } = await supabase
             .from("favorite_hadiths")
-            .insert({ user_id: sess.user.id, hadith_id: hadithId });
+            .insert({ user_id: user.id, hadith_id: hadithId });
           if (error) console.error("Failed to save favorite hadith:", error.message);
         }
       } catch (err) {
