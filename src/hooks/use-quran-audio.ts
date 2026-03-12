@@ -39,10 +39,12 @@ interface UseQuranAudioReturn {
 // Cache audio URLs per reciter+chapter to avoid re-fetching
 const audioUrlCache = new Map<string, Map<number, string>>();
 
-// Strip HTML tags from translation text
 function stripHtml(text: string): string {
   return text.replace(/<[^>]*>/g, "");
 }
+
+// Playback phase to prevent any overlap between Arabic and TTS
+type PlaybackPhase = "idle" | "arabic" | "translation";
 
 export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAudioOptions): UseQuranAudioReturn {
   const [currentVerseNumber, setCurrentVerseNumber] = useState<number | null>(null);
@@ -82,6 +84,11 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
   const translationEnabledRef = useRef(translationEnabled);
   const versesRef = useRef(verses);
   const langRef = useRef(lang);
+  const phaseRef = useRef<PlaybackPhase>("idle");
+  const isSpeakingRef = useRef(false);
+  const safetyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Ref to hold playVerseInternal so onArabicEnded can call it directly
+  const playVerseInternalRef = useRef<(verseNumber: number) => void>(() => {});
 
   // Keep refs in sync
   useEffect(() => { translationEnabledRef.current = translationEnabled; }, [translationEnabled]);
@@ -105,6 +112,7 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
       ttsAudio.pause();
       ttsAudio.src = "";
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      if (safetyTimeoutRef.current) clearTimeout(safetyTimeoutRef.current);
     };
   }, []);
 
@@ -156,117 +164,118 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
     animFrameRef.current = requestAnimationFrame(update);
   }, []);
 
-  // Language code mapping for TTS API
   const langToTtsCode: Record<string, string> = {
     en: "en", bn: "bn", ur: "ur", ar: "ar", tr: "tr", ms: "ms", id: "id",
   };
 
-  // Speak translation using server-side TTS API (proper voice, not browser TTS)
+  // Fully stop TTS audio and clean up
+  const stopTts = useCallback(() => {
+    const tts = ttsAudioRef.current;
+    if (tts) {
+      tts.onended = null;
+      tts.onerror = null;
+      tts.pause();
+      tts.removeAttribute("src");
+      tts.load(); // Reset the element fully
+    }
+    if (safetyTimeoutRef.current) {
+      clearTimeout(safetyTimeoutRef.current);
+      safetyTimeoutRef.current = null;
+    }
+    isSpeakingRef.current = false;
+    setIsSpeakingTranslation(false);
+  }, []);
+
+  // Speak translation using server-side TTS API
+  // Returns a promise that resolves ONLY when TTS finishes or fails
   const speakTranslation = useCallback(
     (verseNumber: number): Promise<void> => {
       return new Promise((resolve) => {
         const ttsAudio = ttsAudioRef.current;
-        if (!ttsAudio) {
-          resolve();
-          return;
-        }
+        const arabicAudio = audioRef.current;
+        if (!ttsAudio) { resolve(); return; }
 
         const verse = versesRef.current.find((v) => v.verse_number === verseNumber);
         const translationText = verse?.translations?.[0]?.text;
-        if (!translationText) {
-          resolve();
-          return;
-        }
+        if (!translationText) { resolve(); return; }
 
         const cleanText = stripHtml(translationText);
-        if (!cleanText) {
-          resolve();
-          return;
+        if (!cleanText) { resolve(); return; }
+
+        // Ensure Arabic audio is fully paused before TTS
+        if (arabicAudio && !arabicAudio.paused) {
+          arabicAudio.pause();
         }
 
-        // Stop any previous TTS playback
+        // Fully reset TTS element — clear handlers FIRST to prevent stale events
+        ttsAudio.onended = null;
+        ttsAudio.onerror = null;
         ttsAudio.pause();
-        ttsAudio.src = "";
+        ttsAudio.removeAttribute("src");
+
+        // Clear any previous safety timeout
+        if (safetyTimeoutRef.current) {
+          clearTimeout(safetyTimeoutRef.current);
+          safetyTimeoutRef.current = null;
+        }
 
         const ttsLang = langToTtsCode[langRef.current] || "en";
         const ttsUrl = `/api/tts?lang=${ttsLang}&text=${encodeURIComponent(cleanText)}`;
 
+        phaseRef.current = "translation";
+        isSpeakingRef.current = true;
         setIsSpeakingTranslation(true);
 
-        ttsAudio.onended = () => {
-          setIsSpeakingTranslation(false);
-          resolve();
-        };
-        ttsAudio.onerror = () => {
+        let resolved = false;
+        const done = () => {
+          if (resolved) return;
+          resolved = true;
+          ttsAudio.onended = null;
+          ttsAudio.onerror = null;
+          if (safetyTimeoutRef.current) {
+            clearTimeout(safetyTimeoutRef.current);
+            safetyTimeoutRef.current = null;
+          }
+          isSpeakingRef.current = false;
           setIsSpeakingTranslation(false);
           resolve();
         };
 
-        // Small pause before speaking translation
+        // Small pause before speaking translation, then set src and play
         setTimeout(() => {
+          if (resolved) return; // Already cancelled
+
+          // Set handlers right before setting src — no gap where stale events can fire
+          ttsAudio.onended = done;
+          ttsAudio.onerror = done;
+
           ttsAudio.src = ttsUrl;
-          ttsAudio.play().catch(() => {
-            setIsSpeakingTranslation(false);
-            resolve();
-          });
+          ttsAudio.play().catch(done);
         }, 400);
 
         // Safety timeout (max 60 seconds per verse translation)
-        setTimeout(() => {
-          if (!ttsAudio.paused) {
+        safetyTimeoutRef.current = setTimeout(() => {
+          if (!resolved) {
             ttsAudio.pause();
-            ttsAudio.src = "";
+            ttsAudio.removeAttribute("src");
+            done();
           }
-          setIsSpeakingTranslation(false);
-          resolve();
         }, 60000);
       });
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
-  // What happens after Arabic audio ends
-  const onArabicEnded = useCallback(
-    async (verseNumber: number) => {
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-
-      // If translation is enabled, speak it before advancing
-      if (translationEnabledRef.current) {
-        await speakTranslation(verseNumber);
-      }
-
-      // Now advance or stop
-      if (fullSurahRef.current) {
-        const nextNum = verseNumber + 1;
-        if (nextNum <= totalVerses) {
-          // playVerseInternal will be called — we need to reference it but it's not defined yet
-          // So we dispatch a custom event
-          window.dispatchEvent(new CustomEvent("quran-advance", { detail: { nextNum } }));
-        } else {
-          fullSurahRef.current = false;
-          setIsFullSurahMode(false);
-          setIsPlaying(false);
-          setCurrentVerseNumber(null);
-          setProgress(0);
-        }
-      } else {
-        setIsPlaying(false);
-        setProgress(100);
-      }
-    },
-    [totalVerses, speakTranslation]
-  );
-
-  // Play a specific verse
+  // Play a specific verse (Arabic recitation)
   const playVerseInternal = useCallback(
     async (verseNumber: number) => {
       const audio = audioRef.current;
       if (!audio) return;
 
-      // Cancel any ongoing TTS
-      const tts = ttsAudioRef.current;
-      if (tts) { tts.pause(); tts.src = ""; }
-      setIsSpeakingTranslation(false);
+      // Fully stop any ongoing TTS before starting Arabic
+      stopTts();
+      phaseRef.current = "arabic";
 
       setAudioLoading(true);
       setCurrentVerseNumber(verseNumber);
@@ -280,6 +289,12 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
 
         if (!url) {
           setAudioLoading(false);
+          // In full surah mode, skip to next verse instead of getting stuck
+          if (fullSurahRef.current && verseNumber < totalVerses) {
+            setTimeout(() => playVerseInternalRef.current(verseNumber + 1), 100);
+          } else {
+            setIsPlaying(false);
+          }
           return;
         }
 
@@ -295,49 +310,121 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
         startProgressTracking();
       } catch {
         setAudioLoading(false);
+        // On play failure in full surah mode, skip to next verse
+        if (fullSurahRef.current && verseNumber < totalVerses) {
+          setTimeout(() => playVerseInternalRef.current(verseNumber + 1), 300);
+        } else {
+          setIsPlaying(false);
+        }
       }
     },
-    [fetchAudioUrls, startProgressTracking, reciterId]
+    [fetchAudioUrls, startProgressTracking, reciterId, stopTts, totalVerses]
   );
 
-  // Listen for advance events (from onArabicEnded)
+  // Keep the ref in sync so onArabicEnded can always call the latest version
   useEffect(() => {
-    const handler = (e: Event) => {
-      const detail = (e as CustomEvent).detail;
-      if (detail?.nextNum) {
-        playVerseInternal(detail.nextNum);
-      }
-    };
-    window.addEventListener("quran-advance", handler);
-    return () => window.removeEventListener("quran-advance", handler);
+    playVerseInternalRef.current = playVerseInternal;
   }, [playVerseInternal]);
 
-  // Handle Arabic audio end
+  // Handle Arabic audio end — speak translation then advance
+  const onArabicEnded = useCallback(
+    async (verseNumber: number) => {
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+
+      // If translation is enabled, speak it before advancing
+      if (translationEnabledRef.current) {
+        await speakTranslation(verseNumber);
+      }
+
+      // Now advance or stop
+      if (fullSurahRef.current) {
+        const nextNum = verseNumber + 1;
+        if (nextNum <= totalVerses) {
+          // Call via ref to always get the latest playVerseInternal
+          playVerseInternalRef.current(nextNum);
+        } else {
+          fullSurahRef.current = false;
+          phaseRef.current = "idle";
+          setIsFullSurahMode(false);
+          setIsPlaying(false);
+          setCurrentVerseNumber(null);
+          setProgress(0);
+        }
+      } else {
+        phaseRef.current = "idle";
+        setIsPlaying(false);
+        setProgress(100);
+      }
+    },
+    [totalVerses, speakTranslation]
+  );
+
+  // Handle Arabic audio end + error events
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const handler = () => {
+    const handleEnded = () => {
       if (currentVerseNumber !== null) {
         onArabicEnded(currentVerseNumber);
       }
     };
 
-    audio.onended = handler;
-    return () => {
-      audio.onended = null;
+    // On audio error (network timeout, CDN failure, decode error),
+    // skip to next verse in full surah mode instead of getting stuck
+    const handleError = () => {
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      setAudioLoading(false);
+
+      if (fullSurahRef.current && currentVerseNumber !== null && currentVerseNumber < totalVerses) {
+        setTimeout(() => playVerseInternalRef.current(currentVerseNumber + 1), 300);
+      } else {
+        setIsPlaying(false);
+        phaseRef.current = "idle";
+      }
     };
-  }, [currentVerseNumber, onArabicEnded]);
+
+    // Also handle stall — audio has been trying to load but no data is coming
+    let stallTimeout: ReturnType<typeof setTimeout> | null = null;
+    const handleStalled = () => {
+      // Give it 10 seconds to recover, then skip
+      if (stallTimeout) clearTimeout(stallTimeout);
+      stallTimeout = setTimeout(() => {
+        if (audio.readyState < 3 && !audio.paused && fullSurahRef.current) {
+          handleError();
+        }
+      }, 10000);
+    };
+
+    const handlePlaying = () => {
+      // Audio recovered from stall, cancel the timeout
+      if (stallTimeout) {
+        clearTimeout(stallTimeout);
+        stallTimeout = null;
+      }
+    };
+
+    audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("error", handleError);
+    audio.addEventListener("stalled", handleStalled);
+    audio.addEventListener("playing", handlePlaying);
+
+    return () => {
+      audio.removeEventListener("ended", handleEnded);
+      audio.removeEventListener("error", handleError);
+      audio.removeEventListener("stalled", handleStalled);
+      audio.removeEventListener("playing", handlePlaying);
+      if (stallTimeout) clearTimeout(stallTimeout);
+    };
+  }, [currentVerseNumber, onArabicEnded, totalVerses]);
 
   const playVerse = useCallback(
     (verseNumber: number) => {
       const audio = audioRef.current;
       if (!audio) return;
 
-      // Cancel any TTS
-      const tts = ttsAudioRef.current;
-      if (tts) { tts.pause(); tts.src = ""; }
-      setIsSpeakingTranslation(false);
+      // Stop any TTS
+      stopTts();
 
       // If same verse is playing, toggle pause/resume
       if (currentVerseNumber === verseNumber && isPlaying) {
@@ -359,7 +446,7 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
       setIsFullSurahMode(false);
       playVerseInternal(verseNumber);
     },
-    [currentVerseNumber, isPlaying, playVerseInternal, startProgressTracking]
+    [currentVerseNumber, isPlaying, playVerseInternal, startProgressTracking, stopTts]
   );
 
   const playFullSurah = useCallback(
@@ -373,7 +460,7 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
 
   const pause = useCallback(() => {
     const audio = audioRef.current;
-    if (audio) {
+    if (audio && !audio.paused) {
       audio.pause();
     }
     const tts = ttsAudioRef.current;
@@ -385,43 +472,42 @@ export function useQuranAudio({ surahId, totalVerses, verses, lang }: UseQuranAu
   }, []);
 
   const resume = useCallback(() => {
-    // If TTS audio was paused, resume it
-    const tts = ttsAudioRef.current;
-    if (tts && tts.src && tts.paused && isSpeakingTranslation) {
-      tts.play().catch(() => {});
-      setIsPlaying(true);
-      return;
+    // Use ref to avoid stale closure — check if we're in translation phase
+    if (isSpeakingRef.current) {
+      const tts = ttsAudioRef.current;
+      if (tts && tts.src && tts.paused) {
+        tts.play().catch(() => {});
+        setIsPlaying(true);
+        return;
+      }
     }
     const audio = audioRef.current;
-    if (audio && audio.src) {
+    if (audio && audio.src && audio.paused) {
       audio.play().then(() => {
         setIsPlaying(true);
         startProgressTracking();
       }).catch(() => {});
     }
-  }, [startProgressTracking, isSpeakingTranslation]);
+  }, [startProgressTracking]);
 
   const stop = useCallback(() => {
     const audio = audioRef.current;
     if (audio) {
       audio.pause();
-      audio.src = "";
+      audio.removeAttribute("src");
+      audio.load();
     }
-    const tts = ttsAudioRef.current;
-    if (tts) {
-      tts.pause();
-      tts.src = "";
-    }
+    stopTts();
     fullSurahRef.current = false;
+    phaseRef.current = "idle";
     setIsFullSurahMode(false);
     setIsPlaying(false);
-    setIsSpeakingTranslation(false);
     setCurrentVerseNumber(null);
     setProgress(0);
     setCurrentTime(0);
     setDuration(0);
     if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-  }, []);
+  }, [stopTts]);
 
   const seekTo = useCallback((time: number) => {
     const audio = audioRef.current;

@@ -8,16 +8,17 @@ import { Footer } from "@/components/layout/footer";
 import { HijriCalendar } from "@/components/calendar/hijri-calendar";
 import { IslamicEvents } from "@/components/calendar/islamic-events";
 import { DateConverter } from "@/components/calendar/date-converter";
-import { gregorianToHijri, getHijriMonthName, getHijriDayName } from "@/lib/hijri-utils";
+import { gregorianToHijri, getHijriMonthName, getHijriDayName, getHijriAdjustment } from "@/lib/hijri-utils";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
 import { getLangFromCountry, CALENDAR_PAGE_TEXTS } from "@/lib/islamic-content";
 
 export default function CalendarPage() {
-  const todayHijri = useMemo(() => gregorianToHijri(new Date()), []);
+  const [formData] = useLocalStorage<ZakatFormData>("zakat-calculator-data", DEFAULT_FORM_DATA);
+  const hijriAdjust = useMemo(() => getHijriAdjustment(formData.country), [formData.country]);
+  const todayHijri = useMemo(() => gregorianToHijri(new Date(), hijriAdjust), [hijriAdjust]);
   const monthName = getHijriMonthName(todayHijri.month);
   const dayName = getHijriDayName(new Date().getDay());
-  const [formData] = useLocalStorage<ZakatFormData>("zakat-calculator-data", DEFAULT_FORM_DATA);
   const lang = getLangFromCountry(formData.country);
   const calT = CALENDAR_PAGE_TEXTS[lang];
 
@@ -94,7 +95,7 @@ export default function CalendarPage() {
               </div>
 
               {/* Gregorian equivalent */}
-              <p className="text-emerald-300/60 text-sm">
+              <p className="text-emerald-300/60 text-sm mt-3">
                 {new Date().toLocaleDateString("en-US", {
                   weekday: "long",
                   year: "numeric",
@@ -131,7 +132,7 @@ export default function CalendarPage() {
               transition={{ duration: 0.5, delay: 0.2 }}
             >
               <div className="rounded-2xl border border-emerald-200/60 bg-white/80 backdrop-blur-sm p-4 sm:p-6 shadow-lg shadow-emerald-900/5">
-                <HijriCalendar />
+                <HijriCalendar adjustment={hijriAdjust} />
               </div>
             </motion.div>
 
@@ -144,12 +145,12 @@ export default function CalendarPage() {
             >
               {/* Date Converter */}
               <div className="rounded-2xl border border-emerald-200/60 bg-white/80 backdrop-blur-sm p-4 sm:p-5 shadow-lg shadow-emerald-900/5">
-                <DateConverter />
+                <DateConverter adjustment={hijriAdjust} />
               </div>
 
               {/* Islamic Events */}
               <div className="rounded-2xl border border-emerald-200/60 bg-white/80 backdrop-blur-sm p-4 sm:p-5 shadow-lg shadow-emerald-900/5">
-                <IslamicEvents />
+                <IslamicEvents adjustment={hijriAdjust} />
               </div>
             </motion.div>
           </div>

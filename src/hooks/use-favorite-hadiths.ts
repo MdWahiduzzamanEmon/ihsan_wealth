@@ -58,37 +58,39 @@ export function useFavoriteHadiths() {
   const favorites = dbFavorites ?? localFavorites;
 
   const toggleFavorite = useCallback(
-    async (hadithId: string) => {
+    async (hadithId: string): Promise<"login-required" | void> => {
+      if (!isAuthenticated || !user) {
+        return "login-required";
+      }
+
       const isFavorited = favorites.includes(hadithId);
       const newFavorites = isFavorited
         ? favorites.filter((id) => id !== hadithId)
         : [...favorites, hadithId];
 
       setLocalFavorites(newFavorites);
+      setDbFavorites(newFavorites);
 
-      if (isAuthenticated && user) {
-        setDbFavorites(newFavorites);
-        try {
-          if (isFavorited) {
-            const { error } = await supabase
-              .from("favorite_hadiths")
-              .delete()
-              .eq("user_id", user.id)
-              .eq("hadith_id", hadithId);
-            if (error) console.error("Failed to remove favorite hadith:", error.message);
-          } else {
-            const { error } = await supabase
-              .from("favorite_hadiths")
-              .insert({ user_id: user.id, hadith_id: hadithId });
-            if (error) console.error("Failed to save favorite hadith:", error.message);
-          }
-        } catch (err) {
-          console.error("Failed to sync favorite hadith:", err);
+      try {
+        if (isFavorited) {
+          const { error } = await supabase
+            .from("favorite_hadiths")
+            .delete()
+            .eq("user_id", user.id)
+            .eq("hadith_id", hadithId);
+          if (error) console.error("Failed to remove favorite hadith:", error.message);
+        } else {
+          const { error } = await supabase
+            .from("favorite_hadiths")
+            .insert({ user_id: user.id, hadith_id: hadithId });
+          if (error) console.error("Failed to save favorite hadith:", error.message);
         }
+      } catch (err) {
+        console.error("Failed to sync favorite hadith:", err);
       }
     },
     [favorites, isAuthenticated, user, supabase, setLocalFavorites]
   );
 
-  return { favorites, toggleFavorite, isLoading };
+  return { favorites, toggleFavorite, isLoading, isAuthenticated };
 }

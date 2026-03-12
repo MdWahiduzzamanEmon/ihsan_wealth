@@ -61,8 +61,19 @@ function parseHijriParts(date: Date): HijriDate {
   return { year, month, day };
 }
 
-export function gregorianToHijri(date: Date): HijriDate {
-  return parseHijriParts(date);
+/**
+ * Convert Gregorian to Hijri with optional day adjustment for moon sighting.
+ * @param date Gregorian date
+ * @param adjustment Day adjustment (-1, 0, +1) to account for local moon sighting differences
+ */
+export function gregorianToHijri(date: Date, adjustment: number = 0): HijriDate {
+  if (adjustment === 0) return parseHijriParts(date);
+
+  // Apply adjustment by shifting the Gregorian date in the opposite direction
+  // If adjustment is -1 (local date is 1 day behind calculated), we parse as if it's yesterday
+  const adjusted = new Date(date);
+  adjusted.setDate(adjusted.getDate() + adjustment);
+  return parseHijriParts(adjusted);
 }
 
 export function hijriToGregorian(hijri: HijriDate): Date {
@@ -135,6 +146,24 @@ export function getDaysInHijriMonth(year: number, month: number): number {
   const nextFirst = hijriToGregorian({ year: nextYear, month: nextMonth, day: 1 });
 
   return Math.round((nextFirst.getTime() - first.getTime()) / 86400000);
+}
+
+// ─── Country-based Hijri Adjustment ───
+// Countries that follow local moon sighting (often 1 day behind Umm al-Qura)
+const MOON_SIGHTING_COUNTRIES: Record<string, number> = {
+  BD: -1, // Bangladesh
+  PK: -1, // Pakistan
+  IN: -1, // India
+  NG: -1, // Nigeria
+  // Gulf/Saudi follow Umm al-Qura (0 adjustment)
+};
+
+/**
+ * Get the Hijri date adjustment for a country.
+ * Countries using local moon sighting may differ from the Umm al-Qura calendar.
+ */
+export function getHijriAdjustment(countryCode: string): number {
+  return MOON_SIGHTING_COUNTRIES[countryCode] ?? 0;
 }
 
 // ─── Islamic Events ───

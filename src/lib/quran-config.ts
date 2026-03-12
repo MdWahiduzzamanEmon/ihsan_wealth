@@ -41,6 +41,8 @@ export const QURAN_TEXTS: Record<TransLang, {
   tafsir: string;
   showTafsir: string;
   hideTafsir: string;
+  listenTafsir: string;
+  stopTafsir: string;
   play: string;
   pause: string;
   playing: string;
@@ -68,6 +70,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     tafsir: "Tafsir",
     showTafsir: "Show Tafsir",
     hideTafsir: "Hide Tafsir",
+    listenTafsir: "Listen",
+    stopTafsir: "Stop",
     play: "Play",
     pause: "Pause",
     playing: "Playing",
@@ -95,6 +99,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     tafsir: "তাফসীর",
     showTafsir: "তাফসীর দেখুন",
     hideTafsir: "তাফসীর লুকান",
+    listenTafsir: "শুনুন",
+    stopTafsir: "থামান",
     play: "চালান",
     pause: "বিরতি",
     playing: "চলছে",
@@ -122,6 +128,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     tafsir: "تفسیر",
     showTafsir: "تفسیر دیکھیں",
     hideTafsir: "تفسیر چھپائیں",
+    listenTafsir: "سنیں",
+    stopTafsir: "رکیں",
     play: "چلائیں",
     pause: "روکیں",
     playing: "چل رہا ہے",
@@ -149,6 +157,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     tafsir: "تفسير",
     showTafsir: "عرض التفسير",
     hideTafsir: "إخفاء التفسير",
+    listenTafsir: "استمع",
+    stopTafsir: "إيقاف",
     play: "تشغيل",
     pause: "إيقاف مؤقت",
     playing: "قيد التشغيل",
@@ -176,6 +186,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     tafsir: "Tefsir",
     showTafsir: "Tefsiri Goster",
     hideTafsir: "Tefsiri Gizle",
+    listenTafsir: "Dinle",
+    stopTafsir: "Durdur",
     play: "Oynat",
     pause: "Duraklat",
     playing: "Oynuyor",
@@ -203,6 +215,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     tafsir: "Tafsir",
     showTafsir: "Tunjukkan Tafsir",
     hideTafsir: "Sembunyikan Tafsir",
+    listenTafsir: "Dengar",
+    stopTafsir: "Berhenti",
     play: "Main",
     pause: "Jeda",
     playing: "Sedang bermain",
@@ -230,6 +244,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     tafsir: "Tafsir",
     showTafsir: "Tampilkan Tafsir",
     hideTafsir: "Sembunyikan Tafsir",
+    listenTafsir: "Dengarkan",
+    stopTafsir: "Berhenti",
     play: "Putar",
     pause: "Jeda",
     playing: "Sedang diputar",

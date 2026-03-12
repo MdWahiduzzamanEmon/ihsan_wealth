@@ -40,8 +40,12 @@ const EVENT_TYPE_CONFIG: Record<
   },
 };
 
-export function IslamicEvents() {
-  const todayHijri = useMemo(() => gregorianToHijri(new Date()), []);
+interface IslamicEventsProps {
+  adjustment?: number;
+}
+
+export function IslamicEvents({ adjustment = 0 }: IslamicEventsProps) {
+  const todayHijri = useMemo(() => gregorianToHijri(new Date(), adjustment), [adjustment]);
 
   const yearEvents = useMemo(() => getYearEvents(todayHijri.year), [todayHijri.year]);
 

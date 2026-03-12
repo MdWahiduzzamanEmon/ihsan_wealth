@@ -12,7 +12,11 @@ import {
   type HijriDate,
 } from "@/lib/hijri-utils";
 
-export function DateConverter() {
+interface DateConverterProps {
+  adjustment?: number;
+}
+
+export function DateConverter({ adjustment = 0 }: DateConverterProps) {
   // Gregorian -> Hijri
   const [gregorianInput, setGregorianInput] = useState("");
   const [hijriResult, setHijriResult] = useState<HijriDate | null>(null);
@@ -30,7 +34,7 @@ export function DateConverter() {
     try {
       const date = new Date(gregorianInput);
       if (isNaN(date.getTime())) return;
-      const hijri = gregorianToHijri(date);
+      const hijri = gregorianToHijri(date, adjustment);
       setHijriResult(hijri);
     } catch {
       // Invalid date

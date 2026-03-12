@@ -61,49 +61,35 @@ export function useFavoriteDuas() {
   const favorites = dbFavorites ?? localFavorites;
 
   const toggleFavorite = useCallback(
-    async (duaId: string) => {
-      const isFavorited = favorites.includes(duaId);
+    async (duaId: string): Promise<"login-required" | void> => {
+      if (!isAuthenticated || !user) {
+        return "login-required";
+      }
 
-      // Compute new list
+      const isFavorited = favorites.includes(duaId);
       const newFavorites = isFavorited
         ? favorites.filter((id) => id !== duaId)
         : [...favorites, duaId];
 
-      // Always update localStorage
       setLocalFavorites(newFavorites);
+      setDbFavorites(newFavorites);
 
-      if (isAuthenticated && user) {
-        // Update local DB state immediately
-        setDbFavorites(newFavorites);
-
-        try {
-          if (isFavorited) {
-            // Remove from DB
-            const { error } = await supabase
-              .from("favorite_duas")
-              .delete()
-              .eq("user_id", user.id)
-              .eq("dua_id", duaId);
-
-            if (error) {
-              console.error("Failed to remove favorite dua from DB:", error.message);
-            }
-          } else {
-            // Add to DB
-            const { error } = await supabase
-              .from("favorite_duas")
-              .insert({
-                user_id: user.id,
-                dua_id: duaId,
-              });
-
-            if (error) {
-              console.error("Failed to save favorite dua to DB:", error.message);
-            }
-          }
-        } catch (err) {
-          console.error("Failed to sync favorite dua with DB:", err);
+      try {
+        if (isFavorited) {
+          const { error } = await supabase
+            .from("favorite_duas")
+            .delete()
+            .eq("user_id", user.id)
+            .eq("dua_id", duaId);
+          if (error) console.error("Failed to remove favorite dua from DB:", error.message);
+        } else {
+          const { error } = await supabase
+            .from("favorite_duas")
+            .insert({ user_id: user.id, dua_id: duaId });
+          if (error) console.error("Failed to save favorite dua to DB:", error.message);
         }
+      } catch (err) {
+        console.error("Failed to sync favorite dua with DB:", err);
       }
     },
     [favorites, isAuthenticated, user, supabase, setLocalFavorites]
@@ -113,5 +99,6 @@ export function useFavoriteDuas() {
     favorites,
     toggleFavorite,
     isLoading,
+    isAuthenticated,
   };
 }

@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Copy, Check, Heart, Share2 } from "lucide-react";
+import { Copy, Check, Heart, Share2, LogIn } from "lucide-react";
 import { staggerItem } from "@/lib/animations";
 import type { Hadith } from "@/lib/hadith-data";
 import type { TransLang } from "@/lib/islamic-content";
@@ -13,13 +14,14 @@ import { HADITH_TEXTS } from "@/lib/hadith-data";
 interface HadithCardProps {
   hadith: Hadith;
   isFavorite: boolean;
-  onToggleFavorite: (id: string) => void;
+  onToggleFavorite: (id: string) => Promise<"login-required" | void>;
   lang: TransLang;
   isHighlighted?: boolean;
 }
 
 export function HadithCard({ hadith, isFavorite, onToggleFavorite, lang, isHighlighted }: HadithCardProps) {
   const [copied, setCopied] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const t = HADITH_TEXTS[lang];
   const translation = hadith.translations[lang] || hadith.translations.en;
 
@@ -42,6 +44,14 @@ export function HadithCard({ hadith, isFavorite, onToggleFavorite, lang, isHighl
       } catch {}
     }
     handleCopy();
+  };
+
+  const handleToggleFavorite = async () => {
+    const result = await onToggleFavorite(hadith.id);
+    if (result === "login-required") {
+      setShowLoginPrompt(true);
+      setTimeout(() => setShowLoginPrompt(false), 4000);
+    }
   };
 
   return (
@@ -92,7 +102,7 @@ export function HadithCard({ hadith, isFavorite, onToggleFavorite, lang, isHighl
           </div>
 
           {/* Action buttons */}
-          <div className="mt-4 flex items-center justify-center gap-1">
+          <div className="mt-4 flex items-center justify-center gap-1 relative">
             <button
               onClick={handleShare}
               className="rounded-full p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
@@ -109,18 +119,44 @@ export function HadithCard({ hadith, isFavorite, onToggleFavorite, lang, isHighl
             >
               {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
             </button>
-            <button
-              onClick={() => onToggleFavorite(hadith.id)}
-              className={cn(
-                "rounded-full p-2 transition-colors",
-                isFavorite
-                  ? "text-rose-500 hover:bg-rose-50"
-                  : "text-gray-400 hover:text-rose-500 hover:bg-rose-50"
-              )}
-              aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-            >
-              <Heart className={cn("h-4 w-4", isFavorite && "fill-rose-500")} />
-            </button>
+            <div className="relative">
+              <button
+                onClick={handleToggleFavorite}
+                className={cn(
+                  "rounded-full p-2 transition-colors",
+                  isFavorite
+                    ? "text-rose-500 hover:bg-rose-50"
+                    : "text-gray-400 hover:text-rose-500 hover:bg-rose-50"
+                )}
+                aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+              >
+                <Heart className={cn("h-4 w-4", isFavorite && "fill-rose-500")} />
+              </button>
+
+              {/* Login required tooltip */}
+              <AnimatePresence>
+                {showLoginPrompt && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 4, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 4, scale: 0.95 }}
+                    className="absolute bottom-full right-0 mb-2 z-50"
+                  >
+                    <div className="rounded-xl bg-gray-900 text-white shadow-xl px-4 py-3 text-xs whitespace-nowrap">
+                      <p className="font-medium mb-1.5">Login required to save favorites</p>
+                      <Link
+                        href="/auth/login"
+                        className="inline-flex items-center gap-1 rounded-md bg-emerald-600 px-2.5 py-1 text-[11px] font-medium text-white hover:bg-emerald-500 transition-colors"
+                      >
+                        <LogIn className="h-3 w-3" />
+                        Sign in
+                      </Link>
+                      <div className="absolute -bottom-1 right-4 h-2 w-2 rotate-45 bg-gray-900" />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </CardContent>
       </Card>

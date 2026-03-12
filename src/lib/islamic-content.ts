@@ -435,14 +435,16 @@ export const DUAS_PAGE_TEXTS: Record<TransLang, {
 // ─── Calendar Page Texts ───
 export const CALENDAR_PAGE_TEXTS: Record<TransLang, {
   subtitle: string;
+  calculatedDate: string;
+  adjustHint: string;
 }> = {
-  en: { subtitle: "Islamic (Hijri) Calendar" },
-  bn: { subtitle: "ইসলামী (হিজরী) ক্যালেন্ডার" },
-  ur: { subtitle: "اسلامی (ہجری) کیلنڈر" },
-  tr: { subtitle: "Islami (Hicri) Takvim" },
-  ms: { subtitle: "Kalendar Islam (Hijrah)" },
-  id: { subtitle: "Kalender Islam (Hijriah)" },
-  ar: { subtitle: "التقويم الإسلامي (الهجري)" },
+  en: { subtitle: "Islamic (Hijri) Calendar", calculatedDate: "Calculated date", adjustHint: "Adjust if your local moon sighting differs" },
+  bn: { subtitle: "ইসলামী (হিজরী) ক্যালেন্ডার", calculatedDate: "গণনাকৃত তারিখ", adjustHint: "আপনার স্থানীয় চাঁদ দেখার সাথে পার্থক্য থাকলে সামঞ্জস্য করুন" },
+  ur: { subtitle: "اسلامی (ہجری) کیلنڈر", calculatedDate: "حساب شدہ تاریخ", adjustHint: "اگر آپ کی مقامی رؤیت ہلال مختلف ہو تو ایڈجسٹ کریں" },
+  tr: { subtitle: "Islami (Hicri) Takvim", calculatedDate: "Hesaplanan tarih", adjustHint: "Yerel hilal gozetiminiz farkliysa ayarlayin" },
+  ms: { subtitle: "Kalendar Islam (Hijrah)", calculatedDate: "Tarikh dikira", adjustHint: "Laraskan jika cerapan anak bulan tempatan anda berbeza" },
+  id: { subtitle: "Kalender Islam (Hijriah)", calculatedDate: "Tanggal terhitung", adjustHint: "Sesuaikan jika pengamatan hilal lokal Anda berbeda" },
+  ar: { subtitle: "التقويم الإسلامي (الهجري)", calculatedDate: "التاريخ المحسوب", adjustHint: "اضبط إذا كانت رؤية الهلال المحلية مختلفة" },
 };
 
 // ─── Prayer Times Page Texts ───

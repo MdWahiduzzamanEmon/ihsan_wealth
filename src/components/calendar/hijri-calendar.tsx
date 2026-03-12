@@ -24,14 +24,24 @@ interface CalendarDay {
 
 interface HijriCalendarProps {
   onDateSelect?: (hijri: HijriDate, gregorian: Date) => void;
+  adjustment?: number;
 }
 
-export function HijriCalendar({ onDateSelect }: HijriCalendarProps) {
-  const todayHijri = useMemo(() => gregorianToHijri(new Date()), []);
-  const [currentMonth, setCurrentMonth] = useState(todayHijri.month);
-  const [currentYear, setCurrentYear] = useState(todayHijri.year);
+export function HijriCalendar({ onDateSelect, adjustment = 0 }: HijriCalendarProps) {
+  const todayHijri = useMemo(() => gregorianToHijri(new Date(), adjustment), [adjustment]);
+  // monthOffset from today's hijri month (0 = current month, +1 = next, -1 = prev)
+  const [monthOffset, setMonthOffset] = useState(0);
   const [direction, setDirection] = useState(0);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
+
+  // Derive absolute month/year from today + offset
+  const { currentMonth, currentYear } = useMemo(() => {
+    let m = todayHijri.month + monthOffset;
+    let y = todayHijri.year;
+    while (m > 12) { m -= 12; y += 1; }
+    while (m < 1) { m += 12; y -= 1; }
+    return { currentMonth: m, currentYear: y };
+  }, [todayHijri.month, todayHijri.year, monthOffset]);
 
   const monthName = getHijriMonthName(currentMonth);
   const daysInMonth = getDaysInHijriMonth(currentYear, currentMonth);
@@ -98,30 +108,18 @@ export function HijriCalendar({ onDateSelect }: HijriCalendarProps) {
   const goToPrevMonth = useCallback(() => {
     setDirection(-1);
     setSelectedDay(null);
-    if (currentMonth === 1) {
-      setCurrentMonth(12);
-      setCurrentYear((y) => y - 1);
-    } else {
-      setCurrentMonth((m) => m - 1);
-    }
-  }, [currentMonth]);
+    setMonthOffset((o) => o - 1);
+  }, []);
 
   const goToNextMonth = useCallback(() => {
     setDirection(1);
     setSelectedDay(null);
-    if (currentMonth === 12) {
-      setCurrentMonth(1);
-      setCurrentYear((y) => y + 1);
-    } else {
-      setCurrentMonth((m) => m + 1);
-    }
-  }, [currentMonth]);
+    setMonthOffset((o) => o + 1);
+  }, []);
 
   const goToToday = useCallback(() => {
-    const t = gregorianToHijri(new Date());
     setDirection(0);
-    setCurrentMonth(t.month);
-    setCurrentYear(t.year);
+    setMonthOffset(0);
     setSelectedDay(null);
   }, []);
 

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, BookOpen, Loader2, Play, Pause } from "lucide-react";
+import { ChevronDown, BookOpen, Loader2, Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { staggerItem } from "@/lib/animations";
 import type { Verse, QURAN_TEXTS } from "@/lib/quran-config";
 import { HAS_MAUDUDI_FOOTNOTES, TAFSIR_IDS } from "@/lib/quran-config";
@@ -16,21 +16,16 @@ interface VerseDisplayProps {
   onPlayVerse?: (verseNumber: number) => void;
 }
 
-// Extract footnote IDs from translation text like <sup foot_note="176997">1</sup>
 function extractFootnoteIds(text: string): string[] {
   const matches = text.matchAll(/foot_note="(\d+)"/g);
   return [...matches].map((m) => m[1]);
 }
 
-// Strip HTML tags but keep text
 function stripHtml(text: string): string {
   return text.replace(/<[^>]*>/g, "");
 }
 
-// Format plain text into readable paragraphs
-// Splits long text on sentence boundaries (~3-4 sentences per paragraph)
 function formatPlainText(text: string): string {
-  // If it already has HTML paragraph tags, return as-is
   if (text.includes("<p>") || text.includes("<div>")) {
     return text;
   }
@@ -38,14 +33,12 @@ function formatPlainText(text: string): string {
   const cleaned = text.trim();
   if (!cleaned) return "";
 
-  // Split on sentence-ending punctuation followed by space
   const sentences = cleaned.split(/(?<=[.!?।])\s+/);
 
   if (sentences.length <= 3) {
     return `<p>${cleaned}</p>`;
   }
 
-  // Group into paragraphs of ~3 sentences
   const paragraphs: string[] = [];
   for (let i = 0; i < sentences.length; i += 3) {
     const group = sentences.slice(i, i + 3).join(" ");
@@ -55,11 +48,45 @@ function formatPlainText(text: string): string {
   return paragraphs.map((p) => `<p>${p}</p>`).join("");
 }
 
+const LANG_TO_TTS: Record<string, string> = {
+  en: "en", bn: "bn", ur: "ur", ar: "ar", tr: "tr", ms: "ms", id: "id",
+};
+
+// Split text into chunks that fit within the TTS API limit (2000 chars)
+function splitIntoChunks(texts: string[]): string[] {
+  const MAX_LEN = 1800;
+  const chunks: string[] = [];
+  for (const raw of texts) {
+    const clean = stripHtml(raw).trim();
+    if (!clean) continue;
+    if (clean.length <= MAX_LEN) {
+      chunks.push(clean);
+    } else {
+      const sentences = clean.split(/(?<=[.!?।])\s+/);
+      let current = "";
+      for (const sentence of sentences) {
+        if (current.length + sentence.length + 1 > MAX_LEN) {
+          if (current) chunks.push(current.trim());
+          current = sentence;
+        } else {
+          current += (current ? " " : "") + sentence;
+        }
+      }
+      if (current) chunks.push(current.trim());
+    }
+  }
+  return chunks;
+}
+
 export function VerseDisplay({ verse, lang, t, isCurrentlyPlaying, onPlayVerse }: VerseDisplayProps) {
   const [tafsirOpen, setTafsirOpen] = useState(false);
   const [tafsirTexts, setTafsirTexts] = useState<string[]>([]);
   const [tafsirLoading, setTafsirLoading] = useState(false);
   const [tafsirFetched, setTafsirFetched] = useState(false);
+  const [tafsirPlaying, setTafsirPlaying] = useState(false);
+  const [tafsirAudioLoading, setTafsirAudioLoading] = useState(false);
+  const tafsirAudioRef = useRef<HTMLAudioElement | null>(null);
+  const cancelledRef = useRef(false);
 
   const rawTranslation = verse.translations?.[0]?.text || "";
   const cleanTranslation = stripHtml(rawTranslation);
@@ -67,6 +94,18 @@ export function VerseDisplay({ verse, lang, t, isCurrentlyPlaying, onPlayVerse }
   const footnoteIds = hasMaududiFootnotes ? extractFootnoteIds(rawTranslation) : [];
   const tafsirId = TAFSIR_IDS[lang];
   const hasTafsir = footnoteIds.length > 0 || (!hasMaududiFootnotes && tafsirId);
+
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      cancelledRef.current = true;
+      const audio = tafsirAudioRef.current;
+      if (audio) {
+        audio.pause();
+        audio.removeAttribute("src");
+      }
+    };
+  }, []);
 
   const fetchTafsir = useCallback(async () => {
     if (tafsirFetched) {
@@ -79,7 +118,6 @@ export function VerseDisplay({ verse, lang, t, isCurrentlyPlaying, onPlayVerse }
 
     try {
       if (hasMaududiFootnotes && footnoteIds.length > 0) {
-        // Fetch Maududi footnotes
         const results = await Promise.all(
           footnoteIds.map(async (id) => {
             const res = await fetch(`/api/quran?path=foot_notes/${id}`);
@@ -89,7 +127,6 @@ export function VerseDisplay({ verse, lang, t, isCurrentlyPlaying, onPlayVerse }
         );
         setTafsirTexts(results.filter(Boolean));
       } else if (tafsirId) {
-        // Fetch tafsir from tafsir endpoint
         const res = await fetch(
           `/api/quran?path=tafsirs/${tafsirId}/by_ayah/${verse.verse_key}`
         );
@@ -104,6 +141,72 @@ export function VerseDisplay({ verse, lang, t, isCurrentlyPlaying, onPlayVerse }
       setTafsirFetched(true);
     }
   }, [tafsirFetched, tafsirOpen, hasMaududiFootnotes, footnoteIds, tafsirId, verse.verse_key]);
+
+  const stopTafsirAudio = useCallback(() => {
+    cancelledRef.current = true;
+    const audio = tafsirAudioRef.current;
+    if (audio) {
+      audio.onended = null;
+      audio.onerror = null;
+      audio.pause();
+      audio.removeAttribute("src");
+      audio.load();
+    }
+    setTafsirPlaying(false);
+    setTafsirAudioLoading(false);
+  }, []);
+
+  // Play a single TTS chunk, returns promise that resolves when done
+  const playChunk = useCallback((text: string): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      if (!tafsirAudioRef.current) {
+        tafsirAudioRef.current = new Audio();
+      }
+      const audio = tafsirAudioRef.current;
+      audio.onended = null;
+      audio.onerror = null;
+      audio.pause();
+
+      const ttsLang = LANG_TO_TTS[lang] || "en";
+      const url = `/api/tts?lang=${ttsLang}&text=${encodeURIComponent(text)}&rate=-5%`;
+
+      audio.onended = () => resolve();
+      audio.onerror = () => reject(new Error("TTS failed"));
+      audio.src = url;
+      audio.play().catch(reject);
+    });
+  }, [lang]);
+
+  const handleListenTafsir = useCallback(async () => {
+    if (tafsirPlaying) {
+      stopTafsirAudio();
+      return;
+    }
+
+    if (tafsirTexts.length === 0) return;
+
+    const chunks = splitIntoChunks(tafsirTexts);
+    if (chunks.length === 0) return;
+
+    cancelledRef.current = false;
+    setTafsirPlaying(true);
+    setTafsirAudioLoading(true);
+
+    try {
+      for (let i = 0; i < chunks.length; i++) {
+        if (cancelledRef.current) break;
+        await playChunk(chunks[i]);
+        if (i === 0) setTafsirAudioLoading(false);
+      }
+    } catch {
+      // Playback error or cancelled
+    } finally {
+      if (!cancelledRef.current) {
+        setTafsirPlaying(false);
+      }
+      setTafsirAudioLoading(false);
+    }
+  }, [tafsirPlaying, tafsirTexts, playChunk, stopTafsirAudio]);
 
   return (
     <motion.div
@@ -184,7 +287,7 @@ export function VerseDisplay({ verse, lang, t, isCurrentlyPlaying, onPlayVerse }
                 className="overflow-hidden"
               >
                 <div className="mt-3 rounded-xl bg-gradient-to-b from-amber-50/60 to-emerald-50/40 border border-amber-200/40 p-5">
-                  {/* Tafsir header */}
+                  {/* Tafsir header with listen button */}
                   <div className="flex items-center gap-2 mb-4 pb-3 border-b border-amber-200/30">
                     <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-100">
                       <BookOpen className="h-3.5 w-3.5 text-amber-700" />
@@ -196,6 +299,27 @@ export function VerseDisplay({ verse, lang, t, isCurrentlyPlaying, onPlayVerse }
                       <span className="text-[10px] text-amber-600/70 ml-1">
                         — Tafhimul Quran
                       </span>
+                    )}
+
+                    {/* Listen to tafsir button */}
+                    {!tafsirLoading && tafsirTexts.length > 0 && (
+                      <button
+                        onClick={handleListenTafsir}
+                        className={`ml-auto inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${
+                          tafsirPlaying
+                            ? "text-amber-800 bg-amber-200/80 border border-amber-300 shadow-sm"
+                            : "text-amber-700 bg-amber-100/80 hover:bg-amber-200/80 border border-amber-200/60"
+                        }`}
+                      >
+                        {tafsirAudioLoading ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : tafsirPlaying ? (
+                          <VolumeX className="h-3 w-3" />
+                        ) : (
+                          <Volume2 className="h-3 w-3" />
+                        )}
+                        {tafsirPlaying ? t.stopTafsir : t.listenTafsir}
+                      </button>
                     )}
                   </div>
 
