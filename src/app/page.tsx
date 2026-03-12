@@ -2,14 +2,20 @@
 
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
+import { getLangFromCountry, type TransLang } from "@/lib/islamic-content";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { CalculatorWizard } from "@/components/calculator/calculator-wizard";
 import { BismillahBanner } from "@/components/islamic/bismillah-banner";
 import { HadithDuasSection } from "@/components/islamic/hadith-duas-section";
-import { ZakatEligibilitySection } from "@/components/islamic/zakat-eligibility-section";
 import { FeaturesGrid } from "@/components/layout/features-grid";
+import { HeroSection } from "@/components/home/hero-section";
+import { NextPrayerWidget } from "@/components/home/next-prayer-widget";
+import { LoggedInDashboard } from "@/components/home/logged-in-dashboard";
+import { PWAInstallGuide } from "@/components/home/pwa-install-guide";
+import { IhsanAIPromo } from "@/components/home/ihsan-ai-promo";
 import { SalatHomeWidget } from "@/components/salat-tracker/salat-home-widget";
+import { DonationAppeal } from "@/components/home/donation-appeal";
+import { OccasionBanner } from "@/components/home/occasion-banner";
 
 export default function Home() {
   const [formData] = useLocalStorage<ZakatFormData>(
@@ -18,36 +24,23 @@ export default function Home() {
   );
 
   const countryCode = formData.country;
+  const lang = getLangFromCountry(countryCode) as TransLang;
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20">
       <BismillahBanner countryCode={countryCode} />
       <Header countryCode={countryCode} />
       <main className="flex-1">
-        <CalculatorWizard />
-
-        {/* Decorative separator */}
-        <div className="mx-auto max-w-4xl px-4">
-          <div className="flex items-center gap-4 my-4">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-300/40 to-transparent" />
-            <div className="font-arabic text-emerald-300/50 text-lg">
-              &#10022;
-            </div>
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-300/40 to-transparent" />
-          </div>
-        </div>
-
-        {/* Salat Tracker Widget (logged-in users only) */}
+        <HeroSection lang={lang} />
+        <OccasionBanner lang={lang} countryCode={countryCode} />
+        <NextPrayerWidget lang={lang} />
+        <IhsanAIPromo lang={lang} />
         <SalatHomeWidget />
-
-        {/* Features Grid */}
-        <FeaturesGrid />
-
-        <HadithDuasSection countryCode={countryCode} />
+        <LoggedInDashboard lang={lang} countryCode={countryCode} />
 
         {/* Decorative separator */}
-        <div className="mx-auto max-w-4xl px-4">
-          <div className="flex items-center gap-4">
+        <div className="mx-auto max-w-5xl px-4">
+          <div className="flex items-center gap-4 my-2">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-300/40 to-transparent" />
             <div className="font-arabic text-emerald-300/50 text-lg">
               &#10022;
@@ -56,7 +49,10 @@ export default function Home() {
           </div>
         </div>
 
-        <ZakatEligibilitySection countryCode={countryCode} />
+        <FeaturesGrid />
+        <DonationAppeal lang={lang} />
+        <HadithDuasSection countryCode={countryCode} />
+        <PWAInstallGuide lang={lang} />
       </main>
       <Footer countryCode={countryCode} />
     </div>

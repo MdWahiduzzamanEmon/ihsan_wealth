@@ -1,6 +1,7 @@
 import { tool } from "@langchain/core/tools";
 import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { getLocalDateStr } from "@/lib/date-utils";
 
 const GRAMS_PER_OUNCE = 31.1035;
 const GOLD_NISAB_GRAMS = 87.48;
@@ -211,14 +212,14 @@ export function createSupabaseTools(supabase: SupabaseClient, userId: string) {
       parts.push(`\nTotal Sadaqah Given: ${sadaqahTotal} (${sadaqah?.length || 0} donations)`);
 
       // Salat stats
-      const today = new Date().toISOString().split("T")[0];
+      const today = getLocalDateStr();
       const weekAgo = new Date();
       weekAgo.setDate(weekAgo.getDate() - 6);
       const { data: salatRecords } = await supabase
         .from("salat_records")
         .select("date, prayer_name, prayer_type, status, in_jamaah, on_time")
         .eq("user_id", userId)
-        .gte("date", weekAgo.toISOString().split("T")[0])
+        .gte("date", getLocalDateStr(weekAgo))
         .order("date", { ascending: false })
         .limit(100);
 
@@ -286,21 +287,21 @@ export function createSupabaseTools(supabase: SupabaseClient, userId: string) {
 
   const getSalatRecords = tool(
     async ({ period, date }) => {
-      const today = new Date().toISOString().split("T")[0];
+      const today = getLocalDateStr();
       let startDate = today;
 
       if (period === "week") {
         const d = new Date();
         d.setDate(d.getDate() - 6);
-        startDate = d.toISOString().split("T")[0];
+        startDate = getLocalDateStr(d);
       } else if (period === "month") {
         const d = new Date();
         d.setDate(d.getDate() - 29);
-        startDate = d.toISOString().split("T")[0];
+        startDate = getLocalDateStr(d);
       } else if (period === "year") {
         const d = new Date();
         d.setFullYear(d.getFullYear() - 1);
-        startDate = d.toISOString().split("T")[0];
+        startDate = getLocalDateStr(d);
       }
 
       if (date) {

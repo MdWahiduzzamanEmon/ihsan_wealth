@@ -55,6 +55,24 @@ const T: Record<string, Record<TransLang, string>> = {
     ms: "Siapa Wajib Beri",
     id: "Siapa Wajib Memberi",
   },
+  tabEvidence: {
+    en: "Scholarly Evidence",
+    bn: "দলিল প্রমাণ",
+    ur: "علمی دلائل",
+    ar: "الأدلة الشرعية",
+    tr: "Ilmi Deliller",
+    ms: "Dalil Ilmiah",
+    id: "Dalil Ilmiah",
+  },
+  tabExclusions: {
+    en: "Who Cannot Receive",
+    bn: "যাকাত পাবে না",
+    ur: "مستثنیٰ",
+    ar: "من لا يستحق",
+    tr: "Kimler Alamaz",
+    ms: "Siapa Tidak Layak",
+    id: "Siapa Tidak Berhak",
+  },
   quranVerse: {
     en: "Zakah expenditures are only for the poor and for the needy and for those employed for it and for bringing hearts together and for freeing captives and for those in debt and for the cause of Allah and for the [stranded] traveler — an obligation by Allah. And Allah is Knowing and Wise.",
     bn: "যাকাত শুধুমাত্র ফকির, মিসকিন, এর কর্মচারী, অন্তর আকৃষ্ট করার জন্য, দাসমুক্তি, ঋণগ্রস্ত, আল্লাহর পথে এবং বিপদগ্রস্ত মুসাফিরদের জন্য — আল্লাহর পক্ষ থেকে ফরয। আল্লাহ সর্বজ্ঞ, প্রজ্ঞাময়।",
@@ -118,6 +136,51 @@ const T: Record<string, Record<TransLang, string>> = {
     ms: "Jika semua syarat di atas terpakai pada anda, maka zakat wajib (fardhu) ke atas anda. Gunakan kalkulator kami untuk menentukan jumlah tepat anda.",
     id: "Jika semua syarat di atas berlaku bagi Anda, maka zakat wajib (fardhu) atas Anda. Gunakan kalkulator kami untuk menentukan jumlah pasti Anda.",
   },
+  scholarlyEvidence: {
+    en: "Supporting Evidence from Quran & Sunnah",
+    bn: "কুরআন ও সুন্নাহ থেকে প্রমাণ",
+    ur: "قرآن و سنت سے دلائل",
+    ar: "أدلة من القرآن والسنة",
+    tr: "Kuran ve Sunnetten Deliller",
+    ms: "Dalil dari Al-Quran & Sunnah",
+    id: "Dalil dari Al-Quran & Sunnah",
+  },
+  showEvidence: {
+    en: "Show Scholarly Evidence",
+    bn: "দলিল দেখুন",
+    ur: "دلائل دکھائیں",
+    ar: "عرض الأدلة",
+    tr: "Delilleri Goster",
+    ms: "Tunjukkan Dalil",
+    id: "Tampilkan Dalil",
+  },
+  hideEvidence: {
+    en: "Hide Evidence",
+    bn: "দলিল লুকান",
+    ur: "دلائل چھپائیں",
+    ar: "إخفاء الأدلة",
+    tr: "Delilleri Gizle",
+    ms: "Sembunyikan Dalil",
+    id: "Sembunyikan Dalil",
+  },
+  fromQuran: {
+    en: "From the Quran",
+    bn: "কুরআন থেকে",
+    ur: "قرآن سے",
+    ar: "من القرآن",
+    tr: "Kuran'dan",
+    ms: "Dari Al-Quran",
+    id: "Dari Al-Quran",
+  },
+  fromSunnah: {
+    en: "From the Sunnah",
+    bn: "সুন্নাহ থেকে",
+    ur: "سنت سے",
+    ar: "من السنة",
+    tr: "Sunnetten",
+    ms: "Dari Sunnah",
+    id: "Dari Sunnah",
+  },
 };
 
 /* ─── Translated Recipients ─── */
@@ -129,6 +192,8 @@ interface RecipientData {
   description: Record<TransLang, string>;
   canReceive: Record<TransLang, string[]>;
   cannotReceive: Record<TransLang, string[]>;
+  arabicEvidence?: string;
+  evidenceSource?: Record<TransLang, string>;
 }
 
 const ZAKAT_RECIPIENTS: RecipientData[] = [
@@ -167,6 +232,11 @@ const ZAKAT_RECIPIENTS: RecipientData[] = [
       ms: ["Memiliki harta melebihi nisab", "Mempunyai pendapatan mencukupi untuk keperluan asas"],
       id: ["Memiliki harta di atas nisab", "Memiliki penghasilan cukup untuk kebutuhan dasar"],
     },
+    arabicEvidence: "لِلْفُقَرَاءِ الَّذِينَ أُحْصِرُوا فِي سَبِيلِ اللَّهِ لَا يَسْتَطِيعُونَ ضَرْبًا فِي الْأَرْضِ",
+    evidenceSource: {
+      en: "Quran 2:273", bn: "কুরআন ২:২৭৩", ur: "قرآن ۲:۲۷۳", ar: "القرآن ٢:٢٧٣",
+      tr: "Kuran 2:273", ms: "Al-Quran 2:273", id: "Al-Quran 2:273",
+    },
   },
   {
     arabic: "المساكين",
@@ -202,6 +272,11 @@ const ZAKAT_RECIPIENTS: RecipientData[] = [
       tr: ["Nisab uzerinde serveti var", "Tum temel ihtiyaclarini rahatca karsilayabilir"],
       ms: ["Memiliki harta melebihi nisab", "Dapat memenuhi semua keperluan asas dengan selesa"],
       id: ["Memiliki harta di atas nisab", "Dapat memenuhi semua kebutuhan dasar dengan nyaman"],
+    },
+    arabicEvidence: "أَمَّا السَّفِينَةُ فَكَانَتْ لِمَسَاكِينَ يَعْمَلُونَ فِي الْبَحْرِ",
+    evidenceSource: {
+      en: "Quran 18:79", bn: "কুরআন ১৮:৭৯", ur: "قرآن ۱۸:۷۹", ar: "القرآن ١٨:٧٩",
+      tr: "Kuran 18:79", ms: "Al-Quran 18:79", id: "Al-Quran 18:79",
     },
   },
   {
@@ -239,6 +314,11 @@ const ZAKAT_RECIPIENTS: RecipientData[] = [
       ms: ["Melantik diri sendiri tanpa kebenaran", "Sudah menerima gaji mencukupi daripada sumber lain"],
       id: ["Menunjuk diri sendiri tanpa wewenang", "Sudah menerima gaji cukup dari sumber lain"],
     },
+    arabicEvidence: "وَالْعَامِلِينَ عَلَيْهَا",
+    evidenceSource: {
+      en: "Quran 9:60", bn: "কুরআন ৯:৬০", ur: "قرآن ۹:۶۰", ar: "القرآن ٩:٦٠",
+      tr: "Kuran 9:60", ms: "Al-Quran 9:60", id: "Al-Quran 9:60",
+    },
   },
   {
     arabic: "المؤلفة قلوبهم",
@@ -274,6 +354,11 @@ const ZAKAT_RECIPIENTS: RecipientData[] = [
       tr: ["Destege ihtiyaci olmayan zengin yeni Muslumanlar", "Samimiyetsiz amaclar icin"],
       ms: ["Mualaf kaya yang tidak memerlukan sokongan", "Tujuan yang tidak ikhlas"],
       id: ["Mualaf kaya yang tidak membutuhkan dukungan", "Tujuan yang tidak tulus"],
+    },
+    arabicEvidence: "وَالْمُؤَلَّفَةِ قُلُوبُهُمْ",
+    evidenceSource: {
+      en: "Quran 9:60", bn: "কুরআন ৯:৬০", ur: "قرآن ۹:۶۰", ar: "القرآن ٩:٦٠",
+      tr: "Kuran 9:60", ms: "Al-Quran 9:60", id: "Al-Quran 9:60",
     },
   },
   {
@@ -311,6 +396,11 @@ const ZAKAT_RECIPIENTS: RecipientData[] = [
       ms: ["Penjenayah yang dipenjara dengan adil", "Tidak dalam apa-apa bentuk perhambaan"],
       id: ["Penjahat yang dipenjara secara adil", "Tidak dalam bentuk perbudakan apa pun"],
     },
+    arabicEvidence: "وَفِي الرِّقَابِ",
+    evidenceSource: {
+      en: "Quran 9:60", bn: "কুরআন ৯:৬০", ur: "قرآن ۹:۶۰", ar: "القرآن ٩:٦٠",
+      tr: "Kuran 9:60", ms: "Al-Quran 9:60", id: "Al-Quran 9:60",
+    },
   },
   {
     arabic: "الغارمين",
@@ -346,6 +436,11 @@ const ZAKAT_RECIPIENTS: RecipientData[] = [
       tr: ["Haram amaclar icin borc (kumar, alkol)", "Borcunu odeyebilecek zengin kisi", "Kasitli olarak geri odemekten kacinan"],
       ms: ["Hutang untuk tujuan haram (judi, arak)", "Orang kaya yang mampu membayar hutang", "Sengaja mengelak pembayaran"],
       id: ["Hutang untuk tujuan haram (judi, alkohol)", "Orang kaya yang mampu melunasi hutang", "Sengaja menghindari pembayaran"],
+    },
+    arabicEvidence: "وَالْغَارِمِينَ",
+    evidenceSource: {
+      en: "Quran 9:60", bn: "কুরআন ৯:৬০", ur: "قرآن ۹:۶۰", ar: "القرآن ٩:٦٠",
+      tr: "Kuran 9:60", ms: "Al-Quran 9:60", id: "Al-Quran 9:60",
     },
   },
   {
@@ -383,6 +478,11 @@ const ZAKAT_RECIPIENTS: RecipientData[] = [
       ms: ["Individu kaya yang melakukan kerja sukarela", "Projek yang mempunyai dana mencukupi"],
       id: ["Individu kaya yang bekerja sukarela", "Proyek yang sudah cukup dana"],
     },
+    arabicEvidence: "وَأَنفِقُوا فِي سَبِيلِ اللَّهِ",
+    evidenceSource: {
+      en: "Quran 2:195", bn: "কুরআন ২:১৯৫", ur: "قرآن ۲:۱۹۵", ar: "القرآن ٢:١٩٥",
+      tr: "Kuran 2:195", ms: "Al-Quran 2:195", id: "Al-Quran 2:195",
+    },
   },
   {
     arabic: "ابن السبيل",
@@ -418,6 +518,131 @@ const ZAKAT_RECIPIENTS: RecipientData[] = [
       tr: ["Haram amaclarla seyahat eden", "Fonlarina erisebildigi halde kullanmayan", "Kaynaklara sahip zengin yolcu"],
       ms: ["Bermusafir untuk tujuan haram", "Mempunyai akses kepada dana tetapi tidak mahu menggunakan", "Musafir kaya yang mempunyai sumber"],
       id: ["Bepergian untuk tujuan haram", "Memiliki akses dana tapi tidak mau menggunakan", "Musafir kaya yang memiliki sumber daya"],
+    },
+    arabicEvidence: "وَابْنِ السَّبِيلِ",
+    evidenceSource: {
+      en: "Quran 9:60", bn: "কুরআন ৯:৬০", ur: "قرآن ۹:۶۰", ar: "القرآن ٩:٦٠",
+      tr: "Kuran 9:60", ms: "Al-Quran 9:60", id: "Al-Quran 9:60",
+    },
+  },
+];
+
+/* ─── Scholarly Evidence ─── */
+interface ScholarlyEvidence {
+  arabic: string;
+  source: string;
+  type: "quran" | "hadith";
+  translation: Record<TransLang, string>;
+  reference: Record<TransLang, string>;
+}
+
+const SCHOLARLY_EVIDENCE: ScholarlyEvidence[] = [
+  {
+    arabic: "وَأَقِيمُوا الصَّلَاةَ وَآتُوا الزَّكَاةَ وَارْكَعُوا مَعَ الرَّاكِعِينَ",
+    source: "2:43",
+    type: "quran",
+    translation: {
+      en: "And establish prayer and give Zakat and bow with those who bow [in worship].",
+      bn: "এবং নামায কায়েম কর, যাকাত দাও এবং রুকুকারীদের সাথে রুকু কর।",
+      ur: "اور نماز قائم کرو اور زکوٰۃ دو اور رکوع کرنے والوں کے ساتھ رکوع کرو۔",
+      ar: "وأقيموا الصلاة وآتوا الزكاة واركعوا مع الراكعين.",
+      tr: "Namazi kilin, zekati verin ve rueku edenlerle birlikte rueku edin.",
+      ms: "Dan dirikanlah solat, tunaikanlah zakat dan rukuklah bersama orang-orang yang rukuk.",
+      id: "Dan dirikanlah shalat, tunaikanlah zakat, dan rukuklah beserta orang-orang yang rukuk.",
+    },
+    reference: {
+      en: "Surah Al-Baqarah 2:43", bn: "সূরা আল-বাকারা ২:৪৩", ur: "سورۃ البقرۃ ۲:۴۳", ar: "سورة البقرة ٢:٤٣",
+      tr: "Bakara Suresi 2:43", ms: "Surah Al-Baqarah 2:43", id: "Surah Al-Baqarah 2:43",
+    },
+  },
+  {
+    arabic: "خُذْ مِنْ أَمْوَالِهِمْ صَدَقَةً تُطَهِّرُهُمْ وَتُزَكِّيهِم بِهَا",
+    source: "9:103",
+    type: "quran",
+    translation: {
+      en: "Take from their wealth a charity by which you purify them and cause them increase.",
+      bn: "তাদের সম্পদ থেকে সদকা গ্রহণ কর, যা তাদের পবিত্র ও পরিশুদ্ধ করবে।",
+      ur: "ان کے مال سے صدقہ لو جو انہیں پاک اور بابرکت کرے۔",
+      ar: "خذ من أموالهم صدقة تطهرهم وتزكيهم بها.",
+      tr: "Mallarindan, onlari temizleyecek ve aritacak bir sadaka (zekat) al.",
+      ms: "Ambillah zakat dari harta mereka yang membersihkan dan menyucikan mereka.",
+      id: "Ambillah zakat dari sebagian harta mereka, yang membersihkan dan menyucikan mereka.",
+    },
+    reference: {
+      en: "Surah At-Tawbah 9:103", bn: "সূরা আত-তাওবা ৯:১০৩", ur: "سورۃ التوبۃ ۹:۱۰۳", ar: "سورة التوبة ٩:١٠٣",
+      tr: "Tevbe Suresi 9:103", ms: "Surah At-Taubah 9:103", id: "Surah At-Taubah 9:103",
+    },
+  },
+  {
+    arabic: "يَا أَيُّهَا الَّذِينَ آمَنُوا أَنفِقُوا مِن طَيِّبَاتِ مَا كَسَبْتُمْ",
+    source: "2:267",
+    type: "quran",
+    translation: {
+      en: "O you who have believed, spend from the good things which you have earned.",
+      bn: "হে ঈমানদারগণ! তোমরা যা উপার্জন করেছ তার উত্তম অংশ থেকে ব্যয় কর।",
+      ur: "اے ایمان والو! اپنی کمائی کی اچھی چیزوں سے خرچ کرو۔",
+      ar: "يا أيها الذين آمنوا أنفقوا من طيبات ما كسبتم.",
+      tr: "Ey iman edenler! Kazandiklarinizin iyilerinden infak edin.",
+      ms: "Wahai orang-orang yang beriman! Belanjakanlah dari yang baik-baik daripada apa yang kamu usahakan.",
+      id: "Wahai orang-orang yang beriman! Nafkahkanlah dari yang baik-baik dari apa yang kamu usahakan.",
+    },
+    reference: {
+      en: "Surah Al-Baqarah 2:267", bn: "সূরা আল-বাকারা ২:২৬৭", ur: "سورۃ البقرۃ ۲:۲۶۷", ar: "سورة البقرة ٢:٢٦٧",
+      tr: "Bakara Suresi 2:267", ms: "Surah Al-Baqarah 2:267", id: "Surah Al-Baqarah 2:267",
+    },
+  },
+  {
+    arabic: "وَفِي أَمْوَالِهِمْ حَقٌّ لِّلسَّائِلِ وَالْمَحْرُومِ",
+    source: "51:19",
+    type: "quran",
+    translation: {
+      en: "And in their wealth there was a right for the beggar and the deprived.",
+      bn: "এবং তাদের সম্পদে ছিল প্রার্থী ও বঞ্চিতদের হক।",
+      ur: "اور ان کے مالوں میں سائل اور محروم کا حق تھا۔",
+      ar: "وفي أموالهم حق للسائل والمحروم.",
+      tr: "Mallarinda isteyenin ve mahrumun hakki vardi.",
+      ms: "Dan pada harta mereka ada hak untuk orang yang meminta dan orang yang tidak mendapat.",
+      id: "Dan pada harta mereka ada hak bagi orang yang meminta dan orang yang tidak mendapat.",
+    },
+    reference: {
+      en: "Surah Adh-Dhariyat 51:19", bn: "সূরা আয-যারিয়াত ৫১:১৯", ur: "سورۃ الذاریات ۵۱:۱۹", ar: "سورة الذاريات ٥١:١٩",
+      tr: "Zariyat Suresi 51:19", ms: "Surah Adz-Dzariyat 51:19", id: "Surah Adz-Dzariyat 51:19",
+    },
+  },
+  {
+    arabic: "مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ",
+    source: "Muslim 2588",
+    type: "hadith",
+    translation: {
+      en: "Charity does not decrease wealth.",
+      bn: "দান-সদকা সম্পদ কমায় না।",
+      ur: "صدقہ مال کو کم نہیں کرتا۔",
+      ar: "ما نقصت صدقة من مال.",
+      tr: "Sadaka mali eksiltmez.",
+      ms: "Sedekah tidak mengurangkan harta.",
+      id: "Sedekah tidak mengurangi harta.",
+    },
+    reference: {
+      en: "Sahih Muslim 2588", bn: "সহীহ মুসলিম ২৫৮৮", ur: "صحیح مسلم ۲۵۸۸", ar: "صحيح مسلم ٢٥٨٨",
+      tr: "Sahih Muslim 2588", ms: "Sahih Muslim 2588", id: "Shahih Muslim 2588",
+    },
+  },
+  {
+    arabic: "بُنِيَ الإِسْلاَمُ عَلَى خَمْسٍ شَهَادَةِ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَأَنَّ مُحَمَّدًا رَسُولُ اللَّهِ وَإِقَامِ الصَّلاَةِ وَإِيتَاءِ الزَّكَاةِ وَالْحَجِّ وَصَوْمِ رَمَضَانَ",
+    source: "Bukhari 8",
+    type: "hadith",
+    translation: {
+      en: "Islam is built upon five pillars: testifying that there is no god but Allah and Muhammad is the Messenger of Allah, establishing prayer, giving Zakat, making pilgrimage, and fasting in Ramadan.",
+      bn: "ইসলাম পাঁচটি স্তম্ভের উপর প্রতিষ্ঠিত: সাক্ষ্য দেওয়া যে আল্লাহ ছাড়া কোনো ইলাহ নেই এবং মুহাম্মদ আল্লাহর রাসূল, নামায কায়েম করা, যাকাত দেওয়া, হজ্জ করা এবং রমযানে রোযা রাখা।",
+      ur: "اسلام پانچ ستونوں پر قائم ہے: گواہی دینا کہ اللہ کے سوا کوئی معبود نہیں اور محمد اللہ کے رسول ہیں، نماز قائم کرنا، زکوٰۃ دینا، حج کرنا اور رمضان کے روزے رکھنا۔",
+      ar: "بني الإسلام على خمس: شهادة أن لا إله إلا الله وأن محمداً رسول الله، وإقام الصلاة، وإيتاء الزكاة، والحج، وصوم رمضان.",
+      tr: "Islam bes esas uzerine kurulmustur: Allah'tan baska ilah olmadigina ve Muhammed'in O'nun elcisi olduguna sehadet etmek, namaz kilmak, zekat vermek, hacca gitmek ve Ramazan orucu tutmak.",
+      ms: "Islam didirikan atas lima perkara: mengucap syahadah bahawa tiada tuhan selain Allah dan Muhammad adalah Rasul Allah, mendirikan solat, menunaikan zakat, mengerjakan haji, dan berpuasa di bulan Ramadan.",
+      id: "Islam dibangun atas lima perkara: bersaksi bahwa tiada tuhan selain Allah dan Muhammad adalah utusan Allah, mendirikan shalat, menunaikan zakat, melaksanakan haji, dan berpuasa di bulan Ramadan.",
+    },
+    reference: {
+      en: "Sahih al-Bukhari 8", bn: "সহীহ আল-বুখারী ৮", ur: "صحیح البخاری ۸", ar: "صحيح البخاري ٨",
+      tr: "Sahih el-Buhari 8", ms: "Sahih al-Bukhari 8", id: "Shahih al-Bukhari 8",
     },
   },
 ];
@@ -631,8 +856,8 @@ interface ZakatEligibilitySectionProps {
   countryCode?: string;
 }
 
-export function ZakatEligibilitySection({ countryCode = "US" }: ZakatEligibilitySectionProps) {
-  const [activeTab, setActiveTab] = useState<"recipients" | "givers">("recipients");
+export function ZakatEligibilitySection({ countryCode = "BD" }: ZakatEligibilitySectionProps) {
+  const [activeTab, setActiveTab] = useState<"recipients" | "givers" | "evidence" | "exclusions">("recipients");
   const [expandedCard, setExpandedCard] = useState<number | null>(null);
   const lang = getLangFromCountry(countryCode);
   const isRtl = lang === "ar" || lang === "ur";
@@ -653,7 +878,7 @@ export function ZakatEligibilitySection({ countryCode = "US" }: ZakatEligibility
       </div>
 
       {/* Tabs */}
-      <div className="flex justify-center gap-2 mb-6 px-1">
+      <div className="flex flex-wrap justify-center gap-2 mb-6 px-1">
         <button
           onClick={() => setActiveTab("recipients")}
           className={cn(
@@ -680,9 +905,35 @@ export function ZakatEligibilitySection({ countryCode = "US" }: ZakatEligibility
           <span>{T.tabGivers[lang]}</span>
           <span className="font-arabic text-[10px] sm:text-xs opacity-70 hidden sm:inline">واجب</span>
         </button>
+        <button
+          onClick={() => setActiveTab("evidence")}
+          className={cn(
+            "flex items-center gap-1.5 sm:gap-2 rounded-full px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-medium transition-all",
+            activeTab === "evidence"
+              ? "bg-emerald-700 text-white shadow-md shadow-emerald-200"
+              : "bg-white text-gray-600 border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50"
+          )}
+        >
+          <BookOpen className="h-4 w-4" />
+          <span>{T.tabEvidence[lang]}</span>
+          <span className="font-arabic text-[10px] sm:text-xs opacity-70 hidden sm:inline">أدلة</span>
+        </button>
+        <button
+          onClick={() => setActiveTab("exclusions")}
+          className={cn(
+            "flex items-center gap-1.5 sm:gap-2 rounded-full px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-medium transition-all",
+            activeTab === "exclusions"
+              ? "bg-emerald-700 text-white shadow-md shadow-emerald-200"
+              : "bg-white text-gray-600 border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50"
+          )}
+        >
+          <XCircle className="h-4 w-4" />
+          <span>{T.tabExclusions[lang]}</span>
+          <span className="font-arabic text-[10px] sm:text-xs opacity-70 hidden sm:inline">مستثنیٰ</span>
+        </button>
       </div>
 
-      {activeTab === "recipients" ? (
+      {activeTab === "recipients" && (
         <motion.div
           variants={staggerContainer}
           initial="initial"
@@ -769,6 +1020,19 @@ export function ZakatEligibilitySection({ countryCode = "US" }: ZakatEligibility
                         className="border-t border-gray-100 px-3 sm:px-4 pb-3 sm:pb-4 pt-3"
                         dir={isRtl ? "rtl" : "ltr"}
                       >
+                        {recipient.arabicEvidence && (
+                          <div className="mb-3 rounded-lg bg-amber-50/60 border border-amber-100 px-3 py-2.5 text-center">
+                            <p className="font-arabic text-sm text-amber-800/70 leading-loose" dir="rtl">
+                              {recipient.arabicEvidence}
+                            </p>
+                            {recipient.evidenceSource && (
+                              <p className="text-[10px] text-amber-600/50 mt-1 font-medium">
+                                — {recipient.evidenceSource[lang]}
+                              </p>
+                            )}
+                          </div>
+                        )}
+
                         <div className="mb-3">
                           <h4 className="text-xs font-semibold text-emerald-700 mb-1.5 flex items-center gap-1">
                             <CheckCircle className="h-3 w-3" /> {T.canReceiveIf[lang]}
@@ -803,27 +1067,10 @@ export function ZakatEligibilitySection({ countryCode = "US" }: ZakatEligibility
             ))}
           </div>
 
-          {/* General exclusions */}
-          <motion.div variants={staggerItem} className="mt-5">
-            <Card className="border-red-200 bg-red-50/50">
-              <CardContent className="p-4 sm:p-5">
-                <h3 className="text-sm font-bold text-red-800 mb-3 flex items-center gap-2">
-                  <XCircle className="h-4 w-4" />
-                  {T.cannotReceiveTitle[lang]}
-                </h3>
-                <ul className="space-y-2">
-                  {CANNOT_RECEIVE.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-sm text-red-700/80">
-                      <item.icon className="h-4 w-4 shrink-0 mt-0.5 text-red-400" />
-                      {item.text[lang]}
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          </motion.div>
         </motion.div>
-      ) : (
+      )}
+
+      {activeTab === "givers" && (
         <motion.div
           variants={staggerContainer}
           initial="initial"
@@ -899,6 +1146,102 @@ export function ZakatEligibilitySection({ countryCode = "US" }: ZakatEligibility
               </CardContent>
             </Card>
           </motion.div>
+        </motion.div>
+      )}
+
+      {activeTab === "evidence" && (
+        <motion.div
+          variants={staggerContainer}
+          initial="initial"
+          animate="animate"
+          key="evidence"
+        >
+          {/* Section heading */}
+          <motion.div variants={staggerItem} className="mb-5">
+            <div className="rounded-xl bg-gradient-to-br from-amber-50 to-white border border-amber-200 p-4 sm:p-5 text-center">
+              <BookOpen className="h-5 w-5 text-amber-600 mx-auto mb-2" />
+              <h3 className="text-sm font-bold text-amber-900">{T.scholarlyEvidence[lang]}</h3>
+            </div>
+          </motion.div>
+
+          {/* Quran evidence */}
+          <motion.div variants={staggerItem} className="mb-5">
+            <h4 className="text-xs font-semibold text-emerald-700 mb-2 flex items-center gap-1.5">
+              <BookOpen className="h-3.5 w-3.5" />
+              {T.fromQuran[lang]}
+            </h4>
+            <div className="space-y-2.5">
+              {SCHOLARLY_EVIDENCE.filter((e) => e.type === "quran").map((evidence, i) => (
+                <div key={i} className="rounded-lg border border-emerald-100 bg-white p-3 sm:p-4">
+                  <p className="font-arabic text-sm sm:text-base text-amber-800/80 leading-loose text-center mb-2" dir="rtl">
+                    {evidence.arabic}
+                  </p>
+                  <p className="text-xs text-gray-600 italic text-center leading-relaxed" dir={isRtl ? "rtl" : "ltr"}>
+                    &ldquo;{evidence.translation[lang]}&rdquo;
+                  </p>
+                  <p className="text-[10px] text-emerald-600/60 text-center mt-1.5 font-medium">
+                    — {evidence.reference[lang]}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Hadith evidence */}
+          <motion.div variants={staggerItem}>
+            <h4 className="text-xs font-semibold text-emerald-700 mb-2 flex items-center gap-1.5">
+              <Scale className="h-3.5 w-3.5" />
+              {T.fromSunnah[lang]}
+            </h4>
+            <div className="space-y-2.5">
+              {SCHOLARLY_EVIDENCE.filter((e) => e.type === "hadith").map((evidence, i) => (
+                <div key={i} className="rounded-lg border border-amber-100 bg-gradient-to-br from-amber-50/30 to-white p-3 sm:p-4">
+                  <p className="font-arabic text-sm sm:text-base text-amber-800/80 leading-loose text-center mb-2" dir="rtl">
+                    {evidence.arabic}
+                  </p>
+                  <p className="text-xs text-gray-600 italic text-center leading-relaxed" dir={isRtl ? "rtl" : "ltr"}>
+                    &ldquo;{evidence.translation[lang]}&rdquo;
+                  </p>
+                  <p className="text-[10px] text-amber-600/60 text-center mt-1.5 font-medium">
+                    — {evidence.reference[lang]}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+
+      {activeTab === "exclusions" && (
+        <motion.div
+          variants={staggerContainer}
+          initial="initial"
+          animate="animate"
+          key="exclusions"
+        >
+          {/* Section heading */}
+          <motion.div variants={staggerItem} className="mb-5">
+            <div className="rounded-xl bg-gradient-to-br from-red-50 to-white border border-red-200 p-4 sm:p-5 text-center">
+              <XCircle className="h-5 w-5 text-red-500 mx-auto mb-2" />
+              <h3 className="text-sm font-bold text-red-800">{T.cannotReceiveTitle[lang]}</h3>
+            </div>
+          </motion.div>
+
+          {/* Exclusion cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {CANNOT_RECEIVE.map((item, i) => (
+              <motion.div key={i} variants={staggerItem}>
+                <Card className="border-l-4 border-l-red-400 bg-red-50/30 hover:shadow-md transition-shadow h-full" style={isRtl ? { borderLeftWidth: 0, borderRightWidth: 4, borderRightColor: "#f87171" } : {}}>
+                  <CardContent className="p-4 sm:p-5">
+                    <div className="flex items-start gap-3">
+                      <item.icon className="h-5 w-5 shrink-0 mt-0.5 text-red-400" />
+                      <p className="text-sm text-red-700/80 leading-relaxed">{item.text[lang]}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
       )}
     </section>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Copy, Check, ChevronDown, ChevronUp } from "lucide-react";
 
 const PHONE = "01703459656";
@@ -38,7 +39,7 @@ export function SupportBanner() {
           onClick={() => handleCopy("bkash")}
           className="group flex flex-col items-center gap-1.5 rounded-lg bg-[#E2136E]/15 border border-[#E2136E]/30 hover:border-[#E2136E]/50 hover:bg-[#E2136E]/20 px-3 py-3 transition-all"
         >
-          <span className="text-xs font-bold text-[#E2136E] tracking-wide">bKash</span>
+          <Image src="/bkash-logo.png" alt="bKash" width={72} height={28} className="h-7 w-auto object-contain" />
           <span className="text-[11px] text-white/90 font-mono">{PHONE_DISPLAY}</span>
           <span className="text-[9px] text-emerald-300/60">(পার্সোনাল)</span>
           <span className="inline-flex items-center gap-1 text-[10px] text-emerald-200/70 mt-0.5">
@@ -55,7 +56,7 @@ export function SupportBanner() {
           onClick={() => handleCopy("nagad")}
           className="group flex flex-col items-center gap-1.5 rounded-lg bg-[#F6921E]/15 border border-[#F6921E]/30 hover:border-[#F6921E]/50 hover:bg-[#F6921E]/20 px-3 py-3 transition-all"
         >
-          <span className="text-xs font-bold text-[#F6921E] tracking-wide">Nagad</span>
+          <Image src="/nagad-logo.png" alt="Nagad" width={72} height={28} className="h-7 w-auto object-contain" />
           <span className="text-[11px] text-white/90 font-mono">{PHONE_DISPLAY}</span>
           <span className="text-[9px] text-emerald-300/60">(পার্সোনাল)</span>
           <span className="inline-flex items-center gap-1 text-[10px] text-emerald-200/70 mt-0.5">

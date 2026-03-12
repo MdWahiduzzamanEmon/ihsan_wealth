@@ -84,8 +84,8 @@ export interface AssetBreakdown {
 }
 
 export const DEFAULT_FORM_DATA: ZakatFormData = {
-  country: "US",
-  currency: "USD",
+  country: "BD",
+  currency: "BDT",
   cashOnHand: 0,
   bankSavings: 0,
   otherCashEquivalents: 0,

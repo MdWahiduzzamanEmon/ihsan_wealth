@@ -3,6 +3,7 @@
 import type { ZakatResult } from "@/types/zakat";
 import { formatCurrency } from "@/lib/format";
 import { COUNTRIES } from "@/lib/constants";
+import { formatHijriDate } from "@/lib/hijri-utils";
 
 // Generic data shape that works for both live results and history records
 export interface CertificateData {
@@ -48,22 +49,12 @@ export function ZakatCertificate({ result, currency, nisabBasis, countryCode, ca
   const country = COUNTRIES.find((c) => c.code === countryCode);
   const currencySymbol = country?.currencySymbol || "$";
   const dateObj = calculatedDate ? new Date(calculatedDate) : new Date();
-  const hijriFormatter = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
   const gregorianDate = dateObj.toLocaleDateString("en-US", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
-  let hijriDate = "";
-  try {
-    hijriDate = hijriFormatter.format(dateObj);
-  } catch {
-    hijriDate = "";
-  }
+  const hijriDate = formatHijriDate(dateObj, countryCode);
 
   return (
     <div

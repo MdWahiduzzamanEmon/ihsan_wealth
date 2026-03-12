@@ -396,3 +396,22 @@ export function getSalatDateContext(date: Date = new Date(), countryCode?: strin
       : null,
   };
 }
+
+/**
+ * Format a Hijri date as a display string, e.g. "23 Ramadan 1447 AH" / "٢٣ رمضان ١٤٤٧ هـ".
+ * Uses the unified gregorianToHijri with country adjustment.
+ */
+export function formatHijriDate(date: Date, countryCode?: string): string {
+  const adjustment = countryCode ? getHijriAdjustment(countryCode) : 0;
+  const hijri = gregorianToHijri(date, adjustment);
+  const monthName = getHijriMonthName(hijri.month);
+  return `${hijri.day} ${monthName.english} ${hijri.year} AH`;
+}
+
+/** Format Hijri date with Arabic month name. */
+export function formatHijriDateArabic(date: Date, countryCode?: string): string {
+  const adjustment = countryCode ? getHijriAdjustment(countryCode) : 0;
+  const hijri = gregorianToHijri(date, adjustment);
+  const monthName = getHijriMonthName(hijri.month);
+  return `${hijri.day} ${monthName.arabic} ${hijri.year} هـ`;
+}

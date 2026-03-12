@@ -50,7 +50,7 @@ export interface AppFeature {
 export const APP_FEATURES: AppFeature[] = [
   {
     id: "calculator",
-    href: "/",
+    href: "/calculator",
     icon: Calculator,
     iconName: "Calculator",
     label: {

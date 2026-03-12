@@ -10,8 +10,10 @@ import {
 } from "lucide-react";
 import { staggerContainer, fadeIn, slideUp } from "@/lib/animations";
 import { CALCULATION_METHODS } from "@/lib/prayer-times-calc";
-import { approximateHijriDate } from "@/lib/prayer-times-calc";
+import { formatHijriDateArabic } from "@/lib/hijri-utils";
 import { PrayerCard } from "@/components/prayer-times/prayer-card";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
 
 import {
   Select,
@@ -51,6 +53,7 @@ export function PrayerTimesDisplay({ state, t, lang }: PrayerTimesDisplayProps) 
     setAsrJuristic,
   } = state;
 
+  const [formData] = useLocalStorage<ZakatFormData>("zakat-calculator-data", DEFAULT_FORM_DATA);
   const locationName = useReverseGeocode(latitude, longitude);
 
   const now = new Date();
@@ -61,7 +64,7 @@ export function PrayerTimesDisplay({ state, t, lang }: PrayerTimesDisplayProps) 
     month: "long",
     day: "numeric",
   });
-  const hijri = approximateHijriDate(now);
+  const hijri = formatHijriDateArabic(now, formData.country);
 
   if (isLoading) {
     return (

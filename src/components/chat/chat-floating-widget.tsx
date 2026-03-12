@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ArrowUp } from "lucide-react";
 import { ChatPanel } from "./chat-panel";
 import { getLangFromCountry, type TransLang } from "@/lib/islamic-content";
 import { buildZakatSummary } from "@/lib/chat/build-zakat-summary";
@@ -56,7 +57,14 @@ function IhsanAIIcon({ className }: { className?: string }) {
 
 export function ChatFloatingWidget() {
   const [open, setOpen] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const [formData] = useLocalStorage<ZakatFormData>("zakat-calculator-data", DEFAULT_FORM_DATA);
+
+  useEffect(() => {
+    const onScroll = () => setShowScrollTop(window.scrollY > 400);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const lang = getLangFromCountry(formData.country) as TransLang;
 
   // Build a read-only summary of current zakat data for context
@@ -64,6 +72,22 @@ export function ChatFloatingWidget() {
 
   return (
     <>
+      {/* Scroll to top button */}
+      <AnimatePresence>
+        {showScrollTop && !open && (
+          <motion.button
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="fixed bottom-44 right-6 z-[99] no-print flex h-10 w-10 items-center justify-center rounded-full bg-white border border-gray-200 shadow-md hover:shadow-lg hover:border-emerald-300 transition-all"
+            aria-label="Scroll to top"
+          >
+            <ArrowUp className="h-4 w-4 text-gray-600" />
+          </motion.button>
+        )}
+      </AnimatePresence>
+
       {/* Floating button */}
       <AnimatePresence>
         {!open && (
@@ -75,13 +99,13 @@ export function ChatFloatingWidget() {
             className="fixed bottom-24 right-6 z-[100] group no-print"
             aria-label="Open IhsanAI Chat"
           >
-            {/* Animated pulse ring */}
-            <span className="absolute inset-0 rounded-full bg-emerald-500/30 animate-ping" />
-            {/* Rotating outer ring */}
+            {/* Pulse ring */}
+            <span className="absolute inset-0 rounded-full bg-emerald-500/25 animate-ping" />
+            {/* Outer glow ring */}
             <motion.span
               animate={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute -inset-1 rounded-full border border-amber-400/30"
+              className="absolute -inset-1 rounded-full border border-amber-400/25"
             />
             {/* Main button */}
             <span className="relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-800 shadow-lg shadow-emerald-900/40 group-hover:shadow-xl group-hover:shadow-emerald-800/50 transition-shadow">
@@ -120,7 +144,8 @@ export function ChatFloatingWidget() {
               transition={{ duration: 0.2 }}
               className="fixed z-[101] no-print
                 bottom-0 right-0 left-0 sm:bottom-6 sm:right-6 sm:left-auto
-                w-full sm:w-[400px]
+                w-full sm:w-[420px]
+                max-h-[85vh] sm:max-h-[600px]
                 rounded-t-2xl sm:rounded-2xl
                 shadow-2xl shadow-emerald-900/20
                 border border-gray-200

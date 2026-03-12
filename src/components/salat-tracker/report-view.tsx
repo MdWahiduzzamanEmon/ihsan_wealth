@@ -14,6 +14,7 @@ import {
   Cell,
 } from "recharts";
 import { fadeIn } from "@/lib/animations";
+import { getLocalDateStr } from "@/lib/date-utils";
 import { FARD_PRAYERS, type SalatRecord, type SalatStats } from "@/hooks/use-salat-tracker";
 import type { SalatTrackerTexts } from "@/lib/salat-tracker-texts";
 
@@ -38,24 +39,24 @@ export function ReportView({ records, stats, t, getRecordsForRange }: ReportView
   // Date ranges
   const { startDate, endDate, days } = useMemo(() => {
     const now = new Date();
-    const end = now.toISOString().split("T")[0];
+    const end = getLocalDateStr(now);
     let start: string;
     let days: number;
 
     if (period === "weekly") {
       const d = new Date(now);
       d.setDate(d.getDate() - 6);
-      start = d.toISOString().split("T")[0];
+      start = getLocalDateStr(d);
       days = 7;
     } else if (period === "monthly") {
       const d = new Date(now);
       d.setDate(d.getDate() - 29);
-      start = d.toISOString().split("T")[0];
+      start = getLocalDateStr(d);
       days = 30;
     } else {
       const d = new Date(now);
       d.setFullYear(d.getFullYear() - 1);
-      start = d.toISOString().split("T")[0];
+      start = getLocalDateStr(d);
       days = 365;
     }
     return { startDate: start, endDate: end, days };
@@ -93,7 +94,7 @@ export function ReportView({ records, stats, t, getRecordsForRange }: ReportView
     for (let i = daysToShow - 1; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      const dateStr = d.toISOString().split("T")[0];
+      const dateStr = getLocalDateStr(d);
       const dayRecords = periodRecords.filter(
         (r) => r.date === dateStr && r.prayer_type === "fard"
       );
@@ -146,7 +147,7 @@ export function ReportView({ records, stats, t, getRecordsForRange }: ReportView
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      const dateStr = d.toISOString().split("T")[0];
+      const dateStr = getLocalDateStr(d);
       const dayName = d.toLocaleDateString("en", { weekday: "short" }).slice(0, 2);
       for (const prayer of FARD_PRAYERS) {
         const record = periodRecords.find(

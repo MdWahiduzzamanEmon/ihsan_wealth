@@ -126,6 +126,20 @@ export const ZAKAT_HADITH: IslamicQuote[] = [
     source: "Quran 70:24-25",
     type: "quran",
   },
+  {
+    arabic: "لَن تَنَالُوا الْبِرَّ حَتَّىٰ تُنفِقُوا مِمَّا تُحِبُّونَ",
+    translations: {
+      en: "Never will you attain righteousness until you spend from that which you love.",
+      bn: "তোমরা কখনো পুণ্য লাভ করবে না যতক্ষণ না তোমাদের প্রিয় বস্তু থেকে ব্যয় করবে।",
+      ur: "تم ہرگز نیکی حاصل نہیں کر سکتے جب تک اپنی پسندیدہ چیزوں میں سے خرچ نہ کرو۔",
+      tr: "Sevdiğiniz şeylerden infak etmedikçe asla iyiliğe erişemezsiniz.",
+      ms: "Kamu tidak akan mencapai kebajikan sehingga kamu membelanjakan dari apa yang kamu cintai.",
+      id: "Kamu tidak akan memperoleh kebajikan hingga kamu menginfakkan apa yang kamu cintai.",
+      ar: "لن تنالوا البر حتى تنفقوا مما تحبون.",
+    },
+    source: "Quran 3:92",
+    type: "quran",
+  },
 ];
 
 // ─── Duas ───
@@ -170,6 +184,20 @@ export const ZAKAT_DUAS: IslamicQuote[] = [
       ar: "اللهم بارك لنا في أموالنا وطهرها.",
     },
     source: "Dua for wealth purification",
+    type: "dua",
+  },
+  {
+    arabic: "اللَّهُمَّ أَنْفِقْ عَلَيَّ وَلَا تُحَاسِبْنِي عَلَى مَا أَنْفَقْتُ",
+    translations: {
+      en: "O Allah, spend upon me and do not hold me accountable for what I have spent.",
+      bn: "হে আল্লাহ, আমার উপর খরচ করুন এবং আমি যা খরচ করেছি তার হিসাব নিবেন না।",
+      ur: "اے اللہ مجھ پر خرچ فرما اور جو میں نے خرچ کیا اس کا حساب نہ لے۔",
+      tr: "Allah'ım, bana ver ve harcadıklarımdan beni hesaba çekme.",
+      ms: "Ya Allah, belanjakanlah ke atasku dan jangan hisabkan aku atas apa yang telah ku belanjakan.",
+      id: "Ya Allah, belanjakanlah kepadaku dan jangan hisab aku atas apa yang telah ku belanjakan.",
+      ar: "اللهم أنفق عليّ ولا تحاسبني على ما أنفقت.",
+    },
+    source: "Dua for spending in Allah's cause",
     type: "dua",
   },
 ];

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Printer, FileDown, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ZakatCertificate, exportCertificateAsImage, type CertificateData } from "./zakat-certificate";
+import { getLocalDateStr } from "@/lib/date-utils";
 
 interface CertificatePreviewModalProps {
   open: boolean;
@@ -38,7 +39,7 @@ export function CertificatePreviewModal({
   const handleDownload = useCallback(async () => {
     setExporting(true);
     try {
-      const filename = `Zakat-Report-${year || new Date().toISOString().split("T")[0]}.png`;
+      const filename = `Zakat-Report-${year || getLocalDateStr()}.png`;
       await exportCertificateAsImage(elementId, filename);
     } finally {
       setExporting(false);

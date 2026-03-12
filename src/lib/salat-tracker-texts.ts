@@ -84,6 +84,7 @@ export interface SalatTrackerTexts {
   // Qaza
   qazaRemaining: string;
   qazaCompleted: string;
+  qazaMadeUp: string;
   logQaza: string;
   totalOwed: string;
   qazaOverview: string;
@@ -230,6 +231,7 @@ export const SALAT_TRACKER_TEXTS: Record<TransLang, SalatTrackerTexts> = {
     rank: "Rank",
     qazaRemaining: "Qaza Remaining",
     qazaCompleted: "Qaza Completed",
+    qazaMadeUp: "Made Up",
     logQaza: "Log Qaza Prayer",
     totalOwed: "Total Owed",
     qazaOverview: "Qaza Overview",
@@ -357,6 +359,7 @@ export const SALAT_TRACKER_TEXTS: Record<TransLang, SalatTrackerTexts> = {
     rank: "র‍্যাংক",
     qazaRemaining: "বাকি কাযা",
     qazaCompleted: "কাযা সম্পন্ন",
+    qazaMadeUp: "আদায় হয়েছে",
     logQaza: "কাযা নামাজ লগ করুন",
     totalOwed: "মোট বাকি",
     qazaOverview: "কাযা সারসংক্ষেপ",
@@ -484,6 +487,7 @@ export const SALAT_TRACKER_TEXTS: Record<TransLang, SalatTrackerTexts> = {
     rank: "درجہ",
     qazaRemaining: "باقی قضا",
     qazaCompleted: "قضا مکمل",
+    qazaMadeUp: "ادا کی گئی",
     logQaza: "قضا نماز لاگ کریں",
     totalOwed: "کل واجب الادا",
     qazaOverview: "قضا کا جائزہ",
@@ -611,6 +615,7 @@ export const SALAT_TRACKER_TEXTS: Record<TransLang, SalatTrackerTexts> = {
     rank: "الترتيب",
     qazaRemaining: "القضاء المتبقي",
     qazaCompleted: "القضاء المكتمل",
+    qazaMadeUp: "تم القضاء",
     logQaza: "تسجيل صلاة القضاء",
     totalOwed: "المجموع المستحق",
     qazaOverview: "نظرة عامة على القضاء",
@@ -738,6 +743,7 @@ export const SALAT_TRACKER_TEXTS: Record<TransLang, SalatTrackerTexts> = {
     rank: "Sıra",
     qazaRemaining: "Kalan Kaza",
     qazaCompleted: "Tamamlanan Kaza",
+    qazaMadeUp: "Kılınan Kaza",
     logQaza: "Kaza Namazı Kaydet",
     totalOwed: "Toplam Borç",
     qazaOverview: "Kaza Özeti",
@@ -865,6 +871,7 @@ export const SALAT_TRACKER_TEXTS: Record<TransLang, SalatTrackerTexts> = {
     rank: "Kedudukan",
     qazaRemaining: "Qada Berbaki",
     qazaCompleted: "Qada Selesai",
+    qazaMadeUp: "Telah Diqada",
     logQaza: "Log Solat Qada",
     totalOwed: "Jumlah Terhutang",
     qazaOverview: "Gambaran Qada",
@@ -992,6 +999,7 @@ export const SALAT_TRACKER_TEXTS: Record<TransLang, SalatTrackerTexts> = {
     rank: "Peringkat",
     qazaRemaining: "Qadha Tersisa",
     qazaCompleted: "Qadha Selesai",
+    qazaMadeUp: "Telah Diqadha",
     logQaza: "Catat Shalat Qadha",
     totalOwed: "Total Terhutang",
     qazaOverview: "Ringkasan Qadha",

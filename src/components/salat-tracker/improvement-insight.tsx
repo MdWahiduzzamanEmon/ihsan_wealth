@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { TrendingUp, AlertCircle, Flame, Clock, Award } from "lucide-react";
 import { fadeIn } from "@/lib/animations";
+import { getLocalDateStr } from "@/lib/date-utils";
 import type { SalatStats, SalatRecord } from "@/hooks/use-salat-tracker";
 import type { SalatTrackerTexts } from "@/lib/salat-tracker-texts";
 
@@ -81,7 +82,7 @@ function generateInsights(
   if (records.length > 0) {
     const last7Days = new Date();
     last7Days.setDate(last7Days.getDate() - 7);
-    const last7Str = last7Days.toISOString().split("T")[0];
+    const last7Str = getLocalDateStr(last7Days);
     const recentMissed = records.filter(
       (r) => r.date >= last7Str && r.status === "missed" && r.prayer_type === "fard"
     );

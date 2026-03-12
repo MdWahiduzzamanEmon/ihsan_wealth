@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { gregorianToHijri, getHijriAdjustment, getRamadanDayNumber } from "@/lib/hijri-utils";
+import { getLocalDateStr } from "@/lib/date-utils";
 import type { RamadanDayData } from "@/components/salat-tracker/ramadan-section";
 
 export interface RamadanRecord {
@@ -37,16 +38,16 @@ const DEFAULT_DAY_DATA: RamadanDayData = {
   laylatul_qadr_worship: false,
 };
 
-export function useRamadanTracker(countryCode?: string) {
+export function useRamadanTracker(countryCode?: string, selectedDate?: string) {
   const { user, isAuthenticated, supabase } = useAuth();
   const [records, setRecords] = useState<RamadanRecord[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const fetchId = useRef(0);
 
-  // Current Hijri date
+  // Use selectedDate if provided, otherwise use today
   const adjustment = countryCode ? getHijriAdjustment(countryCode) : 0;
-  const today = new Date();
-  const hijri = gregorianToHijri(today, adjustment);
+  const activeDate = selectedDate ? new Date(selectedDate + "T12:00:00") : new Date();
+  const hijri = gregorianToHijri(activeDate, adjustment);
   const isRamadan = hijri.month === 9;
   const currentHijriYear = hijri.year;
   const ramadanDayNumber = isRamadan ? hijri.day : null;
@@ -87,30 +88,30 @@ export function useRamadanTracker(countryCode?: string) {
     fetchRecords();
   }, [isAuthenticated, user, fetchRecords]);
 
-  // Today's entry
-  const todayStr = today.toISOString().split("T")[0];
-  const todayEntry = useMemo(
-    () => records.find((r) => r.date === todayStr),
-    [records, todayStr]
+  // Active date entry (selected date or today)
+  const activeDateStr = getLocalDateStr(activeDate);
+  const activeDateEntry = useMemo(
+    () => records.find((r) => r.date === activeDateStr),
+    [records, activeDateStr]
   );
 
   const todayData: RamadanDayData = useMemo(() => {
-    if (!todayEntry) return DEFAULT_DAY_DATA;
+    if (!activeDateEntry) return DEFAULT_DAY_DATA;
     return {
-      fasted: todayEntry.fasted,
-      suhoor: todayEntry.suhoor,
-      iftar: todayEntry.iftar,
-      taraweeh: todayEntry.taraweeh,
-      taraweeh_rakats: todayEntry.taraweeh_rakats,
-      quran_pages: todayEntry.quran_pages,
-      sadaqah_given: todayEntry.sadaqah_given,
-      dua_before_iftar: todayEntry.dua_before_iftar,
-      itikaf: todayEntry.itikaf,
-      laylatul_qadr_worship: todayEntry.laylatul_qadr_worship,
+      fasted: activeDateEntry.fasted,
+      suhoor: activeDateEntry.suhoor,
+      iftar: activeDateEntry.iftar,
+      taraweeh: activeDateEntry.taraweeh,
+      taraweeh_rakats: activeDateEntry.taraweeh_rakats,
+      quran_pages: activeDateEntry.quran_pages,
+      sadaqah_given: activeDateEntry.sadaqah_given,
+      dua_before_iftar: activeDateEntry.dua_before_iftar,
+      itikaf: activeDateEntry.itikaf,
+      laylatul_qadr_worship: activeDateEntry.laylatul_qadr_worship,
     };
-  }, [todayEntry]);
+  }, [activeDateEntry]);
 
-  // Toggle a field for today
+  // Toggle a field for the active date
   const toggleField = useCallback(
     async (field: keyof RamadanDayData, value: boolean | number) => {
       if (!user || !isRamadan || !ramadanDayNumber) return;
@@ -119,7 +120,7 @@ export function useRamadanTracker(countryCode?: string) {
         const upsertData = {
           user_id: user.id,
           hijri_year: currentHijriYear,
-          date: todayStr,
+          date: activeDateStr,
           day_number: ramadanDayNumber,
           [field]: value,
         };
@@ -135,7 +136,7 @@ export function useRamadanTracker(countryCode?: string) {
         console.error("Failed to update ramadan field:", err);
       }
     },
-    [supabase, user, isRamadan, ramadanDayNumber, currentHijriYear, todayStr, fetchRecords]
+    [supabase, user, isRamadan, ramadanDayNumber, currentHijriYear, activeDateStr, fetchRecords]
   );
 
   const updateQuranPages = useCallback(
@@ -156,7 +157,7 @@ export function useRamadanTracker(countryCode?: string) {
   return {
     records,
     todayData,
-    todayEntry,
+    todayEntry: activeDateEntry,
     isRamadan,
     ramadanDayNumber,
     currentHijriYear,

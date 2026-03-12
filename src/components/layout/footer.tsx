@@ -48,7 +48,7 @@ interface FooterProps {
   countryCode?: string;
 }
 
-export function Footer({ countryCode = "US" }: FooterProps) {
+export function Footer({ countryCode = "BD" }: FooterProps) {
   const lang = getLangFromCountry(countryCode);
   const texts = UI_TEXTS[lang];
   const linkTexts = FOOTER_LINKS_TEXTS[lang];

@@ -1,0 +1,293 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { Star, Calculator, BookOpen, Compass, Clock } from "lucide-react";
+import { staggerContainer, staggerItem } from "@/lib/animations";
+import type { TransLang } from "@/lib/islamic-content";
+
+const HERO_TEXTS: Record<TransLang, {
+  tagline: string;
+  about: string;
+  quranVerse: string;
+  quranRef: string;
+  mission: string;
+  free: string;
+  ihsan: string;
+  features: { label: string; href: string }[];
+}> = {
+  en: {
+    tagline: "Your Complete Islamic Companion",
+    about: "IhsanWealth brings together everything a Muslim needs in daily life — Zakat Calculator, Prayer Tracker, Quran, Duas, Qibla, Islamic Calendar, Tasbih, and more. All free, no ads, built with sincerity.",
+    quranVerse: "إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا",
+    quranRef: "Surah An-Nisa 4:103",
+    mission: "\"Indeed, prayer has been decreed upon the believers a decree of specified times.\"",
+    free: "100% Free & Open Source",
+    ihsan: "Built with Ihsan",
+    features: [
+      { label: "Zakat Calculator", href: "/calculator" },
+      { label: "Prayer Times", href: "/prayer-times" },
+      { label: "Al-Quran", href: "/quran" },
+      { label: "Qibla Finder", href: "/qibla" },
+    ],
+  },
+  bn: {
+    tagline: "আপনার সম্পূর্ণ ইসলামী সহচর",
+    about: "IhsanWealth একজন মুসলিমের দৈনন্দিন জীবনে প্রয়োজনীয় সবকিছু এক জায়গায় এনেছে — যাকাত ক্যালকুলেটর, নামায ট্র্যাকার, কুরআন, দু'আ, কিবলা, ইসলামী ক্যালেন্ডার, তাসবিহ এবং আরও অনেক কিছু। সম্পূর্ণ বিনামূল্যে, কোনো বিজ্ঞাপন নেই, ইখলাসের সাথে তৈরি।",
+    quranVerse: "إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا",
+    quranRef: "সূরা আন-নিসা ৪:১০৩",
+    mission: "\"নিশ্চয়ই নামায মুমিনদের উপর নির্দিষ্ট সময়ে ফরয করা হয়েছে।\"",
+    free: "১০০% বিনামূল্যে ও ওপেন সোর্স",
+    ihsan: "ইখলাসের সাথে নির্মিত",
+    features: [
+      { label: "যাকাত ক্যালকুলেটর", href: "/calculator" },
+      { label: "নামাযের সময়", href: "/prayer-times" },
+      { label: "আল-কুরআন", href: "/quran" },
+      { label: "কিবলা", href: "/qibla" },
+    ],
+  },
+  ur: {
+    tagline: "آپ کا مکمل اسلامی ساتھی",
+    about: "IhsanWealth ایک مسلمان کی روزمرہ زندگی میں ضروری ہر چیز ایک جگہ لے کر آیا ہے — زکوٰۃ کیلکولیٹر، نماز ٹریکر، قرآن، دعائیں، قبلہ، اسلامی کیلنڈر، تسبیح اور بہت کچھ۔ بالکل مفت، کوئی اشتہار نہیں، اخلاص سے بنایا گیا۔",
+    quranVerse: "إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا",
+    quranRef: "سورۃ النساء ۴:۱۰۳",
+    mission: "\"بے شک نماز مومنوں پر مقررہ اوقات میں فرض کی گئی ہے۔\"",
+    free: "۱۰۰٪ مفت اور اوپن سورس",
+    ihsan: "اخلاص سے بنایا گیا",
+    features: [
+      { label: "زکوٰۃ کیلکولیٹر", href: "/calculator" },
+      { label: "نماز کے اوقات", href: "/prayer-times" },
+      { label: "القرآن", href: "/quran" },
+      { label: "قبلہ", href: "/qibla" },
+    ],
+  },
+  ar: {
+    tagline: "رفيقك الإسلامي الشامل",
+    about: "إحسان الثروة يجمع كل ما يحتاجه المسلم في حياته اليومية — حاسبة الزكاة، متتبع الصلاة، القرآن، الأدعية، القبلة، التقويم الإسلامي، التسبيح والمزيد. مجاني بالكامل، بدون إعلانات، مبني بإخلاص.",
+    quranVerse: "إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا",
+    quranRef: "سورة النساء ٤:١٠٣",
+    mission: "\"إن الصلاة كانت على المؤمنين كتاباً موقوتاً\"",
+    free: "١٠٠٪ مجاني ومفتوح المصدر",
+    ihsan: "مبني بإخلاص",
+    features: [
+      { label: "حاسبة الزكاة", href: "/calculator" },
+      { label: "مواقيت الصلاة", href: "/prayer-times" },
+      { label: "القرآن", href: "/quran" },
+      { label: "القبلة", href: "/qibla" },
+    ],
+  },
+  tr: {
+    tagline: "Eksiksiz Islami Yoldasiniz",
+    about: "IhsanWealth, bir Muslumanin gunluk hayatinda ihtiyac duydugu her seyi bir araya getiriyor — Zekat Hesaplayici, Namaz Takipcisi, Kuran, Dualar, Kible, Islami Takvim, Tesbih ve daha fazlasi. Tamamen ucretsiz, reklamsiz, ihlas ile yapilmis.",
+    quranVerse: "إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا",
+    quranRef: "Nisa Suresi 4:103",
+    mission: "\"Suphesiz namaz, muminlere belirli vakitlerde farz kilinmistir.\"",
+    free: "100% Ucretsiz ve Acik Kaynak",
+    ihsan: "Ihlas ile yapildi",
+    features: [
+      { label: "Zekat Hesaplayici", href: "/calculator" },
+      { label: "Namaz Vakitleri", href: "/prayer-times" },
+      { label: "Kuran-i Kerim", href: "/quran" },
+      { label: "Kible", href: "/qibla" },
+    ],
+  },
+  ms: {
+    tagline: "Teman Islam Lengkap Anda",
+    about: "IhsanWealth menghimpunkan segala keperluan seorang Muslim dalam kehidupan harian — Kalkulator Zakat, Penjejak Solat, Al-Quran, Doa, Kiblat, Kalendar Islam, Tasbih dan banyak lagi. Percuma sepenuhnya, tiada iklan, dibina dengan ikhlas.",
+    quranVerse: "إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا",
+    quranRef: "Surah An-Nisa 4:103",
+    mission: "\"Sesungguhnya solat itu telah ditetapkan ke atas orang-orang mukmin pada waktu-waktu yang tertentu.\"",
+    free: "100% Percuma & Sumber Terbuka",
+    ihsan: "Dibina dengan ikhlas",
+    features: [
+      { label: "Kalkulator Zakat", href: "/calculator" },
+      { label: "Waktu Solat", href: "/prayer-times" },
+      { label: "Al-Quran", href: "/quran" },
+      { label: "Kiblat", href: "/qibla" },
+    ],
+  },
+  id: {
+    tagline: "Pendamping Islam Lengkap Anda",
+    about: "IhsanWealth menyatukan semua yang dibutuhkan seorang Muslim dalam kehidupan sehari-hari — Kalkulator Zakat, Pelacak Shalat, Al-Quran, Doa, Kiblat, Kalender Islam, Tasbih dan lainnya. Sepenuhnya gratis, tanpa iklan, dibuat dengan keikhlasan.",
+    quranVerse: "إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا",
+    quranRef: "Surah An-Nisa 4:103",
+    mission: "\"Sesungguhnya shalat itu telah diwajibkan atas orang-orang mukmin pada waktu-waktu yang telah ditentukan.\"",
+    free: "100% Gratis & Open Source",
+    ihsan: "Dibuat dengan keikhlasan",
+    features: [
+      { label: "Kalkulator Zakat", href: "/calculator" },
+      { label: "Waktu Shalat", href: "/prayer-times" },
+      { label: "Al-Quran", href: "/quran" },
+      { label: "Kiblat", href: "/qibla" },
+    ],
+  },
+};
+
+const FEATURE_ICONS = [Calculator, Clock, BookOpen, Compass];
+
+interface HeroSectionProps {
+  lang: TransLang;
+}
+
+export function HeroSection({ lang }: HeroSectionProps) {
+  const t = HERO_TEXTS[lang];
+  const isRTL = lang === "ar" || lang === "ur";
+
+  return (
+    <section className="relative overflow-hidden" dir={isRTL ? "rtl" : undefined}>
+      {/* Dark background with layers */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-b from-emerald-950 via-emerald-900 to-emerald-950" />
+
+        {/* Islamic geometric pattern */}
+        <div className="absolute inset-0 opacity-[0.06]">
+          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="hero-geo" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+                <path d="M30 0L60 30L30 60L0 30Z" fill="none" stroke="currentColor" strokeWidth="0.5" />
+                <circle cx="30" cy="30" r="12" fill="none" stroke="currentColor" strokeWidth="0.3" />
+                <circle cx="30" cy="30" r="4" fill="none" stroke="currentColor" strokeWidth="0.3" />
+                <path d="M30 0L30 60M0 30L60 30" stroke="currentColor" strokeWidth="0.15" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#hero-geo)" className="text-emerald-300" />
+          </svg>
+        </div>
+
+        {/* Radial glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-radial from-emerald-600/20 via-transparent to-transparent rounded-full blur-3xl" />
+
+        {/* Calligraphy watermark */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none overflow-hidden">
+          <p className="font-arabic text-[120px] sm:text-[180px] text-white whitespace-nowrap leading-none" dir="rtl">
+            بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
+          </p>
+        </div>
+      </div>
+
+      <div className="relative mx-auto max-w-5xl px-4 py-10 sm:py-14">
+        <motion.div
+          variants={staggerContainer}
+          initial="initial"
+          animate="animate"
+        >
+          {/* Brand identity */}
+          <motion.div variants={staggerItem} className="text-center mb-8 sm:mb-10">
+            <div className="inline-flex items-center gap-3 mb-4">
+              <div className="relative">
+                <Image
+                  src="/favicon.svg"
+                  alt="IhsanWealth"
+                  width={52}
+                  height={52}
+                  className="rounded-2xl shadow-lg shadow-black/30 ring-2 ring-white/10"
+                />
+                <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-emerald-400 border-2 border-emerald-950 animate-pulse" />
+              </div>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
+                <span className="bg-gradient-to-r from-emerald-300 via-emerald-200 to-teal-300 bg-clip-text text-transparent">
+                  Ihsan
+                </span>
+                <span className="text-white">Wealth</span>
+              </h1>
+            </div>
+
+            <p className="font-arabic text-amber-400/60 text-base sm:text-lg mb-1.5" dir="rtl">
+              رفيقك الإسلامي الشامل
+            </p>
+            <p className="text-sm sm:text-base font-semibold text-emerald-100/80">
+              {t.tagline}
+            </p>
+          </motion.div>
+
+          {/* Two-column: About (3) + Quran (2) */}
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-5">
+            {/* About the app */}
+            <motion.div
+              variants={staggerItem}
+              className="lg:col-span-3 relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-5 sm:p-6"
+            >
+              <p className="text-sm text-emerald-100/70 leading-relaxed">
+                {t.about}
+              </p>
+
+              <div className="mt-4 flex items-center gap-2 flex-wrap">
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-400/10 border border-emerald-400/20 px-3 py-1">
+                  <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-[11px] font-medium text-emerald-300">{t.free}</span>
+                </div>
+                <div className="inline-flex items-center gap-1 rounded-full bg-amber-400/10 border border-amber-400/20 px-2.5 py-1">
+                  <Star className="h-3 w-3 text-amber-400" />
+                  <span className="text-[10px] font-medium text-amber-300">{t.ihsan}</span>
+                </div>
+              </div>
+
+              {/* Quick feature links */}
+              <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {t.features.map((feat, i) => {
+                  const Icon = FEATURE_ICONS[i];
+                  return (
+                    <Link
+                      key={feat.href}
+                      href={feat.href}
+                      className="flex items-center gap-2 rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 hover:bg-white/10 hover:border-emerald-400/30 transition-all group"
+                    >
+                      <Icon className="h-4 w-4 text-emerald-400/70 group-hover:text-emerald-300 transition-colors shrink-0" />
+                      <span className="text-[11px] font-medium text-emerald-100/70 group-hover:text-white transition-colors truncate">
+                        {feat.label}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </motion.div>
+
+            {/* Quran verse card */}
+            <motion.div
+              variants={staggerItem}
+              className="lg:col-span-2 relative rounded-2xl border border-amber-400/15 bg-gradient-to-br from-amber-500/10 via-white/5 to-emerald-500/5 backdrop-blur-sm p-5 sm:p-6 overflow-hidden flex flex-col justify-center"
+            >
+              {/* Decorative corner arcs */}
+              <div className="absolute top-0 right-0 w-24 h-24 opacity-[0.08] pointer-events-none">
+                <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M96 0A96 96 0 0 0 0 96" fill="none" stroke="currentColor" strokeWidth="0.8" className="text-amber-300" />
+                  <path d="M96 20A76 76 0 0 0 20 96" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-amber-300" />
+                  <path d="M96 40A56 56 0 0 0 40 96" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-amber-300" />
+                </svg>
+              </div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 opacity-[0.08] pointer-events-none rotate-180">
+                <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M96 0A96 96 0 0 0 0 96" fill="none" stroke="currentColor" strokeWidth="0.8" className="text-amber-300" />
+                  <path d="M96 20A76 76 0 0 0 20 96" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-amber-300" />
+                </svg>
+              </div>
+
+              <div className="font-arabic text-amber-400/20 text-4xl leading-none mb-2 text-center" dir="rtl">❝</div>
+
+              <p className="font-arabic text-lg sm:text-xl text-amber-300/80 leading-loose text-center mb-3" dir="rtl">
+                {t.quranVerse}
+              </p>
+
+              <div className="flex items-center gap-3 mb-3">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-400/20 to-transparent" />
+                <div className="font-arabic text-amber-400/30 text-xs">✦</div>
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-400/20 to-transparent" />
+              </div>
+
+              <p className="text-xs sm:text-sm text-emerald-100/60 italic text-center leading-relaxed">
+                {t.mission}
+              </p>
+              <p className="text-[10px] text-amber-400/40 text-center mt-2 font-medium">
+                — {t.quranRef}
+              </p>
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Bottom fade into page background */}
+      <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-emerald-50/30 to-transparent" />
+    </section>
+  );
+}

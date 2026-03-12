@@ -34,7 +34,7 @@ export default function SalatTrackerPage() {
   const [activeTab, setActiveTab] = useState<Tab>("today");
 
   const tracker = useSalatTracker(formData.country);
-  const ramadan = useRamadanTracker(formData.country);
+  const ramadan = useRamadanTracker(formData.country, tracker.selectedDate);
   const { prayerTimes } = usePrayerTimes();
 
   // Build prayer times map for display
@@ -171,7 +171,9 @@ export default function SalatTrackerPage() {
                 <div className="max-w-2xl mx-auto">
                   <QazaLog
                     qazaLog={tracker.qazaLog}
+                    qazaMadeUp={tracker.qazaMadeUp}
                     totalQazaRemaining={tracker.totalQazaRemaining}
+                    totalQazaMadeUp={tracker.totalQazaMadeUp}
                     t={t}
                     onLogQaza={tracker.logQaza}
                   />

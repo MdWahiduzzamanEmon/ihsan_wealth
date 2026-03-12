@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { getSalatDateContext } from "@/lib/hijri-utils";
+import { getLocalDateStr } from "@/lib/date-utils";
 
 // ─── Types ───
 
@@ -98,8 +99,8 @@ export function useSalatTracker(countryCode?: string) {
   // Sunnah visibility toggle — persisted in localStorage
   const [sunnahEnabled, setSunnahEnabled] = useLocalStorage("salat-sunnah-enabled", false);
 
-  // Selected date for navigation (default today)
-  const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split("T")[0]);
+  // Selected date for navigation (default today in local timezone)
+  const [selectedDate, setSelectedDate] = useState(() => getLocalDateStr());
 
   // ─── Day context ───
   const dateContext = useMemo(() => {
@@ -224,10 +225,11 @@ export function useSalatTracker(countryCode?: string) {
   const logQaza = useCallback(
     async (prayerName: FardPrayer, count: number = 1) => {
       if (!user) return;
-      const today = new Date().toISOString().split("T")[0];
-      // Insert qaza records for today with a unique prayer_name suffix
+      const today = getLocalDateStr();
+      const timestamp = Date.now();
+      // Insert qaza records with unique prayer_name suffix to avoid duplicate key conflicts
       for (let i = 0; i < count; i++) {
-        const qazaName = `${prayerName}` as PrayerName;
+        const qazaName = `${prayerName}_qaza_${timestamp}_${i}` as PrayerName;
         try {
           await supabase.auth.getSession();
           const { error } = await supabase.from("salat_records").insert({
@@ -239,7 +241,7 @@ export function useSalatTracker(countryCode?: string) {
             in_jamaah: false,
             on_time: false,
           });
-          if (error && !error.message.includes("duplicate")) {
+          if (error) {
             console.error("Failed to log qaza:", error.message);
           }
         } catch (err) {
@@ -272,7 +274,7 @@ export function useSalatTracker(countryCode?: string) {
           total_on_time: onTimeRecords.length,
           total_jamaah: jamaahRecords.length,
           total_sunnah: sunnahRecords.length,
-          last_updated: new Date().toISOString().split("T")[0],
+          last_updated: getLocalDateStr(),
           updated_at: new Date().toISOString(),
         },
         { onConflict: "user_id" }
@@ -291,7 +293,7 @@ export function useSalatTracker(countryCode?: string) {
   );
 
   // Today's records
-  const today = new Date().toISOString().split("T")[0];
+  const today = getLocalDateStr();
   const todayRecords = useMemo(
     () => records.filter((r) => r.date === today),
     [records, today]
@@ -299,9 +301,9 @@ export function useSalatTracker(countryCode?: string) {
 
   // Stats
   const stats: SalatStats = useMemo(() => {
-    // Today's fard
+    // Today's fard (exclude qaza records which have suffixed names)
     const todayFard = selectedDateRecords.filter(
-      (r) => r.prayer_type === "fard" && r.status !== "missed"
+      (r) => r.prayer_type === "fard" && r.status !== "missed" && !r.prayer_name.includes("_qaza_")
     );
     const todayFardCompleted = todayFard.length;
 
@@ -311,9 +313,9 @@ export function useSalatTracker(countryCode?: string) {
     // Overall rates (last 30 days)
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    const thirtyDaysStr = thirtyDaysAgo.toISOString().split("T")[0];
+    const thirtyDaysStr = getLocalDateStr(thirtyDaysAgo);
     const recentRecords = records.filter(
-      (r) => r.date >= thirtyDaysStr && r.prayer_type === "fard"
+      (r) => r.date >= thirtyDaysStr && r.prayer_type === "fard" && !r.prayer_name.includes("_qaza_")
     );
 
     const totalFardPrayed = recentRecords.filter(
@@ -344,25 +346,38 @@ export function useSalatTracker(countryCode?: string) {
     };
   }, [records, selectedDateRecords]);
 
-  // Qaza log: accumulated missed fard that haven't been made up
-  const qazaLog: QazaEntry[] = useMemo(() => {
+  // Qaza log: accumulated missed fard that haven't been made up + made-up counts
+  const { qazaLog, qazaMadeUp } = useMemo(() => {
     const missed: Record<string, number> = {};
     const madeUp: Record<string, number> = {};
 
     for (const r of records) {
-      if (r.prayer_type === "fard" && FARD_PRAYERS.includes(r.prayer_name as FardPrayer)) {
-        if (r.status === "missed") {
+      if (r.prayer_type === "fard") {
+        // Check if this is a qaza record (prayer_name like "fajr_qaza_..." or old-style same name with qaza status)
+        if (r.status === "qaza") {
+          const baseName = r.prayer_name.includes("_qaza_")
+            ? r.prayer_name.split("_qaza_")[0]
+            : r.prayer_name;
+          if (FARD_PRAYERS.includes(baseName as FardPrayer)) {
+            madeUp[baseName] = (madeUp[baseName] || 0) + 1;
+          }
+        } else if (r.status === "missed" && FARD_PRAYERS.includes(r.prayer_name as FardPrayer)) {
           missed[r.prayer_name] = (missed[r.prayer_name] || 0) + 1;
-        } else if (r.status === "qaza") {
-          madeUp[r.prayer_name] = (madeUp[r.prayer_name] || 0) + 1;
         }
       }
     }
 
-    return FARD_PRAYERS.map((prayer) => ({
+    const log: QazaEntry[] = FARD_PRAYERS.map((prayer) => ({
       prayer_name: prayer,
       count: Math.max(0, (missed[prayer] || 0) - (madeUp[prayer] || 0)),
     })).filter((e) => e.count > 0);
+
+    const madeUpEntries: QazaEntry[] = FARD_PRAYERS.map((prayer) => ({
+      prayer_name: prayer,
+      count: madeUp[prayer] || 0,
+    }));
+
+    return { qazaLog: log, qazaMadeUp: madeUpEntries };
   }, [records]);
 
   const totalQazaRemaining = useMemo(
@@ -370,25 +385,30 @@ export function useSalatTracker(countryCode?: string) {
     [qazaLog]
   );
 
+  const totalQazaMadeUp = useMemo(
+    () => qazaMadeUp.reduce((sum, e) => sum + e.count, 0),
+    [qazaMadeUp]
+  );
+
   // ─── Date navigation ───
   const goToPreviousDay = useCallback(() => {
     const d = new Date(selectedDate + "T12:00:00");
     d.setDate(d.getDate() - 1);
-    setSelectedDate(d.toISOString().split("T")[0]);
+    setSelectedDate(getLocalDateStr(d));
   }, [selectedDate]);
 
   const goToNextDay = useCallback(() => {
     const d = new Date(selectedDate + "T12:00:00");
     d.setDate(d.getDate() + 1);
-    const todayStr = new Date().toISOString().split("T")[0];
-    const nextStr = d.toISOString().split("T")[0];
+    const todayStr = getLocalDateStr();
+    const nextStr = getLocalDateStr(d);
     if (nextStr <= todayStr) {
       setSelectedDate(nextStr);
     }
   }, [selectedDate]);
 
   const goToToday = useCallback(() => {
-    setSelectedDate(new Date().toISOString().split("T")[0]);
+    setSelectedDate(getLocalDateStr());
   }, []);
 
   // ─── Records for a date range (for reports) ───
@@ -415,7 +435,9 @@ export function useSalatTracker(countryCode?: string) {
 
     // Qaza
     qazaLog,
+    qazaMadeUp,
     totalQazaRemaining,
+    totalQazaMadeUp,
 
     // Day context
     dateContext,

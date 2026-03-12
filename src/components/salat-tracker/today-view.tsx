@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Flame, ChevronLeft, ChevronRight, CalendarDays, Settings2 } from "lucide-react";
+import { Flame, ChevronLeft, ChevronRight, CalendarDays } from "lucide-react";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 import { PrayerCheckCard } from "./prayer-check-card";
 import { JummahCard } from "./jummah-card";
@@ -238,9 +238,18 @@ export function TodayView({
               onRemove={onRemove}
             />
           ))}
+
+          {/* Sunnah/Nafl — directly below fard prayers in the same column */}
+          <SunnahSection
+            records={selectedDateRecords}
+            t={t}
+            onToggleStatus={onToggleStatus}
+            onRemove={onRemove}
+            isRamadan={dateContext.isRamadan}
+          />
         </div>
 
-        {/* RIGHT: Stats, Goals, Insights, Sunnah toggle */}
+        {/* RIGHT: Stats, Goals, Insights */}
         <div className="space-y-3">
           {/* Quick Stats Grid */}
           <div className="grid grid-cols-3 gap-2">
@@ -263,15 +272,6 @@ export function TodayView({
 
           {/* Improvement Insights */}
           <ImprovementInsight stats={stats} records={allRecords} t={t} />
-
-          {/* Sunnah toggle */}
-          <button
-            onClick={onToggleSunnah}
-            className="w-full flex items-center justify-center gap-2 rounded-xl border border-dashed border-emerald-200 px-4 py-2.5 text-xs font-medium text-emerald-600 hover:bg-emerald-50/50 transition-colors"
-          >
-            <Settings2 className="h-3.5 w-3.5" />
-            {sunnahEnabled ? t.hideSunnah : t.showSunnah}
-          </button>
         </div>
       </div>
 
@@ -285,17 +285,6 @@ export function TodayView({
           t={t}
           onToggle={onRamadanToggle}
           onUpdateQuranPages={onRamadanQuranPages}
-        />
-      )}
-
-      {/* Sunnah/Nafl section — full width */}
-      {sunnahEnabled && (
-        <SunnahSection
-          records={selectedDateRecords}
-          t={t}
-          onToggleStatus={onToggleStatus}
-          onRemove={onRemove}
-          isRamadan={dateContext.isRamadan}
         />
       )}
     </motion.div>

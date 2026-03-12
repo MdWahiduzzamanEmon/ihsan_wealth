@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
+import { getLocalDateStr } from "@/lib/date-utils";
 
 export interface TasbihSession {
   id: string;
@@ -69,7 +70,7 @@ export function useTasbihHistory() {
         id: crypto.randomUUID(),
         ...session,
         completed_at: now.toISOString(),
-        date: now.toISOString().split("T")[0],
+        date: getLocalDateStr(now),
       };
 
       try {
@@ -120,7 +121,7 @@ export function useTasbihHistory() {
     [supabase, fetchSessions]
   );
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = getLocalDateStr();
   const todaySessions = sessions.filter((s) => s.date === today);
   const todayTotal = todaySessions.reduce((sum, s) => sum + s.completed_count, 0);
 

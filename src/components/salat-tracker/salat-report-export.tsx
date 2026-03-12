@@ -5,6 +5,7 @@ import { Download, Loader2 } from "lucide-react";
 import { useState } from "react";
 import type { SalatStats } from "@/hooks/use-salat-tracker";
 import type { SalatTrackerTexts } from "@/lib/salat-tracker-texts";
+import { getLocalDateStr } from "@/lib/date-utils";
 
 interface SalatReportExportProps {
   stats: SalatStats;
@@ -28,7 +29,7 @@ export function SalatReportExport({ stats, t }: SalatReportExportProps) {
       });
 
       const link = document.createElement("a");
-      link.download = `salat-report-${new Date().toISOString().split("T")[0]}.png`;
+      link.download = `salat-report-${getLocalDateStr()}.png`;
       link.href = dataUrl;
       link.click();
     } catch (err) {

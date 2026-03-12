@@ -7,7 +7,7 @@ interface BismillahBannerProps {
   countryCode?: string;
 }
 
-export function BismillahBanner({ countryCode = "US" }: BismillahBannerProps) {
+export function BismillahBanner({ countryCode = "BD" }: BismillahBannerProps) {
   const lang = getLangFromCountry(countryCode);
   const translation = BISMILLAH.translations[lang] || BISMILLAH.translations.en;
 

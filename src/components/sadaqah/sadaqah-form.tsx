@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { TransLang } from "@/lib/islamic-content";
+import { getLocalDateStr } from "@/lib/date-utils";
 import { SADAQAH_FORM_TEXTS, SADAQAH_CATEGORY_LABELS } from "@/lib/sadaqah-texts";
 
 export interface SadaqahRecord {
@@ -46,7 +47,7 @@ export function SadaqahForm({ onAdd, currencySymbol = "$", currencyCode = "USD",
   const catLabels = SADAQAH_CATEGORY_LABELS[lang];
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("General");
-  const [date, setDate] = useState(() => new Date().toISOString().split("T")[0]);
+  const [date, setDate] = useState(() => getLocalDateStr());
   const [notes, setNotes] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
 

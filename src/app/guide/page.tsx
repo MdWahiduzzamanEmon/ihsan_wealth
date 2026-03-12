@@ -42,6 +42,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   CalendarDays,
   Heart,
   History,
+  Sparkles,
 };
 
 const REQUIRES_LOGIN = new Set(["sadaqah", "history", "tasbih", "salat"]);
@@ -218,7 +219,7 @@ export default function GuidePage() {
     setMounted(true);
   }, []);
 
-  const countryCode = formData?.country || "US";
+  const countryCode = formData?.country || "BD";
   const lang = getLangFromCountry(countryCode);
   const isRtl = lang === "ar" || lang === "ur";
 
