@@ -72,7 +72,7 @@ export function ChatFloatingWidget() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             onClick={() => setOpen(true)}
-            className="fixed bottom-6 right-6 z-[100] group no-print"
+            className="fixed bottom-24 right-6 z-[100] group no-print"
             aria-label="Open IhsanAI Chat"
           >
             {/* Animated pulse ring */}
