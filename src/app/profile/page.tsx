@@ -240,7 +240,7 @@ export default function ProfilePage() {
           <motion.div className="mb-6" variants={fadeIn} initial="initial" animate="animate">
             <Link href="/">
               <Button variant="ghost" size="sm" className="gap-1">
-                <ArrowLeft className="h-4 w-4" /> Back
+                <ArrowLeft className="h-4 w-4" /> {t.back}
               </Button>
             </Link>
           </motion.div>
@@ -301,7 +301,7 @@ export default function ProfilePage() {
                           </div>
                         </div>
                         <div className="mt-2 text-[10px] text-muted-foreground">
-                          {sadaqahRecords.length} donations
+                          {sadaqahRecords.length} {t.donations}
                         </div>
                       </CardContent>
                     </Card>
@@ -347,7 +347,7 @@ export default function ProfilePage() {
                           </div>
                         </div>
                         <div className="mt-2 text-[10px] text-muted-foreground">
-                          {hadithFavorites.length} hadith, {duaFavorites.length} duas
+                          {hadithFavorites.length} {t.hadith}, {duaFavorites.length} {t.duas}
                         </div>
                       </CardContent>
                     </Card>
@@ -378,7 +378,7 @@ export default function ProfilePage() {
                         <p className="text-sm text-muted-foreground">{t.noZakatYet}</p>
                         <Link href="/">
                           <Button size="sm" className="mt-3 bg-emerald-600 hover:bg-emerald-700">
-                            <Calculator className="h-3.5 w-3.5 mr-1.5" /> Go to Calculator
+                            <Calculator className="h-3.5 w-3.5 mr-1.5" /> {t.goToCalculator}
                           </Button>
                         </Link>
                       </div>
@@ -450,7 +450,7 @@ export default function ProfilePage() {
                           <p className="text-sm text-muted-foreground">{t.noSadaqahYet}</p>
                           <Link href="/sadaqah">
                             <Button size="sm" className="mt-3 bg-rose-600 hover:bg-rose-700">
-                              <Heart className="h-3.5 w-3.5 mr-1.5" /> Start Tracking
+                              <Heart className="h-3.5 w-3.5 mr-1.5" /> {t.startTracking}
                             </Button>
                           </Link>
                         </div>
@@ -501,7 +501,7 @@ export default function ProfilePage() {
                           <p className="text-sm text-muted-foreground">{t.noTasbihYet}</p>
                           <Link href="/tasbih">
                             <Button size="sm" className="mt-3 bg-violet-600 hover:bg-violet-700">
-                              <Hash className="h-3.5 w-3.5 mr-1.5" /> Start Dhikr
+                              <Hash className="h-3.5 w-3.5 mr-1.5" /> {t.startDhikr}
                             </Button>
                           </Link>
                         </div>
@@ -538,7 +538,7 @@ export default function ProfilePage() {
                                     ))}
                                   </Pie>
                                   <Tooltip
-                                    formatter={(value) => `${Number(value).toLocaleString()} counts`}
+                                    formatter={(value) => `${Number(value).toLocaleString()} ${t.counts}`}
                                     contentStyle={{
                                       borderRadius: "8px",
                                       border: "1px solid #ede9fe",
@@ -587,7 +587,7 @@ export default function ProfilePage() {
                             <BookHeart className="h-6 w-6 text-cyan-600" />
                           </div>
                           <div>
-                            <p className="font-semibold text-gray-800">{hadithFavorites.length} Hadith</p>
+                            <p className="font-semibold text-gray-800">{hadithFavorites.length} {t.hadith}</p>
                             <p className="text-xs text-muted-foreground">{t.viewAll} →</p>
                           </div>
                         </div>
@@ -598,7 +598,7 @@ export default function ProfilePage() {
                             <BookOpen className="h-6 w-6 text-purple-600" />
                           </div>
                           <div>
-                            <p className="font-semibold text-gray-800">{duaFavorites.length} Duas</p>
+                            <p className="font-semibold text-gray-800">{duaFavorites.length} {t.duas}</p>
                             <p className="text-xs text-muted-foreground">{t.viewAll} →</p>
                           </div>
                         </div>

@@ -8,14 +8,29 @@ import { Badge } from "@/components/ui/badge";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 import { Trash2, Heart, ListChecks } from "lucide-react";
 import { SADAQAH_CATEGORIES, type SadaqahRecord } from "./sadaqah-form";
+import { getLangFromCountry, type TransLang } from "@/lib/islamic-content";
+import { SADAQAH_LIST_TEXTS } from "@/lib/sadaqah-texts";
 
 interface SadaqahListProps {
   records: SadaqahRecord[];
   onDelete: (id: string) => void;
   currencySymbol?: string;
+  lang: TransLang;
 }
 
-export function SadaqahList({ records, onDelete, currencySymbol = "$" }: SadaqahListProps) {
+const LOCALE_MAP: Record<TransLang, string> = {
+  en: "en-US",
+  bn: "bn-BD",
+  ur: "ur-PK",
+  ar: "ar-SA",
+  tr: "tr-TR",
+  ms: "ms-MY",
+  id: "id-ID",
+};
+
+export function SadaqahList({ records, onDelete, currencySymbol = "$", lang }: SadaqahListProps) {
+  const lt = SADAQAH_LIST_TEXTS[lang];
+  const locale = LOCALE_MAP[lang];
   const [confirmId, setConfirmId] = useState<string | null>(null);
 
   const grouped = useMemo(() => {
@@ -45,7 +60,7 @@ export function SadaqahList({ records, onDelete, currencySymbol = "$" }: Sadaqah
   const formatMonthLabel = (key: string) => {
     const [year, month] = key.split("-");
     const d = new Date(parseInt(year), parseInt(month) - 1);
-    return d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+    return d.toLocaleDateString(locale, { month: "long", year: "numeric" });
   };
 
   const getCategoryInfo = (categoryValue: string) => {
@@ -65,16 +80,16 @@ export function SadaqahList({ records, onDelete, currencySymbol = "$" }: Sadaqah
               <Heart className="h-8 w-8 text-emerald-300" />
             </div>
             <h3 className="text-lg font-semibold text-emerald-800 mb-1">
-              No donations yet
+              {lt.noDonationsYet}
             </h3>
             <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-3">
-              Start recording your Sadaqah to track your generosity and earn continuous rewards.
+              {lt.noDonationsDesc}
             </p>
             <p className="font-arabic text-base text-amber-600/70">
               مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              &ldquo;Charity does not decrease wealth.&rdquo; &mdash; Sahih Muslim
+              &ldquo;{lt.charityHadith}&rdquo; &mdash; Sahih Muslim
             </p>
           </CardContent>
         </Card>
@@ -88,7 +103,7 @@ export function SadaqahList({ records, onDelete, currencySymbol = "$" }: Sadaqah
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-emerald-800">
             <ListChecks className="h-5 w-5 text-emerald-600" />
-            Donation History
+            {lt.donationHistory}
             <span className="font-arabic text-base text-emerald-600/50 font-normal">
               سجل التبرعات
             </span>
@@ -104,7 +119,7 @@ export function SadaqahList({ records, onDelete, currencySymbol = "$" }: Sadaqah
                 </h3>
                 <div className="flex-1 h-px bg-emerald-100" />
                 <span className="text-xs text-muted-foreground">
-                  {monthRecords.length} donation{monthRecords.length !== 1 ? "s" : ""} &middot; {currencySymbol}
+                  {monthRecords.length} {monthRecords.length !== 1 ? lt.donations : lt.donation} &middot; {currencySymbol}
                   {monthRecords.reduce((s, r) => s + r.amount, 0).toFixed(2)}
                 </span>
               </div>
@@ -145,7 +160,7 @@ export function SadaqahList({ records, onDelete, currencySymbol = "$" }: Sadaqah
                           </div>
                           <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
                             <span>
-                              {new Date(record.date).toLocaleDateString("en-US", {
+                              {new Date(record.date).toLocaleDateString(locale, {
                                 month: "short",
                                 day: "numeric",
                                 year: "numeric",

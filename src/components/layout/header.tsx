@@ -15,13 +15,25 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { PRIMARY_NAV_FEATURES, MORE_NAV_FEATURES, ALL_NAV_FEATURES } from "@/lib/app-features";
+import { getLangFromCountry, type TransLang } from "@/lib/islamic-content";
+
+const HEADER_TEXTS: Record<TransLang, { more: string; signIn: string }> = {
+  en: { more: "More", signIn: "Sign In" },
+  bn: { more: "আরও", signIn: "সাইন ইন" },
+  ur: { more: "مزید", signIn: "سائن ان" },
+  ar: { more: "المزيد", signIn: "تسجيل الدخول" },
+  tr: { more: "Daha Fazla", signIn: "Giris Yap" },
+  ms: { more: "Lagi", signIn: "Log Masuk" },
+  id: { more: "Lainnya", signIn: "Masuk" },
+};
 
 interface HeaderProps {
   countryCode?: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function Header({ countryCode: _countryCode = "US" }: HeaderProps) {
+export function Header({ countryCode = "US" }: HeaderProps) {
+  const lang = getLangFromCountry(countryCode) as TransLang;
+  const ht = HEADER_TEXTS[lang];
   const { user, signOut, isAuthenticated } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
@@ -93,7 +105,7 @@ export function Header({ countryCode: _countryCode = "US" }: HeaderProps) {
                     }`}
                   >
                     <Icon className="h-3.5 w-3.5" />
-                    {label.en}
+                    {label[lang]}
                   </Button>
                 </Link>
               );
@@ -111,7 +123,7 @@ export function Header({ countryCode: _countryCode = "US" }: HeaderProps) {
                     : "text-emerald-100/80 hover:text-white hover:bg-white/10"
                 }`}
               >
-                More
+                {ht.more}
                 <ChevronDown className={`h-3 w-3 transition-transform ${moreOpen ? "rotate-180" : ""}`} />
               </Button>
 
@@ -129,7 +141,7 @@ export function Header({ countryCode: _countryCode = "US" }: HeaderProps) {
                           }`}
                         >
                           <Icon className="h-4 w-4 shrink-0" />
-                          {label.en}
+                          {label[lang]}
                         </div>
                       </Link>
                     );
@@ -164,7 +176,7 @@ export function Header({ countryCode: _countryCode = "US" }: HeaderProps) {
               <Link href="/auth/login">
                 <Button variant="ghost" size="sm" className="text-emerald-100/80 hover:text-white hover:bg-white/10 gap-1.5 text-xs h-8">
                   <LogIn className="h-4 w-4" />
-                  <span className="hidden sm:inline">Sign In</span>
+                  <span className="hidden sm:inline">{ht.signIn}</span>
                 </Button>
               </Link>
             )}
@@ -198,7 +210,7 @@ export function Header({ countryCode: _countryCode = "US" }: HeaderProps) {
                     }`}
                   >
                     <Icon className="h-4 w-4 shrink-0" />
-                    {label.en}
+                    {label[lang]}
                   </div>
                 </Link>
               );

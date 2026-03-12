@@ -217,6 +217,12 @@ export const UI_TEXTS: Record<TransLang, {
   disclaimer: string;
   disclaimerText: string;
   jazakallah: string;
+  signInToSave: string;
+  viewCertificate: string;
+  editRecalculate: string;
+  ushrLabel: string;
+  fitrLabel: string;
+  totalDueLabel: string;
 }> = {
   en: {
     zakatObligatory: "Zakat is Obligatory",
@@ -231,6 +237,12 @@ export const UI_TEXTS: Record<TransLang, {
     disclaimer: "Important Notice",
     disclaimerText: "IhsanWealth provides Islamic tools — Zakat calculator, prayer times, Quran, Duas, and more — based on standard Fiqh rulings. These are for guidance only. For specific rulings, please consult a qualified Islamic scholar (Mufti).",
     jazakallah: "May Allah reward you with goodness",
+    signInToSave: "Sign in to Save",
+    viewCertificate: "View Certificate",
+    editRecalculate: "Edit & Recalculate",
+    ushrLabel: "Ushr:",
+    fitrLabel: "Fitr:",
+    totalDueLabel: "Total Due:",
   },
   bn: {
     zakatObligatory: "যাকাত আপনার উপর ফরয",
@@ -245,6 +257,12 @@ export const UI_TEXTS: Record<TransLang, {
     disclaimer: "গুরুত্বপূর্ণ বিজ্ঞপ্তি",
     disclaimerText: "ইহসান ওয়েলথ ইসলামী টুলস প্রদান করে — যাকাত ক্যালকুলেটর, নামাযের সময়, কুরআন, দু'আ এবং আরও অনেক কিছু — যা মানক ফিকহী বিধান অনুযায়ী তৈরি। এগুলো শুধুমাত্র নির্দেশনার জন্য। নির্দিষ্ট বিষয়ে একজন যোগ্য ইসলামী আলেম (মুফতী) এর পরামর্শ নিন।",
     jazakallah: "আল্লাহ আপনাকে উত্তম প্রতিদান দিন",
+    signInToSave: "সংরক্ষণ করতে সাইন ইন করুন",
+    viewCertificate: "সনদপত্র দেখুন",
+    editRecalculate: "সম্পাদনা ও পুনঃহিসাব",
+    ushrLabel: "উশর:",
+    fitrLabel: "ফিতর:",
+    totalDueLabel: "মোট প্রদেয়:",
   },
   ur: {
     zakatObligatory: "زکوٰۃ آپ پر فرض ہے",
@@ -259,6 +277,12 @@ export const UI_TEXTS: Record<TransLang, {
     disclaimer: "اہم اطلاع",
     disclaimerText: "احسان ویلتھ اسلامی ٹولز فراہم کرتا ہے — زکوٰۃ کیلکولیٹر، نماز کے اوقات، قرآن، دعائیں اور مزید — معیاری فقہی احکام کے مطابق۔ یہ صرف رہنمائی کے لیے ہیں۔ مخصوص مسائل میں کسی مستند عالم (مفتی) سے رجوع کریں۔",
     jazakallah: "اللہ آپ کو بہترین اجر عطا فرمائے",
+    signInToSave: "محفوظ کرنے کے لیے سائن ان کریں",
+    viewCertificate: "سرٹیفکیٹ دیکھیں",
+    editRecalculate: "ترمیم اور دوبارہ حساب",
+    ushrLabel: "عشر:",
+    fitrLabel: "فطر:",
+    totalDueLabel: "کل واجب الادا:",
   },
   tr: {
     zakatObligatory: "Zekat sizin uzerinize farzdır",
@@ -273,6 +297,12 @@ export const UI_TEXTS: Record<TransLang, {
     disclaimer: "Onemli Bilgi",
     disclaimerText: "IhsanWealth Islami araclar sunar — Zekat hesaplayici, namaz vakitleri, Kuran, dualar ve daha fazlasi — standart fikih hukumlerine gore. Bunlar yalnizca rehberlik amaclidir. Ozel hukumler icin ehil bir Islami alime danisiniz.",
     jazakallah: "Allah sizi hayirla mukafatlandirsin",
+    signInToSave: "Kaydetmek icin giris yapin",
+    viewCertificate: "Sertifikayi Goruntule",
+    editRecalculate: "Duzenle ve Yeniden Hesapla",
+    ushrLabel: "Usr:",
+    fitrLabel: "Fitr:",
+    totalDueLabel: "Toplam Borc:",
   },
   ms: {
     zakatObligatory: "Zakat wajib ke atas anda",
@@ -287,6 +317,12 @@ export const UI_TEXTS: Record<TransLang, {
     disclaimer: "Notis Penting",
     disclaimerText: "IhsanWealth menyediakan alat Islam — kalkulator Zakat, waktu solat, Al-Quran, doa dan lagi — berdasarkan hukum Fiqh standard. Ini hanya untuk panduan. Untuk hukum tertentu, sila rujuk ulama yang berkelayakan.",
     jazakallah: "Semoga Allah memberi ganjaran kebaikan kepada anda",
+    signInToSave: "Log masuk untuk Simpan",
+    viewCertificate: "Lihat Sijil",
+    editRecalculate: "Edit & Kira Semula",
+    ushrLabel: "Usyr:",
+    fitrLabel: "Fitrah:",
+    totalDueLabel: "Jumlah Perlu Dibayar:",
   },
   id: {
     zakatObligatory: "Zakat wajib atas Anda",
@@ -301,6 +337,12 @@ export const UI_TEXTS: Record<TransLang, {
     disclaimer: "Pemberitahuan Penting",
     disclaimerText: "IhsanWealth menyediakan alat Islam — kalkulator Zakat, waktu shalat, Al-Quran, doa dan lainnya — berdasarkan hukum Fiqh standar. Ini hanya untuk panduan. Untuk hukum tertentu, silakan berkonsultasi dengan ulama yang berkompeten.",
     jazakallah: "Semoga Allah membalas Anda dengan kebaikan",
+    signInToSave: "Masuk untuk Menyimpan",
+    viewCertificate: "Lihat Sertifikat",
+    editRecalculate: "Edit & Hitung Ulang",
+    ushrLabel: "Usyr:",
+    fitrLabel: "Fitrah:",
+    totalDueLabel: "Total yang Harus Dibayar:",
   },
   ar: {
     zakatObligatory: "الزكاة واجبة عليك",
@@ -315,6 +357,12 @@ export const UI_TEXTS: Record<TransLang, {
     disclaimer: "تنبيه مهم",
     disclaimerText: "إحسان الثروة يوفر أدوات إسلامية — حاسبة الزكاة، أوقات الصلاة، القرآن، الأدعية والمزيد — وفقاً لأحكام الفقه المعتمدة. هذه للإرشاد فقط. للأحكام الخاصة يرجى استشارة عالم مؤهل (مفتي).",
     jazakallah: "جزاكم الله خيراً",
+    signInToSave: "سجّل الدخول للحفظ",
+    viewCertificate: "عرض الشهادة",
+    editRecalculate: "تعديل وإعادة الحساب",
+    ushrLabel: "العشر:",
+    fitrLabel: "الفطر:",
+    totalDueLabel: "إجمالي المستحق:",
   },
 };
 
@@ -331,6 +379,23 @@ export const FOOTER_LINKS_TEXTS: Record<TransLang, {
   tr: { sitemap: "Site Haritası", privacyPolicy: "Gizlilik Politikası", usageRights: "Kullanım Hakları" },
   ms: { sitemap: "Peta Laman", privacyPolicy: "Dasar Privasi", usageRights: "Hak Penggunaan" },
   id: { sitemap: "Peta Situs", privacyPolicy: "Kebijakan Privasi", usageRights: "Hak Penggunaan" },
+};
+
+// ─── Footer Extra Texts ───
+export const FOOTER_EXTRA_TEXTS: Record<TransLang, {
+  features: string;
+  legal: string;
+  builtWithCareBy: string;
+  visitors: string;
+  brandDesc: string;
+}> = {
+  en: { features: "Features", legal: "Legal", builtWithCareBy: "Built with care by", visitors: "visitors", brandDesc: "Your complete Islamic companion — empowering Muslims worldwide with essential tools for worship and finance." },
+  bn: { features: "ফিচারসমূহ", legal: "আইনি", builtWithCareBy: "যত্নসহকারে তৈরি করেছেন", visitors: "ভিজিটর", brandDesc: "আপনার সম্পূর্ণ ইসলামিক সহচর — ইবাদত ও অর্থের জন্য প্রয়োজনীয় টুলস দিয়ে বিশ্বব্যাপী মুসলিমদের ক্ষমতায়ন।" },
+  ur: { features: "خصوصیات", legal: "قانونی", builtWithCareBy: "محبت سے بنایا", visitors: "وزیٹرز", brandDesc: "آپ کا مکمل اسلامی ساتھی — عبادت اور مالیات کے لیے ضروری ٹولز کے ساتھ دنیا بھر کے مسلمانوں کی مدد۔" },
+  ar: { features: "الميزات", legal: "قانوني", builtWithCareBy: "صُنع بعناية بواسطة", visitors: "زائر", brandDesc: "رفيقك الإسلامي الشامل — تمكين المسلمين حول العالم بأدوات أساسية للعبادة والمالية." },
+  tr: { features: "Ozellikler", legal: "Yasal", builtWithCareBy: "Ozenle yapan", visitors: "ziyaretci", brandDesc: "Eksiksiz Islam arkadasiniz — ibadet ve finans icin temel araclarla dunya genelinde Muslumanlari guclendiriyor." },
+  ms: { features: "Ciri-ciri", legal: "Undang-undang", builtWithCareBy: "Dibina dengan kasih oleh", visitors: "pelawat", brandDesc: "Teman Islam lengkap anda — memperkasa umat Islam di seluruh dunia dengan alat penting untuk ibadat dan kewangan." },
+  id: { features: "Fitur", legal: "Hukum", builtWithCareBy: "Dibuat dengan penuh perhatian oleh", visitors: "pengunjung", brandDesc: "Pendamping Islam lengkap Anda — memberdayakan Muslim di seluruh dunia dengan alat penting untuk ibadah dan keuangan." },
 };
 
 // ─── Duas Page Texts ───
@@ -881,6 +946,7 @@ export const SADAQAH_PAGE_TEXTS: Record<TransLang, {
   loading: string;
   loadingRecords: string;
   motivationalHadith: string;
+  back: string;
 }> = {
   en: {
     title: "Sadaqah Tracker",
@@ -893,6 +959,7 @@ export const SADAQAH_PAGE_TEXTS: Record<TransLang, {
     loading: "Loading...",
     loadingRecords: "Loading your records...",
     motivationalHadith: "Charity does not decrease wealth.",
+    back: "Back",
   },
   bn: {
     title: "সদকা ট্র্যাকার",
@@ -905,6 +972,7 @@ export const SADAQAH_PAGE_TEXTS: Record<TransLang, {
     loading: "লোড হচ্ছে...",
     loadingRecords: "আপনার রেকর্ড লোড হচ্ছে...",
     motivationalHadith: "দান-সদকা সম্পদ কমায় না।",
+    back: "পেছনে",
   },
   ur: {
     title: "صدقہ ٹریکر",
@@ -917,6 +985,7 @@ export const SADAQAH_PAGE_TEXTS: Record<TransLang, {
     loading: "لوڈ ہو رہا ہے...",
     loadingRecords: "آپ کے ریکارڈ لوڈ ہو رہے ہیں...",
     motivationalHadith: "صدقہ مال کو کم نہیں کرتا۔",
+    back: "واپس",
   },
   tr: {
     title: "Sadaka Takibi",
@@ -929,6 +998,7 @@ export const SADAQAH_PAGE_TEXTS: Record<TransLang, {
     loading: "Yukleniyor...",
     loadingRecords: "Kayitlariniz yukleniyor...",
     motivationalHadith: "Sadaka maldan eksiltmez.",
+    back: "Geri",
   },
   ms: {
     title: "Penjejak Sedekah",
@@ -941,6 +1011,7 @@ export const SADAQAH_PAGE_TEXTS: Record<TransLang, {
     loading: "Memuatkan...",
     loadingRecords: "Memuatkan rekod anda...",
     motivationalHadith: "Sedekah tidak mengurangkan harta.",
+    back: "Kembali",
   },
   id: {
     title: "Pelacak Sedekah",
@@ -953,6 +1024,7 @@ export const SADAQAH_PAGE_TEXTS: Record<TransLang, {
     loading: "Memuat...",
     loadingRecords: "Memuat catatan Anda...",
     motivationalHadith: "Sedekah tidak mengurangi harta.",
+    back: "Kembali",
   },
   ar: {
     title: "متتبع الصدقات",
@@ -965,5 +1037,6 @@ export const SADAQAH_PAGE_TEXTS: Record<TransLang, {
     loading: "جاري التحميل...",
     loadingRecords: "جاري تحميل سجلاتك...",
     motivationalHadith: "ما نقصت صدقة من مال.",
+    back: "رجوع",
   },
 };

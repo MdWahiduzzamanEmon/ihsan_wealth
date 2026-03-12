@@ -71,21 +71,22 @@ export function useSadaqahRecords() {
       // Optimistic update
       setRecords((prev) => [record, ...prev]);
 
-      if (isAuthenticated && user) {
-        try {
-          const { error } = await supabase.from("sadaqah_records").insert({
-            id: record.id,
-            user_id: user.id,
-            amount: record.amount,
-            currency: record.currency,
-            category: record.category,
-            date: record.date,
-            notes: record.notes || null,
-          });
-          if (error) console.error("Failed to save sadaqah:", error.message);
-        } catch (err) {
-          console.error("Failed to save sadaqah:", err);
-        }
+      try {
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (!authUser) return;
+
+        const { error } = await supabase.from("sadaqah_records").insert({
+          id: record.id,
+          user_id: authUser.id,
+          amount: record.amount,
+          currency: record.currency,
+          category: record.category,
+          date: record.date,
+          notes: record.notes || null,
+        });
+        if (error) console.error("Failed to save sadaqah:", error.message);
+      } catch (err) {
+        console.error("Failed to save sadaqah:", err);
       }
     },
     [isAuthenticated, user, supabase]
@@ -96,17 +97,18 @@ export function useSadaqahRecords() {
       // Optimistic update
       setRecords((prev) => prev.filter((r) => r.id !== id));
 
-      if (isAuthenticated && user) {
-        try {
-          const { error } = await supabase
-            .from("sadaqah_records")
-            .delete()
-            .eq("id", id)
-            .eq("user_id", user.id);
-          if (error) console.error("Failed to delete sadaqah:", error.message);
-        } catch (err) {
-          console.error("Failed to delete sadaqah:", err);
-        }
+      try {
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (!authUser) return;
+
+        const { error } = await supabase
+          .from("sadaqah_records")
+          .delete()
+          .eq("id", id)
+          .eq("user_id", authUser.id);
+        if (error) console.error("Failed to delete sadaqah:", error.message);
+      } catch (err) {
+        console.error("Failed to delete sadaqah:", err);
       }
     },
     [isAuthenticated, user, supabase]

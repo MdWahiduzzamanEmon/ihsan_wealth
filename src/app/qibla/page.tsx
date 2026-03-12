@@ -24,6 +24,10 @@ import {
 } from "@/lib/qibla-utils";
 import { slideUp, staggerContainer, staggerItem, fadeIn } from "@/lib/animations";
 import { useReverseGeocode } from "@/hooks/use-reverse-geocode";
+import { QIBLA_TEXTS } from "@/lib/qibla-texts";
+import { getLangFromCountry } from "@/lib/islamic-content";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
 
 interface LocationState {
   lat: number;
@@ -33,6 +37,10 @@ interface LocationState {
 type LocationStatus = "idle" | "loading" | "success" | "error";
 
 export default function QiblaPage() {
+  const [formData] = useLocalStorage<ZakatFormData>("zakat-calculator-data", DEFAULT_FORM_DATA);
+  const lang = getLangFromCountry(formData?.country || "US");
+  const t = QIBLA_TEXTS[lang];
+
   const [location, setLocation] = useState<LocationState | null>(null);
   const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
   const [locationError, setLocationError] = useState<string | null>(null);
@@ -49,7 +57,7 @@ export default function QiblaPage() {
   const requestLocation = useCallback(() => {
     if (!navigator.geolocation) {
       setLocationStatus("error");
-      setLocationError("Geolocation is not supported by your browser.");
+      setLocationError(t.geoNotSupported);
       return;
     }
 
@@ -68,18 +76,16 @@ export default function QiblaPage() {
         setLocationStatus("error");
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            setLocationError(
-              "Location permission denied. Please enable location access in your browser settings."
-            );
+            setLocationError(t.permissionDenied);
             break;
           case error.POSITION_UNAVAILABLE:
-            setLocationError("Location information is unavailable.");
+            setLocationError(t.positionUnavailable);
             break;
           case error.TIMEOUT:
-            setLocationError("Location request timed out. Please try again.");
+            setLocationError(t.timeout);
             break;
           default:
-            setLocationError("An unknown error occurred.");
+            setLocationError(t.unknownError);
         }
       },
       {
@@ -88,7 +94,7 @@ export default function QiblaPage() {
         maximumAge: 60000,
       }
     );
-  }, []);
+  }, [t]);
 
   // Auto-request location on mount
   useEffect(() => {
@@ -154,7 +160,7 @@ export default function QiblaPage() {
             اتجاه القبلة
           </p>
           <p className="mt-1 text-xs text-emerald-300/70 italic tracking-wider">
-            Qibla Direction Finder
+            {t.headerSubtitle}
           </p>
         </div>
       </div>
@@ -169,12 +175,12 @@ export default function QiblaPage() {
               className="text-emerald-700 hover:text-emerald-800 gap-1.5"
             >
               <ArrowLeft className="h-4 w-4" />
-              Back to Calculator
+              {t.backToHome}
             </Button>
           </Link>
           <div className="flex items-center gap-2 text-emerald-600">
             <Compass className="h-4 w-4" />
-            <span className="text-sm font-medium">Qibla Finder</span>
+            <span className="text-sm font-medium">{t.qiblaFinder}</span>
           </div>
         </div>
       </div>
@@ -203,10 +209,10 @@ export default function QiblaPage() {
                     <Locate className="h-6 w-6 text-emerald-600" />
                   </motion.div>
                   <h3 className="text-lg font-semibold text-emerald-800 mb-1">
-                    Finding your location...
+                    {t.findingLocation}
                   </h3>
                   <p className="text-sm text-emerald-600/70">
-                    Please allow location access when prompted
+                    {t.allowLocation}
                   </p>
                 </CardContent>
               </Card>
@@ -222,7 +228,7 @@ export default function QiblaPage() {
                     <AlertCircle className="h-6 w-6 text-red-500" />
                   </div>
                   <h3 className="text-lg font-semibold text-red-800 mb-2">
-                    Location Error
+                    {t.locationError}
                   </h3>
                   <p className="text-sm text-red-600/80 mb-4 max-w-md mx-auto">
                     {locationError}
@@ -232,7 +238,7 @@ export default function QiblaPage() {
                     className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
                   >
                     <Locate className="h-4 w-4" />
-                    Try Again
+                    {t.tryAgain}
                   </Button>
                 </CardContent>
               </Card>
@@ -248,18 +254,17 @@ export default function QiblaPage() {
                     <MapPin className="h-6 w-6 text-emerald-600" />
                   </div>
                   <h3 className="text-lg font-semibold text-emerald-800 mb-2">
-                    Find Qibla Direction
+                    {t.findQiblaDirection}
                   </h3>
                   <p className="text-sm text-emerald-600/70 mb-4 max-w-md mx-auto">
-                    Allow location access to calculate the precise direction to
-                    the Kaaba from your current position.
+                    {t.allowLocationDesc}
                   </p>
                   <Button
                     onClick={requestLocation}
                     className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
                   >
                     <Locate className="h-4 w-4" />
-                    Enable Location
+                    {t.enableLocation}
                   </Button>
                 </CardContent>
               </Card>
@@ -283,12 +288,10 @@ export default function QiblaPage() {
                           </div>
                           <div className="flex-1">
                             <h4 className="text-sm font-semibold text-amber-800 mb-1">
-                              Enable Live Compass
+                              {t.enableLiveCompass}
                             </h4>
                             <p className="text-xs text-amber-700/70 mb-3">
-                              Grant device orientation permission for a live
-                              compass that tracks your phone&apos;s direction in
-                              real-time.
+                              {t.enableCompassDesc}
                             </p>
                             <Button
                               onClick={requestCompassPermission}
@@ -296,7 +299,7 @@ export default function QiblaPage() {
                               className="bg-amber-500 hover:bg-amber-600 text-white gap-1.5"
                             >
                               <Compass className="h-3.5 w-3.5" />
-                              Enable Compass
+                              {t.enableCompass}
                             </Button>
                           </div>
                         </div>
@@ -329,13 +332,13 @@ export default function QiblaPage() {
                         <Navigation className="h-4 w-4 text-amber-600" />
                       </div>
                       <p className="text-xs text-emerald-600/70 mb-0.5">
-                        Qibla Direction
+                        {t.qiblaDirection}
                       </p>
                       <p className="text-2xl font-bold text-emerald-800">
                         {qiblaBearing.toFixed(1)}°
                       </p>
                       <p className="text-xs text-emerald-600/60">
-                        {formatBearing(qiblaBearing)} from North
+                        {formatBearing(qiblaBearing)} {t.fromNorth}
                       </p>
                     </CardContent>
                   </Card>
@@ -347,7 +350,7 @@ export default function QiblaPage() {
                         <MapPin className="h-4 w-4 text-emerald-600" />
                       </div>
                       <p className="text-xs text-emerald-600/70 mb-0.5">
-                        Distance to Kaaba
+                        {t.distanceToKaaba}
                       </p>
                       <p className="text-2xl font-bold text-emerald-800">
                         {formatDistance(distanceToKaaba)}
@@ -367,7 +370,7 @@ export default function QiblaPage() {
                         <div className="flex items-center gap-2">
                           <MapPin className="h-3.5 w-3.5 text-emerald-500" />
                           <span className="text-xs text-emerald-700/70">
-                            {locationName || "Your Location"}
+                            {locationName || t.yourLocation}
                           </span>
                         </div>
                         <span className="text-xs font-mono text-emerald-600/60">
@@ -390,18 +393,10 @@ export default function QiblaPage() {
                           </div>
                           <div>
                             <h4 className="text-sm font-semibold text-emerald-800 mb-1">
-                              Using a Desktop?
+                              {t.usingDesktop}
                             </h4>
                             <p className="text-xs text-emerald-600/70 leading-relaxed">
-                              The compass shows the Qibla direction relative to
-                              North. Use a physical compass or your phone&apos;s
-                              compass app to face{" "}
-                              <span className="font-semibold text-amber-600">
-                                {qiblaBearing.toFixed(1)}°{" "}
-                                {formatBearing(qiblaBearing)}
-                              </span>{" "}
-                              from North. For a live compass experience, open
-                              this page on your mobile device.
+                              {t.desktopDesc.replace("{bearing}", `${qiblaBearing.toFixed(1)}° ${formatBearing(qiblaBearing)}`)}
                             </p>
                           </div>
                         </div>
@@ -418,14 +413,7 @@ export default function QiblaPage() {
                         <div className="flex items-start gap-3">
                           <AlertCircle className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
                           <p className="text-xs text-amber-700/70 leading-relaxed">
-                            Compass permission was denied. The Qibla direction
-                            is shown as{" "}
-                            <span className="font-semibold">
-                              {qiblaBearing.toFixed(1)}°{" "}
-                              {formatBearing(qiblaBearing)}
-                            </span>{" "}
-                            from North. Use a physical compass or your device&apos;s
-                            compass app to find this bearing.
+                            {t.compassDenied.replace("{bearing}", `${qiblaBearing.toFixed(1)}° ${formatBearing(qiblaBearing)}`)}
                           </p>
                         </div>
                       </CardContent>
@@ -450,7 +438,7 @@ export default function QiblaPage() {
                       فَوَلِّ وَجْهَكَ شَطْرَ الْمَسْجِدِ الْحَرَامِ
                     </p>
                     <p className="text-xs text-emerald-600/50 italic max-w-sm mx-auto">
-                      &ldquo;So turn your face toward al-Masjid al-Haram&rdquo;
+                      &ldquo;{t.quranVerse}&rdquo;
                       &mdash; Quran 2:144
                     </p>
                   </div>
@@ -463,12 +451,10 @@ export default function QiblaPage() {
       {/* Footer */}
       <footer className="border-t bg-gradient-to-b from-emerald-950 to-emerald-950 px-4 py-6 text-center">
         <p className="text-xs text-emerald-400/40">
-          Qibla direction calculated using great circle bearing to the Kaaba
-          (21.4225°N, 39.8262°E)
+          {t.footerNote}
         </p>
         <p className="mt-1 text-xs text-emerald-400/30">
-          <span className="font-arabic">جزاكم الله خيرا</span> &mdash; May
-          Allah reward you with goodness
+          <span className="font-arabic">جزاكم الله خيرا</span> &mdash; {t.jazakallah}
         </p>
       </footer>
     </div>

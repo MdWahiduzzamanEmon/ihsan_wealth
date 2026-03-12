@@ -125,13 +125,13 @@ export function SummaryDashboard({ result, currency, nisabBasis, countryCode, on
                     {result.agriculturalZakat > 0 && (
                       <div className="inline-flex items-center gap-1.5 bg-lime-100 text-lime-700 px-3 py-1.5 rounded-full text-sm">
                         <Wheat className="h-3.5 w-3.5" />
-                        Ushr: {formatCurrency(result.agriculturalZakat, currency)}
+                        {texts.ushrLabel} {formatCurrency(result.agriculturalZakat, currency)}
                       </div>
                     )}
                     {result.zakatAlFitr > 0 && (
                       <div className="inline-flex items-center gap-1.5 bg-rose-100 text-rose-700 px-3 py-1.5 rounded-full text-sm">
                         <Heart className="h-3.5 w-3.5" />
-                        Fitr: {formatCurrency(result.zakatAlFitr, currency)}
+                        {texts.fitrLabel} {formatCurrency(result.zakatAlFitr, currency)}
                       </div>
                     )}
                   </motion.div>
@@ -144,7 +144,7 @@ export function SummaryDashboard({ result, currency, nisabBasis, countryCode, on
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.7 }}
                   >
-                    Total Due: {formatCurrency(result.totalZakatDue, currency)}
+                    {texts.totalDueLabel} {formatCurrency(result.totalZakatDue, currency)}
                   </motion.div>
                 )}
 
@@ -390,17 +390,17 @@ export function SummaryDashboard({ result, currency, nisabBasis, countryCode, on
         {formData && prices && !isAuthenticated && (
           <Link href="/auth/login">
             <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
-              <LogIn className="h-4 w-4" /> Sign in to Save
+              <LogIn className="h-4 w-4" /> {texts.signInToSave}
             </Button>
           </Link>
         )}
         {saveError && <p className="w-full text-center text-xs text-red-500">{saveError}</p>}
         <Button variant="outline" onClick={() => setShowCertificateModal(true)} className="gap-2">
-          <FileText className="h-4 w-4" /> View Certificate
+          <FileText className="h-4 w-4" /> {texts.viewCertificate}
         </Button>
         {onRecalculate && (
           <Button variant="outline" onClick={onRecalculate} className="gap-2">
-            <RotateCcw className="h-4 w-4" /> Edit & Recalculate
+            <RotateCcw className="h-4 w-4" /> {texts.editRecalculate}
           </Button>
         )}
         <Button variant="outline" onClick={onReset} className="gap-2 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700">

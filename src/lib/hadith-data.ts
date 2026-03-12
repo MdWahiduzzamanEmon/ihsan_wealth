@@ -248,6 +248,11 @@ export const HADITH_TEXTS: Record<TransLang, {
   copied: string;
   share: string;
   copy: string;
+  back: string;
+  loginRequired: string;
+  signIn: string;
+  removeFromFavorites: string;
+  addToFavorites: string;
 }> = {
   en: {
     title: "Hadith of the Day",
@@ -261,6 +266,11 @@ export const HADITH_TEXTS: Record<TransLang, {
     copied: "Copied!",
     share: "Share",
     copy: "Copy",
+    back: "Back",
+    loginRequired: "Login required to save favorites",
+    signIn: "Sign in",
+    removeFromFavorites: "Remove from favorites",
+    addToFavorites: "Add to favorites",
   },
   bn: {
     title: "আজকের হাদিস",
@@ -274,6 +284,11 @@ export const HADITH_TEXTS: Record<TransLang, {
     copied: "কপি হয়েছে!",
     share: "শেয়ার",
     copy: "কপি",
+    back: "ফিরে যান",
+    loginRequired: "পছন্দ সংরক্ষণ করতে লগইন প্রয়োজন",
+    signIn: "সাইন ইন",
+    removeFromFavorites: "পছন্দ থেকে সরান",
+    addToFavorites: "পছন্দে যোগ করুন",
   },
   ur: {
     title: "آج کی حدیث",
@@ -287,6 +302,11 @@ export const HADITH_TEXTS: Record<TransLang, {
     copied: "کاپی ہو گیا!",
     share: "شیئر",
     copy: "کاپی",
+    back: "واپس",
+    loginRequired: "پسندیدہ محفوظ کرنے کے لیے لاگ ان ضروری ہے",
+    signIn: "سائن ان",
+    removeFromFavorites: "پسندیدہ سے ہٹائیں",
+    addToFavorites: "پسندیدہ میں شامل کریں",
   },
   ar: {
     title: "حديث اليوم",
@@ -300,6 +320,11 @@ export const HADITH_TEXTS: Record<TransLang, {
     copied: "تم النسخ!",
     share: "مشاركة",
     copy: "نسخ",
+    back: "رجوع",
+    loginRequired: "يتطلب تسجيل الدخول لحفظ المفضلة",
+    signIn: "تسجيل الدخول",
+    removeFromFavorites: "إزالة من المفضلة",
+    addToFavorites: "إضافة إلى المفضلة",
   },
   tr: {
     title: "Gunun Hadisi",
@@ -313,6 +338,11 @@ export const HADITH_TEXTS: Record<TransLang, {
     copied: "Kopyalandi!",
     share: "Paylas",
     copy: "Kopyala",
+    back: "Geri",
+    loginRequired: "Favorilere kaydetmek icin giris gerekli",
+    signIn: "Giris Yap",
+    removeFromFavorites: "Favorilerden kaldir",
+    addToFavorites: "Favorilere ekle",
   },
   ms: {
     title: "Hadis Hari Ini",
@@ -326,6 +356,11 @@ export const HADITH_TEXTS: Record<TransLang, {
     copied: "Disalin!",
     share: "Kongsi",
     copy: "Salin",
+    back: "Kembali",
+    loginRequired: "Log masuk diperlukan untuk menyimpan kegemaran",
+    signIn: "Log Masuk",
+    removeFromFavorites: "Buang dari kegemaran",
+    addToFavorites: "Tambah ke kegemaran",
   },
   id: {
     title: "Hadis Hari Ini",
@@ -339,5 +374,10 @@ export const HADITH_TEXTS: Record<TransLang, {
     copied: "Disalin!",
     share: "Bagikan",
     copy: "Salin",
+    back: "Kembali",
+    loginRequired: "Login diperlukan untuk menyimpan favorit",
+    signIn: "Masuk",
+    removeFromFavorites: "Hapus dari favorit",
+    addToFavorites: "Tambah ke favorit",
   },
 };

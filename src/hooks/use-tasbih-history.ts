@@ -87,22 +87,23 @@ export function useTasbihHistory() {
       // Optimistic update
       setSessions((prev) => [newSession, ...prev]);
 
-      if (isAuthenticated && user) {
-        try {
-          const { error } = await supabase.from("tasbih_sessions").insert({
-            id: newSession.id,
-            user_id: user.id,
-            dhikr_type: newSession.dhikr_type,
-            custom_text: newSession.custom_text || null,
-            target_count: newSession.target_count,
-            completed_count: newSession.completed_count,
-            completed_at: newSession.completed_at,
-            date: newSession.date,
-          });
-          if (error) console.error("Failed to save tasbih session:", error.message);
-        } catch (err) {
-          console.error("Failed to save tasbih session:", err);
-        }
+      try {
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (!authUser) return newSession;
+
+        const { error } = await supabase.from("tasbih_sessions").insert({
+          id: newSession.id,
+          user_id: authUser.id,
+          dhikr_type: newSession.dhikr_type,
+          custom_text: newSession.custom_text || null,
+          target_count: newSession.target_count,
+          completed_count: newSession.completed_count,
+          completed_at: newSession.completed_at,
+          date: newSession.date,
+        });
+        if (error) console.error("Failed to save tasbih session:", error.message);
+      } catch (err) {
+        console.error("Failed to save tasbih session:", err);
       }
 
       return newSession;
@@ -113,17 +114,18 @@ export function useTasbihHistory() {
   const deleteSession = useCallback(
     async (id: string) => {
       setSessions((prev) => prev.filter((s) => s.id !== id));
-      if (isAuthenticated && user) {
-        try {
-          const { error } = await supabase
-            .from("tasbih_sessions")
-            .delete()
-            .eq("id", id)
-            .eq("user_id", user.id);
-          if (error) console.error("Failed to delete tasbih session:", error.message);
-        } catch (err) {
-          console.error("Failed to delete tasbih session:", err);
-        }
+      try {
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (!authUser) return;
+
+        const { error } = await supabase
+          .from("tasbih_sessions")
+          .delete()
+          .eq("id", id)
+          .eq("user_id", authUser.id);
+        if (error) console.error("Failed to delete tasbih session:", error.message);
+      } catch (err) {
+        console.error("Failed to delete tasbih session:", err);
       }
     },
     [isAuthenticated, user, supabase]

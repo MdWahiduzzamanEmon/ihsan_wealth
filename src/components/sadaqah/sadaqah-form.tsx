@@ -12,6 +12,8 @@ import {
   Baby, Landmark, AlertTriangle, HandHeart, CheckCircle2,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import type { TransLang } from "@/lib/islamic-content";
+import { SADAQAH_FORM_TEXTS, SADAQAH_CATEGORY_LABELS } from "@/lib/sadaqah-texts";
 
 export interface SadaqahRecord {
   id: string;
@@ -36,9 +38,12 @@ interface SadaqahFormProps {
   onAdd: (record: SadaqahRecord) => void;
   currencySymbol?: string;
   currencyCode?: string;
+  lang: TransLang;
 }
 
-export function SadaqahForm({ onAdd, currencySymbol = "$", currencyCode = "USD" }: SadaqahFormProps) {
+export function SadaqahForm({ onAdd, currencySymbol = "$", currencyCode = "USD", lang }: SadaqahFormProps) {
+  const ft = SADAQAH_FORM_TEXTS[lang];
+  const catLabels = SADAQAH_CATEGORY_LABELS[lang];
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("General");
   const [date, setDate] = useState(() => new Date().toISOString().split("T")[0]);
@@ -74,7 +79,7 @@ export function SadaqahForm({ onAdd, currencySymbol = "$", currencyCode = "USD" 
             <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center">
               <Heart className="h-4 w-4 text-emerald-600" />
             </div>
-            Add Sadaqah
+            {ft.addSadaqah}
             <span className="font-arabic text-base text-emerald-600/50 font-normal">
               تسجيل صدقة
             </span>
@@ -85,7 +90,7 @@ export function SadaqahForm({ onAdd, currencySymbol = "$", currencyCode = "USD" 
             {/* Amount & Date Row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-sm font-medium text-emerald-800">Amount ({currencySymbol})</Label>
+                <Label className="text-sm font-medium text-emerald-800">{ft.amount} ({currencySymbol})</Label>
                 <Input
                   type="number"
                   step="0.01"
@@ -98,7 +103,7 @@ export function SadaqahForm({ onAdd, currencySymbol = "$", currencyCode = "USD" 
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-sm font-medium text-emerald-800">Date</Label>
+                <Label className="text-sm font-medium text-emerald-800">{ft.date}</Label>
                 <Input
                   type="date"
                   value={date}
@@ -111,7 +116,7 @@ export function SadaqahForm({ onAdd, currencySymbol = "$", currencyCode = "USD" 
 
             {/* Category Selector */}
             <div className="space-y-1.5">
-              <Label className="text-sm font-medium text-emerald-800">Category</Label>
+              <Label className="text-sm font-medium text-emerald-800">{ft.category}</Label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {SADAQAH_CATEGORIES.map((cat) => {
                   const Icon = cat.icon;
@@ -128,7 +133,7 @@ export function SadaqahForm({ onAdd, currencySymbol = "$", currencyCode = "USD" 
                       }`}
                     >
                       <Icon className="h-4 w-4 shrink-0" style={{ color: cat.color }} />
-                      <span className="truncate">{cat.label}</span>
+                      <span className="truncate">{catLabels[cat.value] || cat.label}</span>
                     </button>
                   );
                 })}
@@ -137,9 +142,9 @@ export function SadaqahForm({ onAdd, currencySymbol = "$", currencyCode = "USD" 
 
             {/* Notes */}
             <div className="space-y-1.5">
-              <Label className="text-sm font-medium text-emerald-800">Notes (optional)</Label>
+              <Label className="text-sm font-medium text-emerald-800">{ft.notesOptional}</Label>
               <Input
-                placeholder="e.g. Donated to local food bank"
+                placeholder={ft.notesPlaceholder}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 className="border-emerald-200 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/30"
@@ -158,7 +163,7 @@ export function SadaqahForm({ onAdd, currencySymbol = "$", currencyCode = "USD" 
                     className="flex items-center justify-center gap-2 h-10 rounded-lg bg-emerald-100 text-emerald-700 font-medium"
                   >
                     <CheckCircle2 className="h-4 w-4" />
-                    Sadaqah recorded! May Allah accept it.
+                    {ft.successMessage}
                   </motion.div>
                 ) : (
                   <motion.div
@@ -172,7 +177,7 @@ export function SadaqahForm({ onAdd, currencySymbol = "$", currencyCode = "USD" 
                       className="w-full h-10 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold gap-2 shadow-md shadow-emerald-600/20"
                     >
                       <Heart className="h-4 w-4" />
-                      Record Sadaqah
+                      {ft.recordSadaqah}
                     </Button>
                   </motion.div>
                 )}

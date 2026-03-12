@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Github } from "lucide-react";
-import { FOOTER_DUA, UI_TEXTS, FOOTER_LINKS_TEXTS, getLangFromCountry } from "@/lib/islamic-content";
+import { FOOTER_DUA, UI_TEXTS, FOOTER_LINKS_TEXTS, FOOTER_EXTRA_TEXTS, getLangFromCountry } from "@/lib/islamic-content";
 import { useVisitorCount } from "@/hooks/use-visitor-count";
 import { GRID_FEATURES } from "@/lib/app-features";
 
@@ -52,6 +52,7 @@ export function Footer({ countryCode = "US" }: FooterProps) {
   const texts = UI_TEXTS[lang];
   const linkTexts = FOOTER_LINKS_TEXTS[lang];
   const duaTranslation = FOOTER_DUA.translations[lang] || FOOTER_DUA.translations.en;
+  const extra = FOOTER_EXTRA_TEXTS[lang];
   const visitorCount = useVisitorCount();
 
   return (
@@ -75,10 +76,10 @@ export function Footer({ countryCode = "US" }: FooterProps) {
           <p className="font-arabic text-2xl text-amber-300/60 mb-3 leading-relaxed" dir="rtl">
             {FOOTER_DUA.arabic}
           </p>
-          <p className="text-sm text-emerald-200/40 italic max-w-xl mx-auto leading-relaxed">
+          <p className="text-sm text-emerald-200/60 italic max-w-xl mx-auto leading-relaxed">
             &ldquo;{duaTranslation}&rdquo;
           </p>
-          <p className="text-xs text-emerald-400/35 mt-1.5">— {FOOTER_DUA.source}</p>
+          <p className="text-xs text-emerald-400/50 mt-1.5">— {FOOTER_DUA.source}</p>
         </div>
 
         {/* Ornamental divider */}
@@ -108,22 +109,22 @@ export function Footer({ countryCode = "US" }: FooterProps) {
                 <span className="text-amber-400">Ihsan</span>Wealth
               </span>
             </Link>
-            <p className="text-xs text-emerald-300/40 leading-relaxed max-w-xs mx-auto md:mx-0">
-              Your complete Islamic companion — empowering Muslims worldwide with essential tools for worship and finance.
+            <p className="text-xs text-emerald-300/60 leading-relaxed max-w-xs mx-auto md:mx-0">
+              {extra.brandDesc}
             </p>
           </div>
 
           {/* Quick links column */}
           <div className="text-center md:text-left">
-            <h3 className="text-xs font-semibold text-emerald-200/70 uppercase tracking-wider mb-3">Features</h3>
+            <h3 className="text-xs font-semibold text-emerald-200/70 uppercase tracking-wider mb-3">{extra.features}</h3>
             <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
               {GRID_FEATURES.slice(0, 8).map((f) => (
                 <Link
                   key={f.id}
                   href={f.href}
-                  className="text-xs text-emerald-300/40 hover:text-emerald-200 transition-colors truncate"
+                  className="text-xs text-emerald-300/60 hover:text-emerald-200 transition-colors truncate"
                 >
-                  {f.label.en}
+                  {f.label[lang]}
                 </Link>
               ))}
             </div>
@@ -131,15 +132,15 @@ export function Footer({ countryCode = "US" }: FooterProps) {
 
           {/* Legal column */}
           <div className="text-center md:text-left">
-            <h3 className="text-xs font-semibold text-emerald-200/70 uppercase tracking-wider mb-3">Legal</h3>
+            <h3 className="text-xs font-semibold text-emerald-200/70 uppercase tracking-wider mb-3">{extra.legal}</h3>
             <div className="flex flex-col gap-1.5">
-              <Link href="/site-map" className="text-xs text-emerald-300/40 hover:text-emerald-200 transition-colors">
+              <Link href="/site-map" className="text-xs text-emerald-300/60 hover:text-emerald-200 transition-colors">
                 {linkTexts.sitemap}
               </Link>
-              <Link href="/privacy" className="text-xs text-emerald-300/40 hover:text-emerald-200 transition-colors">
+              <Link href="/privacy" className="text-xs text-emerald-300/60 hover:text-emerald-200 transition-colors">
                 {linkTexts.privacyPolicy}
               </Link>
-              <Link href="/usage-rights" className="text-xs text-emerald-300/40 hover:text-emerald-200 transition-colors">
+              <Link href="/usage-rights" className="text-xs text-emerald-300/60 hover:text-emerald-200 transition-colors">
                 {linkTexts.usageRights}
               </Link>
             </div>
@@ -148,9 +149,9 @@ export function Footer({ countryCode = "US" }: FooterProps) {
 
         {/* Disclaimer */}
         <div className="rounded-xl bg-white/[0.03] border border-emerald-700/20 px-5 py-4 mb-8">
-          <p className="text-xs text-emerald-200/60 leading-relaxed text-center">
-            <span className="font-arabic text-amber-300/40 mr-1.5">تنبيه</span>
-            <span className="font-medium text-emerald-200/70">{texts.disclaimer}:</span>{" "}
+          <p className="text-xs text-emerald-200/70 leading-relaxed text-center">
+            <span className="font-arabic text-amber-300/60 mr-1.5">تنبيه</span>
+            <span className="font-medium text-emerald-200/80">{texts.disclaimer}:</span>{" "}
             {texts.disclaimerText}
           </p>
         </div>
@@ -159,13 +160,13 @@ export function Footer({ countryCode = "US" }: FooterProps) {
         <div className="flex flex-col items-center gap-4 pt-6 border-t border-emerald-800/30">
           {/* Developer credit with social links */}
           <div className="flex items-center gap-3">
-            <p className="text-[11px] text-emerald-400/40">
-              &copy; {new Date().getFullYear()} IhsanWealth. Built with care by{" "}
+            <p className="text-[11px] text-emerald-400/60">
+              &copy; {new Date().getFullYear()} IhsanWealth. {extra.builtWithCareBy}{" "}
               <a
                 href="https://github.com/MdWahiduzzamanEmon"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-emerald-300/40 hover:text-emerald-200 transition-colors"
+                className="text-emerald-300/60 hover:text-emerald-200 transition-colors"
               >
                 Md Wahiduzzaman Emon
               </a>
@@ -178,7 +179,7 @@ export function Footer({ countryCode = "US" }: FooterProps) {
                 className="h-6 w-6 rounded-md bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
                 aria-label="LinkedIn"
               >
-                <LinkedInIcon className="h-3 w-3 text-emerald-400/50" />
+                <LinkedInIcon className="h-3 w-3 text-emerald-400/60" />
               </a>
               <a
                 href="https://www.facebook.com/wahedemon09/"
@@ -187,7 +188,7 @@ export function Footer({ countryCode = "US" }: FooterProps) {
                 className="h-6 w-6 rounded-md bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
                 aria-label="Facebook"
               >
-                <FacebookIcon className="h-3 w-3 text-emerald-400/50" />
+                <FacebookIcon className="h-3 w-3 text-emerald-400/60" />
               </a>
               <a
                 href="https://github.com/MdWahiduzzamanEmon"
@@ -196,7 +197,7 @@ export function Footer({ countryCode = "US" }: FooterProps) {
                 className="h-6 w-6 rounded-md bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
                 aria-label="GitHub"
               >
-                <Github className="h-3 w-3 text-emerald-400/50" />
+                <Github className="h-3 w-3 text-emerald-400/60" />
               </a>
             </div>
           </div>
@@ -204,12 +205,12 @@ export function Footer({ countryCode = "US" }: FooterProps) {
           {/* Visitor count chip & jazakallah */}
           <div className="flex items-center gap-3 flex-wrap justify-center">
             {visitorCount !== null && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-800/40 border border-emerald-700/30 px-3 py-1 text-[11px] text-emerald-300/60">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/70 animate-pulse" />
-                {visitorCount.toLocaleString()} visitors
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-800/40 border border-emerald-700/30 px-3 py-1 text-[11px] text-emerald-300/70">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/80 animate-pulse" />
+                {visitorCount.toLocaleString()} {extra.visitors}
               </span>
             )}
-            <p className="text-[11px] text-emerald-400/30">
+            <p className="text-[11px] text-emerald-400/50">
               <span className="font-arabic">جزاكم الله خيرا</span> — {texts.jazakallah}
             </p>
           </div>

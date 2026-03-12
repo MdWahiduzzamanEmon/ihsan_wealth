@@ -38,7 +38,7 @@ export default function SadaqahPage() {
             <div className="flex items-center gap-3 mb-2">
               <Link href="/">
                 <Button variant="ghost" size="sm" className="gap-1">
-                  <ArrowLeft className="h-4 w-4" /> Back
+                  <ArrowLeft className="h-4 w-4" /> {t.back}
                 </Button>
               </Link>
             </div>
@@ -120,13 +120,13 @@ export default function SadaqahPage() {
           ) : !isLoading ? (
             <div className="space-y-8">
               {/* Add Form */}
-              <SadaqahForm onAdd={addRecord} currencySymbol={currencySymbol} currencyCode={currencyCode} />
+              <SadaqahForm onAdd={addRecord} currencySymbol={currencySymbol} currencyCode={currencyCode} lang={lang} />
 
               {/* Stats */}
-              <SadaqahStats records={records} currencySymbol={currencySymbol} />
+              <SadaqahStats records={records} currencySymbol={currencySymbol} lang={lang} />
 
               {/* Donations List */}
-              <SadaqahList records={records} onDelete={deleteRecord} currencySymbol={currencySymbol} />
+              <SadaqahList records={records} onDelete={deleteRecord} currencySymbol={currencySymbol} lang={lang} />
 
               {/* Motivational Footer */}
               {records.length > 0 && (

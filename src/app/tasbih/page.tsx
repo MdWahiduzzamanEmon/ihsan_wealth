@@ -38,7 +38,7 @@ export default function TasbihPage() {
             <div className="flex items-center gap-3 mb-2">
               <Link href="/">
                 <Button variant="ghost" size="sm" className="gap-1">
-                  <ArrowLeft className="h-4 w-4" /> Back
+                  <ArrowLeft className="h-4 w-4" /> {t.back}
                 </Button>
               </Link>
             </div>

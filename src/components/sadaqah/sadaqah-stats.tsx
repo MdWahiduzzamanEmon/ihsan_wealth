@@ -11,13 +11,17 @@ import {
   ResponsiveContainer, PieChart, Pie, Cell, Legend,
 } from "recharts";
 import { SADAQAH_CATEGORIES, type SadaqahRecord } from "./sadaqah-form";
+import type { TransLang } from "@/lib/islamic-content";
+import { SADAQAH_STATS_TEXTS } from "@/lib/sadaqah-texts";
 
 interface SadaqahStatsProps {
   records: SadaqahRecord[];
   currencySymbol?: string;
+  lang: TransLang;
 }
 
-export function SadaqahStats({ records, currencySymbol = "$" }: SadaqahStatsProps) {
+export function SadaqahStats({ records, currencySymbol = "$", lang }: SadaqahStatsProps) {
+  const st = SADAQAH_STATS_TEXTS[lang];
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
@@ -84,7 +88,7 @@ export function SadaqahStats({ records, currencySymbol = "$" }: SadaqahStatsProp
                   <Calendar className="h-5 w-5 text-emerald-600" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground font-medium">This Month</p>
+                  <p className="text-xs text-muted-foreground font-medium">{st.thisMonth}</p>
                   <AnimatedCounter
                     value={totalThisMonth}
                     prefix={currencySymbol}
@@ -105,7 +109,7 @@ export function SadaqahStats({ records, currencySymbol = "$" }: SadaqahStatsProp
                   <TrendingUp className="h-5 w-5 text-amber-600" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground font-medium">This Year</p>
+                  <p className="text-xs text-muted-foreground font-medium">{st.thisYear}</p>
                   <AnimatedCounter
                     value={totalThisYear}
                     prefix={currencySymbol}
@@ -126,7 +130,7 @@ export function SadaqahStats({ records, currencySymbol = "$" }: SadaqahStatsProp
                   <Hash className="h-5 w-5 text-purple-600" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground font-medium">Total Donations</p>
+                  <p className="text-xs text-muted-foreground font-medium">{st.totalDonations}</p>
                   <AnimatedCounter
                     value={donationCount}
                     decimals={0}
@@ -148,7 +152,7 @@ export function SadaqahStats({ records, currencySymbol = "$" }: SadaqahStatsProp
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-emerald-800 text-base">
                   <TrendingUp className="h-4 w-4 text-emerald-600" />
-                  Monthly Totals
+                  {st.monthlyTotals}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -185,7 +189,7 @@ export function SadaqahStats({ records, currencySymbol = "$" }: SadaqahStatsProp
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-emerald-800 text-base">
                   <PieChartIcon className="h-4 w-4 text-emerald-600" />
-                  By Category
+                  {st.byCategory}
                 </CardTitle>
               </CardHeader>
               <CardContent>

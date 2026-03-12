@@ -30,6 +30,14 @@ export const PROFILE_PAGE_TEXTS: Record<TransLang, {
   createAccount: string;
   viewAll: string;
   year: string;
+  donations: string;
+  hadith: string;
+  duas: string;
+  goToCalculator: string;
+  startTracking: string;
+  startDhikr: string;
+  counts: string;
+  back: string;
 }> = {
   en: {
     title: "My Profile",
@@ -61,6 +69,14 @@ export const PROFILE_PAGE_TEXTS: Record<TransLang, {
     createAccount: "Create Account",
     viewAll: "View All",
     year: "Year",
+    donations: "donations",
+    hadith: "Hadith",
+    duas: "Duas",
+    goToCalculator: "Go to Calculator",
+    startTracking: "Start Tracking",
+    startDhikr: "Start Dhikr",
+    counts: "counts",
+    back: "Back",
   },
   bn: {
     title: "আমার প্রোফাইল",
@@ -92,6 +108,14 @@ export const PROFILE_PAGE_TEXTS: Record<TransLang, {
     createAccount: "অ্যাকাউন্ট তৈরি",
     viewAll: "সব দেখুন",
     year: "বছর",
+    donations: "দান",
+    hadith: "হাদিস",
+    duas: "দোয়া",
+    goToCalculator: "ক্যালকুলেটরে যান",
+    startTracking: "ট্র্যাকিং শুরু করুন",
+    startDhikr: "যিকর শুরু করুন",
+    counts: "গণনা",
+    back: "পিছনে",
   },
   ur: {
     title: "میری پروفائل",
@@ -123,6 +147,14 @@ export const PROFILE_PAGE_TEXTS: Record<TransLang, {
     createAccount: "اکاؤنٹ بنائیں",
     viewAll: "سب دیکھیں",
     year: "سال",
+    donations: "عطیات",
+    hadith: "حدیث",
+    duas: "دعائیں",
+    goToCalculator: "کیلکولیٹر پر جائیں",
+    startTracking: "ٹریکنگ شروع کریں",
+    startDhikr: "ذکر شروع کریں",
+    counts: "شمار",
+    back: "واپس",
   },
   ar: {
     title: "ملفي الشخصي",
@@ -154,6 +186,14 @@ export const PROFILE_PAGE_TEXTS: Record<TransLang, {
     createAccount: "إنشاء حساب",
     viewAll: "عرض الكل",
     year: "سنة",
+    donations: "تبرعات",
+    hadith: "حديث",
+    duas: "أدعية",
+    goToCalculator: "الذهاب إلى الحاسبة",
+    startTracking: "ابدأ التتبع",
+    startDhikr: "ابدأ الذكر",
+    counts: "عدد",
+    back: "رجوع",
   },
   tr: {
     title: "Profilim",
@@ -185,6 +225,14 @@ export const PROFILE_PAGE_TEXTS: Record<TransLang, {
     createAccount: "Hesap Olustur",
     viewAll: "Tumunu Gor",
     year: "Yil",
+    donations: "bagis",
+    hadith: "Hadis",
+    duas: "Dualar",
+    goToCalculator: "Hesaplayiciya Git",
+    startTracking: "Takibe Basla",
+    startDhikr: "Zikre Basla",
+    counts: "sayi",
+    back: "Geri",
   },
   ms: {
     title: "Profil Saya",
@@ -216,6 +264,14 @@ export const PROFILE_PAGE_TEXTS: Record<TransLang, {
     createAccount: "Cipta Akaun",
     viewAll: "Lihat Semua",
     year: "Tahun",
+    donations: "derma",
+    hadith: "Hadis",
+    duas: "Doa",
+    goToCalculator: "Pergi ke Kalkulator",
+    startTracking: "Mula Jejak",
+    startDhikr: "Mula Zikir",
+    counts: "kiraan",
+    back: "Kembali",
   },
   id: {
     title: "Profil Saya",
@@ -247,5 +303,13 @@ export const PROFILE_PAGE_TEXTS: Record<TransLang, {
     createAccount: "Buat Akun",
     viewAll: "Lihat Semua",
     year: "Tahun",
+    donations: "donasi",
+    hadith: "Hadis",
+    duas: "Doa",
+    goToCalculator: "Buka Kalkulator",
+    startTracking: "Mulai Lacak",
+    startDhikr: "Mulai Zikir",
+    counts: "hitungan",
+    back: "Kembali",
   },
 };

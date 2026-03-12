@@ -128,7 +128,7 @@ export function HadithCard({ hadith, isFavorite, onToggleFavorite, lang, isHighl
                     ? "text-rose-500 hover:bg-rose-50"
                     : "text-gray-400 hover:text-rose-500 hover:bg-rose-50"
                 )}
-                aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                aria-label={isFavorite ? t.removeFromFavorites : t.addToFavorites}
               >
                 <Heart className={cn("h-4 w-4", isFavorite && "fill-rose-500")} />
               </button>
@@ -143,13 +143,13 @@ export function HadithCard({ hadith, isFavorite, onToggleFavorite, lang, isHighl
                     className="absolute bottom-full right-0 mb-2 z-50"
                   >
                     <div className="rounded-xl bg-gray-900 text-white shadow-xl px-4 py-3 text-xs whitespace-nowrap">
-                      <p className="font-medium mb-1.5">Login required to save favorites</p>
+                      <p className="font-medium mb-1.5">{t.loginRequired}</p>
                       <Link
                         href="/auth/login"
                         className="inline-flex items-center gap-1 rounded-md bg-emerald-600 px-2.5 py-1 text-[11px] font-medium text-white hover:bg-emerald-500 transition-colors"
                       >
                         <LogIn className="h-3 w-3" />
-                        Sign in
+                        {t.signIn}
                       </Link>
                       <div className="absolute -bottom-1 right-4 h-2 w-2 rotate-45 bg-gray-900" />
                     </div>

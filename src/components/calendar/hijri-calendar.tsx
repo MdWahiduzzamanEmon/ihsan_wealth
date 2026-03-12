@@ -4,6 +4,18 @@ import { useState, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { TransLang } from "@/lib/islamic-content";
+
+const HIJRI_CAL_TEXTS: Record<TransLang, { noEvents: string; today: string }> = {
+  en: { noEvents: "No special events on this day.", today: "Today" },
+  bn: { noEvents: "এই দিনে কোনো বিশেষ ঘটনা নেই।", today: "আজ" },
+  ur: { noEvents: "اس دن کوئی خاص واقعہ نہیں۔", today: "آج" },
+  ar: { noEvents: "لا توجد أحداث خاصة في هذا اليوم.", today: "اليوم" },
+  tr: { noEvents: "Bu gunde ozel bir etkinlik yok.", today: "Bugun" },
+  ms: { noEvents: "Tiada peristiwa khas pada hari ini.", today: "Hari Ini" },
+  id: { noEvents: "Tidak ada peristiwa khusus pada hari ini.", today: "Hari Ini" },
+};
+
 import {
   gregorianToHijri,
   hijriToGregorian,
@@ -25,9 +37,11 @@ interface CalendarDay {
 interface HijriCalendarProps {
   onDateSelect?: (hijri: HijriDate, gregorian: Date) => void;
   adjustment?: number;
+  lang?: TransLang;
 }
 
-export function HijriCalendar({ onDateSelect, adjustment = 0 }: HijriCalendarProps) {
+export function HijriCalendar({ onDateSelect, adjustment = 0, lang = "en" }: HijriCalendarProps) {
+  const ct = HIJRI_CAL_TEXTS[lang];
   const todayHijri = useMemo(() => gregorianToHijri(new Date(), adjustment), [adjustment]);
   // monthOffset from today's hijri month (0 = current month, +1 = next, -1 = prev)
   const [monthOffset, setMonthOffset] = useState(0);
@@ -190,7 +204,7 @@ export function HijriCalendar({ onDateSelect, adjustment = 0 }: HijriCalendarPro
           onClick={goToToday}
           className="text-xs text-emerald-700 border-emerald-200 hover:bg-emerald-50"
         >
-          Today
+          {ct.today}
         </Button>
       </div>
 
@@ -326,7 +340,7 @@ export function HijriCalendar({ onDateSelect, adjustment = 0 }: HijriCalendarPro
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-gray-500">No special events on this day.</p>
+                    <p className="text-sm text-gray-500">{ct.noEvents}</p>
                   )}
                 </div>
               );

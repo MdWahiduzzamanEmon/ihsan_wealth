@@ -10,6 +10,16 @@ import { Copy, Check, Heart, ChevronDown, ChevronUp, Volume2, VolumeX, Loader2, 
 import { staggerItem } from "@/lib/animations";
 import { useArabicSpeech } from "@/hooks/use-arabic-speech";
 
+const DUA_CARD_TEXTS: Record<string, { loginRequired: string; signIn: string; removeFromFavorites: string; addToFavorites: string }> = {
+  en: { loginRequired: "Login required to save favorites", signIn: "Sign in", removeFromFavorites: "Remove from favorites", addToFavorites: "Add to favorites" },
+  bn: { loginRequired: "পছন্দ সংরক্ষণ করতে লগইন প্রয়োজন", signIn: "সাইন ইন", removeFromFavorites: "পছন্দ থেকে সরান", addToFavorites: "পছন্দে যোগ করুন" },
+  ur: { loginRequired: "پسندیدہ محفوظ کرنے کے لیے لاگ ان ضروری ہے", signIn: "سائن ان", removeFromFavorites: "پسندیدہ سے ہٹائیں", addToFavorites: "پسندیدہ میں شامل کریں" },
+  ar: { loginRequired: "يتطلب تسجيل الدخول لحفظ المفضلة", signIn: "تسجيل الدخول", removeFromFavorites: "إزالة من المفضلة", addToFavorites: "إضافة إلى المفضلة" },
+  tr: { loginRequired: "Favorilere kaydetmek icin giris gerekli", signIn: "Giris Yap", removeFromFavorites: "Favorilerden kaldir", addToFavorites: "Favorilere ekle" },
+  ms: { loginRequired: "Log masuk diperlukan untuk menyimpan kegemaran", signIn: "Log Masuk", removeFromFavorites: "Buang dari kegemaran", addToFavorites: "Tambah ke kegemaran" },
+  id: { loginRequired: "Login diperlukan untuk menyimpan favorit", signIn: "Masuk", removeFromFavorites: "Hapus dari favorit", addToFavorites: "Tambah ke favorit" },
+};
+
 interface DuaCardProps {
   dua: Dua;
   isFavorite: boolean;
@@ -24,6 +34,7 @@ export function DuaCard({ dua, isFavorite, onToggleFavorite, lang }: DuaCardProp
   const [expanded, setExpanded] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const { speak, speaking, loading: loadingVoice } = useArabicSpeech();
+  const dt = DUA_CARD_TEXTS[lang || "en"] || DUA_CARD_TEXTS.en;
 
   const translationText = (lang && dua.translations?.[lang]) || dua.translation;
   const isLong = dua.arabic.length > COLLAPSE_THRESHOLD;
@@ -155,8 +166,8 @@ export function DuaCard({ dua, isFavorite, onToggleFavorite, lang }: DuaCardProp
                       ? "text-rose-500 hover:bg-rose-50"
                       : "text-gray-400 hover:text-rose-500 hover:bg-rose-50"
                   )}
-                  aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-                  title={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                  aria-label={isFavorite ? dt.removeFromFavorites : dt.addToFavorites}
+                  title={isFavorite ? dt.removeFromFavorites : dt.addToFavorites}
                 >
                   <Heart
                     className={cn("h-4 w-4", isFavorite && "fill-rose-500")}
@@ -173,13 +184,13 @@ export function DuaCard({ dua, isFavorite, onToggleFavorite, lang }: DuaCardProp
                       className="absolute bottom-full right-0 mb-2 z-50"
                     >
                       <div className="rounded-xl bg-gray-900 text-white shadow-xl px-4 py-3 text-xs whitespace-nowrap">
-                        <p className="font-medium mb-1.5">Login required to save favorites</p>
+                        <p className="font-medium mb-1.5">{dt.loginRequired}</p>
                         <Link
                           href="/auth/login"
                           className="inline-flex items-center gap-1 rounded-md bg-emerald-600 px-2.5 py-1 text-[11px] font-medium text-white hover:bg-emerald-500 transition-colors"
                         >
                           <LogIn className="h-3 w-3" />
-                          Sign in
+                          {dt.signIn}
                         </Link>
                         <div className="absolute -bottom-1 right-4 h-2 w-2 rotate-45 bg-gray-900" />
                       </div>

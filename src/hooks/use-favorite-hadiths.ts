@@ -77,17 +77,20 @@ export function useFavoriteHadiths() {
       setDbFavorites(newFavorites);
 
       try {
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (!authUser) return;
+
         if (isFavorited) {
           const { error } = await supabase
             .from("favorite_hadiths")
             .delete()
-            .eq("user_id", user.id)
+            .eq("user_id", authUser.id)
             .eq("hadith_id", hadithId);
           if (error) console.error("Failed to remove favorite hadith:", error.message);
         } else {
           const { error } = await supabase
             .from("favorite_hadiths")
-            .insert({ user_id: user.id, hadith_id: hadithId });
+            .insert({ user_id: authUser.id, hadith_id: hadithId });
           if (error) console.error("Failed to save favorite hadith:", error.message);
         }
       } catch (err) {

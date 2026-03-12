@@ -132,7 +132,7 @@ export default function CalendarPage() {
               transition={{ duration: 0.5, delay: 0.2 }}
             >
               <div className="rounded-2xl border border-emerald-200/60 bg-white/80 backdrop-blur-sm p-4 sm:p-6 shadow-lg shadow-emerald-900/5">
-                <HijriCalendar adjustment={hijriAdjust} />
+                <HijriCalendar adjustment={hijriAdjust} lang={lang} />
               </div>
             </motion.div>
 

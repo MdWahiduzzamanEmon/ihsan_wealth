@@ -137,6 +137,7 @@ export const TASBIH_TEXTS: Record<TransLang, {
   createAccount: string;
   loading: string;
   loadingRecords: string;
+  back: string;
 }> = {
   en: {
     title: "Tasbih Counter",
@@ -160,6 +161,7 @@ export const TASBIH_TEXTS: Record<TransLang, {
     createAccount: "Create Account",
     loading: "Loading...",
     loadingRecords: "Loading your tasbih records...",
+    back: "Back",
   },
   bn: {
     title: "তাসবিহ কাউন্টার",
@@ -183,6 +185,7 @@ export const TASBIH_TEXTS: Record<TransLang, {
     createAccount: "অ্যাকাউন্ট তৈরি করুন",
     loading: "লোড হচ্ছে...",
     loadingRecords: "আপনার তাসবিহ রেকর্ড লোড হচ্ছে...",
+    back: "ফিরে যান",
   },
   ur: {
     title: "تسبیح کاؤنٹر",
@@ -206,6 +209,7 @@ export const TASBIH_TEXTS: Record<TransLang, {
     createAccount: "اکاؤنٹ بنائیں",
     loading: "لوڈ ہو رہا ہے...",
     loadingRecords: "آپ کے تسبیح ریکارڈ لوڈ ہو رہے ہیں...",
+    back: "واپس",
   },
   ar: {
     title: "عدّاد التسبيح",
@@ -229,6 +233,7 @@ export const TASBIH_TEXTS: Record<TransLang, {
     createAccount: "إنشاء حساب",
     loading: "جارٍ التحميل...",
     loadingRecords: "جارٍ تحميل سجلات التسبيح...",
+    back: "رجوع",
   },
   tr: {
     title: "Tesbih Sayaci",
@@ -252,6 +257,7 @@ export const TASBIH_TEXTS: Record<TransLang, {
     createAccount: "Hesap Olustur",
     loading: "Yukleniyor...",
     loadingRecords: "Tesbih kayitlariniz yukleniyor...",
+    back: "Geri",
   },
   ms: {
     title: "Pembilang Tasbih",
@@ -275,6 +281,7 @@ export const TASBIH_TEXTS: Record<TransLang, {
     createAccount: "Cipta Akaun",
     loading: "Memuatkan...",
     loadingRecords: "Memuatkan rekod tasbih anda...",
+    back: "Kembali",
   },
   id: {
     title: "Penghitung Tasbih",
@@ -298,5 +305,6 @@ export const TASBIH_TEXTS: Record<TransLang, {
     createAccount: "Buat Akun",
     loading: "Memuat...",
     loadingRecords: "Memuat catatan tasbih Anda...",
+    back: "Kembali",
   },
 };

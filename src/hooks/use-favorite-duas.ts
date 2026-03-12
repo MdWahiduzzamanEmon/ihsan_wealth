@@ -80,17 +80,20 @@ export function useFavoriteDuas() {
       setDbFavorites(newFavorites);
 
       try {
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (!authUser) return;
+
         if (isFavorited) {
           const { error } = await supabase
             .from("favorite_duas")
             .delete()
-            .eq("user_id", user.id)
+            .eq("user_id", authUser.id)
             .eq("dua_id", duaId);
           if (error) console.error("Failed to remove favorite dua from DB:", error.message);
         } else {
           const { error } = await supabase
             .from("favorite_duas")
-            .insert({ user_id: user.id, dua_id: duaId });
+            .insert({ user_id: authUser.id, dua_id: duaId });
           if (error) console.error("Failed to save favorite dua to DB:", error.message);
         }
       } catch (err) {
