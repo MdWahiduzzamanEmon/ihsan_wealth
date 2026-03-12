@@ -7,16 +7,6 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "@/components/providers/auth-provider";
 import { Button } from "@/components/ui/button";
 import {
-  BookOpen,
-  BookOpenText,
-  Bot,
-  Calculator,
-  CalendarDays,
-  Clock,
-  Compass,
-  Heart,
-  HelpCircle,
-  History,
   LogIn,
   LogOut,
   Menu,
@@ -24,24 +14,7 @@ import {
   X,
   ChevronDown,
 } from "lucide-react";
-
-const PRIMARY_LINKS = [
-  { href: "/", label: "Calculator", icon: Calculator },
-  { href: "/prayer-times", label: "Prayer", icon: Clock },
-  { href: "/qibla", label: "Qibla", icon: Compass },
-  { href: "/duas", label: "Duas", icon: BookOpen },
-];
-
-const MORE_LINKS = [
-  { href: "/quran", label: "Quran", icon: BookOpenText },
-  { href: "/calendar", label: "Calendar", icon: CalendarDays },
-  { href: "/sadaqah", label: "Sadaqah", icon: Heart },
-  { href: "/history", label: "History", icon: History },
-  { href: "/assistant", label: "IhsanAI", icon: Bot },
-  { href: "/guide", label: "Guide", icon: HelpCircle },
-];
-
-const ALL_LINKS = [...PRIMARY_LINKS, ...MORE_LINKS];
+import { PRIMARY_NAV_FEATURES, MORE_NAV_FEATURES, ALL_NAV_FEATURES } from "@/lib/app-features";
 
 interface HeaderProps {
   countryCode?: string;
@@ -106,7 +79,7 @@ export function Header({ countryCode: _countryCode = "US" }: HeaderProps) {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-0.5">
-            {PRIMARY_LINKS.map(({ href, label, icon: Icon }) => {
+            {PRIMARY_NAV_FEATURES.map(({ href, label, icon: Icon }) => {
               const isActive = pathname === href;
               return (
                 <Link key={href} href={href}>
@@ -120,7 +93,7 @@ export function Header({ countryCode: _countryCode = "US" }: HeaderProps) {
                     }`}
                   >
                     <Icon className="h-3.5 w-3.5" />
-                    {label}
+                    {label.en}
                   </Button>
                 </Link>
               );
@@ -133,7 +106,7 @@ export function Header({ countryCode: _countryCode = "US" }: HeaderProps) {
                 size="sm"
                 onClick={() => setMoreOpen(!moreOpen)}
                 className={`gap-1 text-xs h-8 px-2.5 ${
-                  MORE_LINKS.some((l) => l.href === pathname)
+                  MORE_NAV_FEATURES.some((l) => l.href === pathname)
                     ? "text-amber-300 bg-white/10"
                     : "text-emerald-100/80 hover:text-white hover:bg-white/10"
                 }`}
@@ -144,7 +117,7 @@ export function Header({ countryCode: _countryCode = "US" }: HeaderProps) {
 
               {moreOpen && (
                 <div className="absolute right-0 top-full mt-1 w-44 rounded-lg border border-emerald-700/50 bg-emerald-900 shadow-xl py-1 z-50">
-                  {MORE_LINKS.map(({ href, label, icon: Icon }) => {
+                  {MORE_NAV_FEATURES.map(({ href, label, icon: Icon }) => {
                     const isActive = pathname === href;
                     return (
                       <Link key={href} href={href} onClick={closeMenus}>
@@ -156,7 +129,7 @@ export function Header({ countryCode: _countryCode = "US" }: HeaderProps) {
                           }`}
                         >
                           <Icon className="h-4 w-4 shrink-0" />
-                          {label}
+                          {label.en}
                         </div>
                       </Link>
                     );
@@ -211,7 +184,7 @@ export function Header({ countryCode: _countryCode = "US" }: HeaderProps) {
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-emerald-700/40 bg-emerald-900/98 backdrop-blur-md">
           <nav className="mx-auto max-w-6xl px-3 py-2 grid grid-cols-3 gap-1">
-            {ALL_LINKS.map(({ href, label, icon: Icon }) => {
+            {ALL_NAV_FEATURES.map(({ href, label, icon: Icon }) => {
               const isActive = pathname === href;
               return (
                 <Link key={href} href={href} onClick={closeMenus}>
@@ -223,7 +196,7 @@ export function Header({ countryCode: _countryCode = "US" }: HeaderProps) {
                     }`}
                   >
                     <Icon className="h-4 w-4 shrink-0" />
-                    {label}
+                    {label.en}
                   </div>
                 </Link>
               );

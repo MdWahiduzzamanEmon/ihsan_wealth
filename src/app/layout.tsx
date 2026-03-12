@@ -25,13 +25,39 @@ export const viewport: Viewport = {
   themeColor: "#065f46",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
+  maximumScale: 5,
 };
 
+const BASE_URL = "https://ihsanwealth.onrender.com";
+
 export const metadata: Metadata = {
-  title: "IhsanWealth - إحسان الثروة | Zakat Calculator",
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: "IhsanWealth — Zakat Calculator, Quran, Prayer Times & Islamic Tools",
+    template: "%s | IhsanWealth",
+  },
   description:
-    "IhsanWealth — Professional Zakat calculator with live gold & silver prices. Calculate your Zakat obligation based on Islamic Fiqh with support for cash, gold, silver, investments, business assets, and more.",
+    "Your complete Islamic companion — Zakat calculator with live gold & silver prices, Holy Quran with Tafhimul Quran tafsir, accurate prayer times, Qibla finder, 30+ duas, Hijri calendar, Sadaqah tracker and more. Free, no login required.",
+  keywords: [
+    "Zakat calculator",
+    "Islamic finance",
+    "Quran online",
+    "Tafhimul Quran",
+    "tafsir",
+    "prayer times",
+    "Qibla finder",
+    "dua",
+    "Hijri calendar",
+    "Sadaqah tracker",
+    "gold price",
+    "silver price",
+    "Nisab",
+    "Islamic app",
+    "Muslim tools",
+    "IhsanWealth",
+  ],
+  authors: [{ name: "Md Wahiduzzaman Emon", url: "https://github.com/MdWahiduzzamanEmon" }],
+  creator: "Md Wahiduzzaman Emon",
   manifest: "/manifest.json",
   icons: {
     icon: "/favicon.svg",
@@ -43,10 +69,44 @@ export const metadata: Metadata = {
     title: "IhsanWealth",
   },
   openGraph: {
-    title: "IhsanWealth - إحسان الثروة",
-    description: "Professional Zakat Calculator with live gold & silver prices",
+    type: "website",
+    locale: "en_US",
+    url: BASE_URL,
+    siteName: "IhsanWealth",
+    title: "IhsanWealth — Zakat Calculator, Quran, Prayer Times & Islamic Tools",
+    description:
+      "Your complete Islamic companion — Zakat calculator, Holy Quran with tafsir, prayer times, Qibla finder, duas, Hijri calendar, and Sadaqah tracker. Free & open source.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "IhsanWealth — Your Complete Islamic Companion",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "IhsanWealth — Zakat Calculator, Quran & Islamic Tools",
+    description:
+      "Free Islamic companion app: Zakat calculator, Quran with tafsir, prayer times, Qibla, duas, Hijri calendar & more.",
     images: ["/og-image.png"],
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: BASE_URL,
+  },
+  category: "Islamic Finance & Worship",
 };
 
 export default function RootLayout({
@@ -56,6 +116,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://api.quran.com" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${amiri.variable} antialiased`}
       >

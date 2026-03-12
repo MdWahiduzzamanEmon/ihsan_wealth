@@ -34,8 +34,8 @@ export const QURAN_TEXTS: Record<TransLang, {
   hideTafsir: string;
 }> = {
   en: {
-    pageTitle: "Tafhimul Quran",
-    subtitle: "Read the Holy Quran with Maududi's translation and commentary",
+    pageTitle: "The Holy Quran",
+    subtitle: "Read, reflect, and understand — with translation and Tafhimul Quran tafsir",
     searchPlaceholder: "Search surah by name or number...",
     verses: "verses",
     meccan: "Meccan",
@@ -53,8 +53,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     hideTafsir: "Hide Tafsir",
   },
   bn: {
-    pageTitle: "তাফহীমুল কুরআন",
-    subtitle: "মাওদূদীর অনুবাদ ও তাফসীর সহ পবিত্র কুরআন পড়ুন",
+    pageTitle: "পবিত্র কুরআন",
+    subtitle: "পড়ুন, চিন্তা করুন এবং বুঝুন — অনুবাদ ও তাফহীমুল কুরআন তাফসীর সহ",
     searchPlaceholder: "নাম বা নম্বর দিয়ে সূরা খুঁজুন...",
     verses: "আয়াত",
     meccan: "মক্কী",
@@ -72,8 +72,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     hideTafsir: "তাফসীর লুকান",
   },
   ur: {
-    pageTitle: "تفہیم القرآن",
-    subtitle: "مولانا مودودی کے ترجمے اور تفسیر کے ساتھ قرآن مجید پڑھیں",
+    pageTitle: "قرآن مجید",
+    subtitle: "پڑھیں، غور کریں اور سمجھیں — ترجمے اور تفہیم القرآن تفسیر کے ساتھ",
     searchPlaceholder: "نام یا نمبر سے سورت تلاش کریں...",
     verses: "آیات",
     meccan: "مکی",
@@ -91,8 +91,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     hideTafsir: "تفسیر چھپائیں",
   },
   ar: {
-    pageTitle: "تفهيم القرآن",
-    subtitle: "اقرأ القرآن الكريم مع ترجمة وتفسير المودودي",
+    pageTitle: "القرآن الكريم",
+    subtitle: "اقرأ وتدبر وافهم — مع الترجمة وتفسير تفهيم القرآن",
     searchPlaceholder: "ابحث عن سورة بالاسم أو الرقم...",
     verses: "آيات",
     meccan: "مكية",
@@ -110,8 +110,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     hideTafsir: "إخفاء التفسير",
   },
   tr: {
-    pageTitle: "Tefhimul Kuran",
-    subtitle: "Mevdudi'nin tercume ve tefsiri ile Kuran-i Kerim'i okuyun",
+    pageTitle: "Kuran-i Kerim",
+    subtitle: "Okuyun, dusunun ve anlayin — tercume ve Tefhimul Kuran tefsiri ile",
     searchPlaceholder: "Sure adi veya numarasiyla arayin...",
     verses: "ayet",
     meccan: "Mekki",
@@ -129,8 +129,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     hideTafsir: "Tefsiri Gizle",
   },
   ms: {
-    pageTitle: "Tafhimul Quran",
-    subtitle: "Baca Al-Quran dengan terjemahan dan ulasan Maududi",
+    pageTitle: "Al-Quran Al-Karim",
+    subtitle: "Baca, renungkan dan fahami — dengan terjemahan dan tafsir Tafhimul Quran",
     searchPlaceholder: "Cari surah mengikut nama atau nombor...",
     verses: "ayat",
     meccan: "Makkiyyah",
@@ -148,8 +148,8 @@ export const QURAN_TEXTS: Record<TransLang, {
     hideTafsir: "Sembunyikan Tafsir",
   },
   id: {
-    pageTitle: "Tafhimul Quran",
-    subtitle: "Baca Al-Quran dengan terjemahan dan tafsir Maududi",
+    pageTitle: "Al-Quran Al-Karim",
+    subtitle: "Baca, renungkan dan pahami — dengan terjemahan dan tafsir Tafhimul Quran",
     searchPlaceholder: "Cari surah berdasarkan nama atau nomor...",
     verses: "ayat",
     meccan: "Makkiyyah",

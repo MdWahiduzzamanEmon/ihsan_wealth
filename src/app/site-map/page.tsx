@@ -2,14 +2,6 @@
 
 import Link from "next/link";
 import {
-  Calculator,
-  BookOpen,
-  Heart,
-  CalendarDays,
-  Clock,
-  Compass,
-  History,
-  Bot,
   LogIn,
   UserPlus,
   Shield,
@@ -22,6 +14,8 @@ import { useLocalStorage } from "@/hooks/use-local-storage";
 import { getLangFromCountry } from "@/lib/islamic-content";
 import { FOOTER_LINKS_TEXTS } from "@/lib/islamic-content";
 import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
+import { SITEMAP_FEATURES } from "@/lib/app-features";
+import type { TransLang } from "@/lib/islamic-content";
 
 const SITEMAP_TEXTS: Record<string, { title: string; description: string; mainPages: string; authPages: string; legalPages: string }> = {
   en: { title: "Sitemap", description: "All pages available on IhsanWealth", mainPages: "Main Pages", authPages: "Account", legalPages: "Legal & Info" },
@@ -33,21 +27,9 @@ const SITEMAP_TEXTS: Record<string, { title: string; description: string; mainPa
   id: { title: "Peta Situs", description: "Semua halaman di IhsanWealth", mainPages: "Halaman Utama", authPages: "Akun", legalPages: "Hukum & Informasi" },
 };
 
-const MAIN_PAGES = [
-  { href: "/", icon: Calculator, label: { en: "Zakat Calculator", bn: "যাকাত ক্যালকুলেটর", ur: "زکوٰۃ کیلکولیٹر", ar: "حاسبة الزكاة", tr: "Zekat Hesaplayici", ms: "Kalkulator Zakat", id: "Kalkulator Zakat" } },
-  { href: "/guide", icon: BookOpen, label: { en: "Guide", bn: "গাইড", ur: "گائیڈ", ar: "الدليل", tr: "Rehber", ms: "Panduan", id: "Panduan" } },
-  { href: "/assistant", icon: Bot, label: { en: "AI Assistant", bn: "AI সহায়ক", ur: "AI معاون", ar: "مساعد AI", tr: "AI Asistan", ms: "Pembantu AI", id: "Asisten AI" } },
-  { href: "/duas", icon: Heart, label: { en: "Duas", bn: "দু'আ", ur: "دعائیں", ar: "الأدعية", tr: "Dualar", ms: "Doa", id: "Doa" } },
-  { href: "/calendar", icon: CalendarDays, label: { en: "Islamic Calendar", bn: "ইসলামিক ক্যালেন্ডার", ur: "اسلامی کیلنڈر", ar: "التقويم الإسلامي", tr: "Islami Takvim", ms: "Kalendar Islam", id: "Kalender Islam" } },
-  { href: "/prayer-times", icon: Clock, label: { en: "Prayer Times", bn: "নামাযের সময়", ur: "نماز کے اوقات", ar: "أوقات الصلاة", tr: "Namaz Vakitleri", ms: "Waktu Solat", id: "Waktu Sholat" } },
-  { href: "/qibla", icon: Compass, label: { en: "Qibla Finder", bn: "কিবলা খুঁজুন", ur: "قبلہ فائنڈر", ar: "اتجاه القبلة", tr: "Kible Bulucu", ms: "Pencari Kiblat", id: "Pencari Kiblat" } },
-  { href: "/sadaqah", icon: Heart, label: { en: "Sadaqah Tracker", bn: "সদকা ট্র্যাকার", ur: "صدقہ ٹریکر", ar: "متتبع الصدقة", tr: "Sadaka Takibi", ms: "Penjejak Sedekah", id: "Pelacak Sedekah" } },
-  { href: "/history", icon: History, label: { en: "History", bn: "ইতিহাস", ur: "ہسٹری", ar: "السجل", tr: "Gecmis", ms: "Sejarah", id: "Riwayat" } },
-];
-
 const AUTH_PAGES = [
-  { href: "/auth/login", icon: LogIn, label: { en: "Login", bn: "লগইন", ur: "لاگ ان", ar: "تسجيل الدخول", tr: "Giris", ms: "Log Masuk", id: "Masuk" } },
-  { href: "/auth/register", icon: UserPlus, label: { en: "Register", bn: "রেজিস্টার", ur: "رجسٹر", ar: "التسجيل", tr: "Kayit", ms: "Daftar", id: "Daftar" } },
+  { href: "/auth/login", icon: LogIn, label: { en: "Login", bn: "লগইন", ur: "لاگ ان", ar: "تسجيل الدخول", tr: "Giris", ms: "Log Masuk", id: "Masuk" } as Record<TransLang, string> },
+  { href: "/auth/register", icon: UserPlus, label: { en: "Register", bn: "রেজিস্টার", ur: "رجسٹر", ar: "التسجيل", tr: "Kayit", ms: "Daftar", id: "Daftar" } as Record<TransLang, string> },
 ];
 
 const LEGAL_PAGES = [
@@ -71,18 +53,18 @@ export default function SitemapPage() {
         <h1 className="text-3xl font-bold text-white mb-2">{texts.title}</h1>
         <p className="text-emerald-300/70 mb-10">{texts.description}</p>
 
-        {/* Main Pages */}
+        {/* Main Pages - auto-generated from APP_FEATURES */}
         <section className="mb-8">
           <h2 className="text-lg font-semibold text-emerald-200 mb-4">{texts.mainPages}</h2>
           <div className="grid gap-2">
-            {MAIN_PAGES.map((page) => (
+            {SITEMAP_FEATURES.map((feature) => (
               <Link
-                key={page.href}
-                href={page.href}
+                key={feature.href}
+                href={feature.href}
                 className="flex items-center gap-3 rounded-lg px-4 py-3 text-white/80 hover:bg-emerald-800/30 hover:text-white transition-colors"
               >
-                <page.icon className="h-5 w-5 text-emerald-400" />
-                <span>{page.label[lang] || page.label.en}</span>
+                <feature.icon className="h-5 w-5 text-emerald-400" />
+                <span>{feature.label[lang]}</span>
               </Link>
             ))}
           </div>
@@ -99,7 +81,7 @@ export default function SitemapPage() {
                 className="flex items-center gap-3 rounded-lg px-4 py-3 text-white/80 hover:bg-emerald-800/30 hover:text-white transition-colors"
               >
                 <page.icon className="h-5 w-5 text-emerald-400" />
-                <span>{page.label[lang] || page.label.en}</span>
+                <span>{page.label[lang]}</span>
               </Link>
             ))}
           </div>

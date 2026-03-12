@@ -12,31 +12,42 @@ function IhsanAIIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 48 48" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
       {/* Outer glow ring */}
-      <circle cx="24" cy="24" r="22" stroke="url(#glow)" strokeWidth="1.5" opacity="0.6" />
+      <circle cx="24" cy="24" r="22" stroke="url(#ai-glow)" strokeWidth="1.5" opacity="0.6" />
       {/* Inner circle */}
-      <circle cx="24" cy="24" r="17" fill="url(#bg)" />
-      {/* Star/Islamic pattern */}
+      <circle cx="24" cy="24" r="17" fill="url(#ai-bg)" />
+      {/* Islamic geometric pattern — interlocking diamond */}
       <path
-        d="M24 10L27.5 19.5L37 20L29.5 26.5L32 36L24 30.5L16 36L18.5 26.5L11 20L20.5 19.5Z"
-        fill="url(#star)"
-        stroke="white"
-        strokeWidth="0.5"
+        d="M24 11L31 18H37L30 25L33 33H27L24 37L21 33H15L18 25L11 18H17Z"
+        fill="none"
+        stroke="url(#ai-accent)"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+        opacity="0.85"
+      />
+      {/* Inner diamond */}
+      <path
+        d="M24 16L29 21L24 30L19 21Z"
+        fill="url(#ai-accent)"
         opacity="0.9"
       />
-      {/* Center dot */}
-      <circle cx="24" cy="23" r="3" fill="white" opacity="0.95" />
+      {/* Center circle — AI brain dot */}
+      <circle cx="24" cy="22" r="2.5" fill="white" opacity="0.95" />
+      {/* Radiating dots */}
+      <circle cx="24" cy="14" r="1" fill="white" opacity="0.6" />
+      <circle cx="30.5" cy="18.5" r="1" fill="white" opacity="0.6" />
+      <circle cx="17.5" cy="18.5" r="1" fill="white" opacity="0.6" />
       <defs>
-        <linearGradient id="glow" x1="2" y1="2" x2="46" y2="46">
+        <linearGradient id="ai-glow" x1="2" y1="2" x2="46" y2="46">
           <stop stopColor="#fbbf24" />
           <stop offset="1" stopColor="#10b981" />
         </linearGradient>
-        <linearGradient id="bg" x1="7" y1="7" x2="41" y2="41">
+        <linearGradient id="ai-bg" x1="7" y1="7" x2="41" y2="41">
           <stop stopColor="#059669" />
           <stop offset="1" stopColor="#064e3b" />
         </linearGradient>
-        <linearGradient id="star" x1="11" y1="10" x2="37" y2="36">
-          <stop stopColor="#fcd34d" />
-          <stop offset="1" stopColor="#f59e0b" />
+        <linearGradient id="ai-accent" x1="15" y1="11" x2="33" y2="37">
+          <stop stopColor="#ffffff" stopOpacity="0.95" />
+          <stop offset="1" stopColor="#a7f3d0" stopOpacity="0.8" />
         </linearGradient>
       </defs>
     </svg>

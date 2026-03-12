@@ -7,22 +7,42 @@ import type { TransLang } from "@/lib/islamic-content";
 
 const CHAPTERS_CACHE_KEY = "quran-chapters-v1";
 
+/** Read chapters from localStorage synchronously (instant, no flicker) */
+function getCachedChapters(): Chapter[] {
+  try {
+    const cached = localStorage.getItem(CHAPTERS_CACHE_KEY);
+    if (cached) return JSON.parse(cached);
+  } catch {}
+  return [];
+}
+
+/** Get a single chapter from cache (for instant surah header) */
+export function getChapterFromCache(surahId: number): Chapter | undefined {
+  return getCachedChapters().find((c) => c.id === surahId);
+}
+
+/** Prefetch verses for a surah (call on hover for instant navigation) */
+export function prefetchVerses(surahId: number, lang: TransLang) {
+  const translationId = TRANSLATION_IDS[lang] || TRANSLATION_IDS.en;
+  const params = new URLSearchParams({
+    path: `verses/by_chapter/${surahId}`,
+    translations: String(translationId),
+    fields: "text_uthmani",
+    per_page: "20",
+    page: "1",
+  });
+  // Use the browser cache — just warm it up
+  fetch(`/api/quran?${params}`).catch(() => {});
+}
+
 export function useChapters() {
-  const [chapters, setChapters] = useState<Chapter[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [chapters, setChapters] = useState<Chapter[]>(getCachedChapters);
+  const [loading, setLoading] = useState(() => getCachedChapters().length === 0);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Try localStorage cache first
-    try {
-      const cached = localStorage.getItem(CHAPTERS_CACHE_KEY);
-      if (cached) {
-        const parsed = JSON.parse(cached);
-        setChapters(parsed);
-        setLoading(false);
-        return;
-      }
-    } catch {}
+    // If we already have cached data, skip network fetch
+    if (chapters.length > 0) return;
 
     fetch("/api/quran?path=chapters")
       .then((r) => r.json())
@@ -35,7 +55,7 @@ export function useChapters() {
       })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
-  }, []);
+  }, [chapters.length]);
 
   return { chapters, loading, error };
 }

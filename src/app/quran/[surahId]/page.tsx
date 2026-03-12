@@ -1,10 +1,10 @@
 "use client";
 
-import { use, useMemo } from "react";
+import { use, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft, BookOpenText, Loader2 } from "lucide-react";
-import { useChapters, useVerses } from "@/hooks/use-quran";
+import { useChapters, useVerses, getChapterFromCache } from "@/hooks/use-quran";
 import { VerseDisplay } from "@/components/quran/verse-display";
 import { QURAN_TEXTS } from "@/lib/quran-config";
 import { getLangFromCountry, type TransLang } from "@/lib/islamic-content";
@@ -24,15 +24,18 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
   const t = QURAN_TEXTS[lang];
   const isRtl = lang === "ar" || lang === "ur";
 
+  // Instant chapter info from localStorage (no network wait)
+  const [cachedChapter] = useState(() => getChapterFromCache(surahNum));
   const { chapters } = useChapters();
   const { verses, loading, loadingMore, hasMore, loadMore, currentPage, totalPages } = useVerses(surahNum, lang);
 
+  // Use cached chapter immediately, upgrade to fresh data when available
   const chapter = useMemo(
-    () => chapters.find((c) => c.id === surahNum),
-    [chapters, surahNum]
+    () => chapters.find((c) => c.id === surahNum) || cachedChapter,
+    [chapters, surahNum, cachedChapter]
   );
 
-  const showBismillah = chapter?.bismillah_pre !== false && surahNum !== 9;
+  const showBismillah = surahNum !== 9 && chapter?.bismillah_pre !== false;
 
   return (
     <div
@@ -52,7 +55,7 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
             {t.backToList}
           </Link>
 
-          {/* Surah header */}
+          {/* Surah header — shows instantly from cache */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-lg shadow-emerald-200 mb-4">
               <BookOpenText className="h-7 w-7 text-white" />
@@ -84,8 +87,8 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
             )}
           </div>
 
-          {/* Bismillah */}
-          {showBismillah && !loading && (
+          {/* Bismillah — show immediately if chapter is known */}
+          {showBismillah && (
             <div className="text-center mb-8 py-4 rounded-xl bg-emerald-50/50 border border-emerald-100">
               <p className="font-arabic text-2xl text-emerald-800" dir="rtl">
                 {t.bismillah}
@@ -93,14 +96,28 @@ export default function SurahPage({ params }: { params: Promise<{ surahId: strin
             </div>
           )}
 
-          {/* Loading skeleton */}
+          {/* Loading state with spinner + skeleton */}
           {loading && (
             <div className="space-y-4">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="h-40 rounded-xl bg-emerald-50/50 animate-pulse"
-                />
+              <div className="flex items-center justify-center gap-2 text-sm text-emerald-600 py-4">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span>{t.loading}</span>
+              </div>
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="rounded-xl border border-emerald-100 bg-white p-5 shadow-sm">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="h-8 w-8 rounded-full bg-emerald-100 animate-pulse" />
+                    <div className="h-3 w-12 rounded bg-gray-100 animate-pulse" />
+                  </div>
+                  <div className="space-y-2 mb-4">
+                    <div className="h-6 w-full rounded bg-emerald-50 animate-pulse" />
+                    <div className="h-6 w-3/4 rounded bg-emerald-50 animate-pulse ml-auto" />
+                  </div>
+                  <div className="pt-4 border-t border-emerald-50 space-y-2">
+                    <div className="h-3 w-full rounded bg-gray-50 animate-pulse" />
+                    <div className="h-3 w-5/6 rounded bg-gray-50 animate-pulse" />
+                  </div>
+                </div>
               ))}
             </div>
           )}

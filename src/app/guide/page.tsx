@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   BookOpen,
+  BookOpenText,
   Calculator,
   CalendarDays,
   ChevronDown,
@@ -36,6 +37,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Clock,
   Compass,
   BookOpen,
+  BookOpenText,
   CalendarDays,
   Heart,
   History,

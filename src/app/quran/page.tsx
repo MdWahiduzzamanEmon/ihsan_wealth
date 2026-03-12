@@ -49,7 +49,7 @@ export default function QuranPage() {
             </div>
             <h1 className="text-3xl font-bold text-emerald-900 mb-1">{t.pageTitle}</h1>
             <p className="font-arabic text-xl text-amber-600/70 mb-2" dir="rtl">
-              تفهيم القرآن
+              القرآن الكريم
             </p>
             <p className="text-sm text-gray-500 max-w-lg mx-auto">{t.subtitle}</p>
           </div>
@@ -88,7 +88,7 @@ export default function QuranPage() {
               key={searchQuery}
             >
               {filteredChapters.map((chapter) => (
-                <SurahCard key={chapter.id} chapter={chapter} t={t} />
+                <SurahCard key={chapter.id} chapter={chapter} t={t} lang={lang} />
               ))}
             </motion.div>
           )}

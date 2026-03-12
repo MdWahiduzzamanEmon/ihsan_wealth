@@ -2,7 +2,8 @@
 
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, BookOpen, Loader2 } from "lucide-react";
+import { ChevronDown, BookOpen, Loader2, Volume2, VolumeX } from "lucide-react";
+import { useArabicSpeech } from "@/hooks/use-arabic-speech";
 import { staggerItem } from "@/lib/animations";
 import type { Verse, QURAN_TEXTS } from "@/lib/quran-config";
 import { HAS_MAUDUDI_FOOTNOTES, TAFSIR_IDS } from "@/lib/quran-config";
@@ -58,6 +59,7 @@ export function VerseDisplay({ verse, lang, t }: VerseDisplayProps) {
   const [tafsirTexts, setTafsirTexts] = useState<string[]>([]);
   const [tafsirLoading, setTafsirLoading] = useState(false);
   const [tafsirFetched, setTafsirFetched] = useState(false);
+  const { speak, speaking, loading: speechLoading } = useArabicSpeech();
 
   const rawTranslation = verse.translations?.[0]?.text || "";
   const cleanTranslation = stripHtml(rawTranslation);
@@ -108,12 +110,30 @@ export function VerseDisplay({ verse, lang, t }: VerseDisplayProps) {
       variants={staggerItem}
       className="rounded-xl border border-emerald-100 bg-white p-5 shadow-sm"
     >
-      {/* Verse number badge + key */}
-      <div className="flex items-start gap-3 mb-4">
+      {/* Verse number badge + key + audio */}
+      <div className="flex items-center gap-3 mb-4">
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white text-xs font-bold shadow-sm">
           {verse.verse_number}
         </span>
-        <span className="text-[11px] text-gray-400 mt-1.5">{verse.verse_key}</span>
+        <span className="text-[11px] text-gray-400">{verse.verse_key}</span>
+        <button
+          onClick={() => speak(verse.text_uthmani)}
+          className={`ml-auto rounded-full p-1.5 transition-colors ${
+            speaking
+              ? "text-emerald-600 bg-emerald-50"
+              : "text-gray-400 hover:text-emerald-600 hover:bg-emerald-50"
+          }`}
+          aria-label={speaking ? "Stop" : "Listen"}
+          title={speaking ? "Stop recitation" : "Listen to verse"}
+        >
+          {speechLoading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : speaking ? (
+            <VolumeX className="h-4 w-4" />
+          ) : (
+            <Volume2 className="h-4 w-4" />
+          )}
+        </button>
       </div>
 
       {/* Arabic text */}

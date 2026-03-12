@@ -1,19 +1,32 @@
 "use client";
 
+import { useCallback, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { staggerItem } from "@/lib/animations";
 import type { Chapter, QURAN_TEXTS } from "@/lib/quran-config";
+import { prefetchVerses } from "@/hooks/use-quran";
+import type { TransLang } from "@/lib/islamic-content";
 
 interface SurahCardProps {
   chapter: Chapter;
   t: (typeof QURAN_TEXTS)[keyof typeof QURAN_TEXTS];
+  lang: TransLang;
 }
 
-export function SurahCard({ chapter, t }: SurahCardProps) {
+export function SurahCard({ chapter, t, lang }: SurahCardProps) {
+  const prefetched = useRef(false);
+
+  const handleHover = useCallback(() => {
+    if (!prefetched.current) {
+      prefetched.current = true;
+      prefetchVerses(chapter.id, lang);
+    }
+  }, [chapter.id, lang]);
+
   return (
     <motion.div variants={staggerItem}>
-      <Link href={`/quran/${chapter.id}`}>
+      <Link href={`/quran/${chapter.id}`} onMouseEnter={handleHover} onTouchStart={handleHover}>
         <div className="group relative overflow-hidden rounded-xl border border-emerald-100 bg-white p-4 shadow-sm transition-all hover:shadow-md hover:border-emerald-300 hover:-translate-y-0.5">
           {/* Subtle pattern */}
           <div className="absolute top-0 right-0 w-20 h-20 opacity-[0.03] pointer-events-none">

@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/duas", priority: 0.7, changeFrequency: "monthly" as const },
     { path: "/calendar", priority: 0.7, changeFrequency: "monthly" as const },
     { path: "/prayer-times", priority: 0.7, changeFrequency: "daily" as const },
+    { path: "/quran", priority: 0.8, changeFrequency: "monthly" as const },
     { path: "/qibla", priority: 0.6, changeFrequency: "monthly" as const },
     { path: "/sadaqah", priority: 0.6, changeFrequency: "monthly" as const },
     { path: "/history", priority: 0.5, changeFrequency: "weekly" as const },
