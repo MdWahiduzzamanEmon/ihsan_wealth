@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import { useAuth } from "@/components/providers/auth-provider";
 import type { ChatMessage, ChatFeature } from "@/types/chat";
 
 interface UseChatOptions {
@@ -9,6 +10,7 @@ interface UseChatOptions {
 }
 
 export function useChat({ language, zakatSummary }: UseChatOptions) {
+  const { session } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [feature, setFeature] = useState<ChatFeature>("islamic-qa");
@@ -46,9 +48,16 @@ export function useChat({ language, zakatSummary }: UseChatOptions) {
           content: m.content,
         }));
 
+        const headers: Record<string, string> = {
+          "Content-Type": "application/json",
+        };
+        if (session?.access_token) {
+          headers["Authorization"] = `Bearer ${session.access_token}`;
+        }
+
         const res = await fetch("/api/chat", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers,
           credentials: "include",
           body: JSON.stringify({
             messages: apiMessages,
@@ -126,7 +135,7 @@ export function useChat({ language, zakatSummary }: UseChatOptions) {
         abortRef.current = null;
       }
     },
-    [messages, isStreaming, feature, language, zakatSummary],
+    [messages, isStreaming, feature, language, zakatSummary, session],
   );
 
   const stopStreaming = useCallback(() => {

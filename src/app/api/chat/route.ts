@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage, AIMessage, SystemMessage, type BaseMessage } from "@langchain/core/messages";
-import { createServerSupabase } from "@/lib/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 import { buildSystemPrompt } from "@/lib/chat/system-prompt";
 import { createSupabaseTools, createMetalPriceTool } from "@/lib/chat/tools";
-import { OPENROUTER_API_URL, OPENROUTER_MODEL } from "@/lib/chat/constants";
+import { OPENROUTER_MODEL } from "@/lib/chat/constants";
 import type { ChatFeature } from "@/types/chat";
 
 // Map user's language to their most likely local currency
@@ -43,9 +43,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Missing messages or feature" }, { status: 400 });
   }
 
-  // Get authenticated user from Supabase
-  const supabase = await createServerSupabase();
-  const { data: { user } } = await supabase.auth.getUser();
+  // Get authenticated user from access token sent by the frontend
+  const authHeader = request.headers.get("Authorization");
+  const accessToken = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    accessToken
+      ? { global: { headers: { Authorization: `Bearer ${accessToken}` } } }
+      : undefined,
+  );
+
+  const { data: { user } } = await supabase.auth.getUser(accessToken || undefined);
 
   // Build system prompt
   const systemPrompt = buildSystemPrompt(feature, language, zakatSummary);
