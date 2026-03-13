@@ -2,10 +2,7 @@ import { tool } from "@langchain/core/tools";
 import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getLocalDateStr } from "@/lib/date-utils";
-
-const GRAMS_PER_OUNCE = 31.1035;
-const GOLD_NISAB_GRAMS = 87.48;
-const SILVER_NISAB_GRAMS = 612.36;
+import { GRAMS_PER_OUNCE, NISAB_GOLD_GRAMS, NISAB_SILVER_GRAMS } from "@/lib/constants";
 
 /**
  * Tool to fetch live gold/silver prices — available to all users (no auth needed).
@@ -20,8 +17,8 @@ export function createMetalPriceTool(baseUrl: string) {
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
 
-        const goldNisab = data.goldPricePerGram * GOLD_NISAB_GRAMS;
-        const silverNisab = data.silverPricePerGram * SILVER_NISAB_GRAMS;
+        const goldNisab = data.goldPricePerGram * NISAB_GOLD_GRAMS;
+        const silverNisab = data.silverPricePerGram * NISAB_SILVER_GRAMS;
 
         return [
           `Live Metal Prices (${data.currency}):`,
@@ -29,8 +26,8 @@ export function createMetalPriceTool(baseUrl: string) {
           `  Silver: ${data.silverPricePerGram.toFixed(2)} per gram | ${data.silverPricePerOunce.toFixed(2)} per troy ounce`,
           ``,
           `Nisab Thresholds (${data.currency}):`,
-          `  Gold Nisab (${GOLD_NISAB_GRAMS}g): ${goldNisab.toFixed(2)}`,
-          `  Silver Nisab (${SILVER_NISAB_GRAMS}g): ${silverNisab.toFixed(2)}`,
+          `  Gold Nisab (${NISAB_GOLD_GRAMS}g): ${goldNisab.toFixed(2)}`,
+          `  Silver Nisab (${NISAB_SILVER_GRAMS}g): ${silverNisab.toFixed(2)}`,
           ``,
           `Source: ${data.live ? "Live market data" : "Estimated (offline fallback)"}`,
           `Updated: ${data.timestamp}`,

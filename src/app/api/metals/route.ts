@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-const GRAMS_PER_OUNCE = 31.1035;
+import { GRAMS_PER_OUNCE } from "@/lib/constants";
 
 // Cache prices for 10 minutes
 let cachedPrices: Record<string, { data: unknown; timestamp: number }> = {};

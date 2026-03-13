@@ -1,4 +1,6 @@
 export type DuaCategory =
+  | "durud"
+  | "munajat"
   | "friday"
   | "morning-evening"
   | "meals"
@@ -22,6 +24,8 @@ export interface Dua {
 }
 
 export const DUA_CATEGORIES: { id: DuaCategory; label: string; labelAr: string; emoji: string }[] = [
+  { id: "durud", label: "Durud / Salawat", labelAr: "الصلاة على النبي ﷺ", emoji: "🌹" },
+  { id: "munajat", label: "Munajat / Prayers", labelAr: "المناجاة", emoji: "🤲" },
   { id: "friday", label: "Friday / Jummah", labelAr: "الجمعة", emoji: "🕌" },
   { id: "morning-evening", label: "Morning / Evening", labelAr: "الصباح والمساء", emoji: "🌅" },
   { id: "daily-life", label: "Daily Life", labelAr: "الحياة اليومية", emoji: "🏠" },
@@ -36,6 +40,283 @@ export const DUA_CATEGORIES: { id: DuaCategory; label: string; labelAr: string; 
 ];
 
 export const DUAS: Dua[] = [
+  // ── Durud / Salawat (Blessings upon the Prophet ﷺ) ─────
+  {
+    id: "durud-ibrahim",
+    arabic: "اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ وَعَلَىٰ آلِ مُحَمَّدٍ، كَمَا صَلَّيْتَ عَلَىٰ إِبْرَاهِيمَ وَعَلَىٰ آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ. اللَّهُمَّ بَارِكْ عَلَىٰ مُحَمَّدٍ وَعَلَىٰ آلِ مُحَمَّدٍ، كَمَا بَارَكْتَ عَلَىٰ إِبْرَاهِيمَ وَعَلَىٰ آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ",
+    transliteration: "Allahumma salli 'ala Muhammadin wa 'ala ali Muhammad, kama sallayta 'ala Ibrahima wa 'ala ali Ibrahim, innaka Hameedun Majeed. Allahumma barik 'ala Muhammadin wa 'ala ali Muhammad, kama barakta 'ala Ibrahima wa 'ala ali Ibrahim, innaka Hameedun Majeed.",
+    translation: "O Allah, send prayers upon Muhammad and upon the family of Muhammad, as You sent prayers upon Ibrahim and the family of Ibrahim. You are indeed Praiseworthy, Glorious. O Allah, bless Muhammad and the family of Muhammad, as You blessed Ibrahim and the family of Ibrahim. You are indeed Praiseworthy, Glorious.",
+    translations: {
+      bn: "হে আল্লাহ, মুহাম্মাদ ও তাঁর পরিবারের উপর রহমত বর্ষণ করুন, যেমন আপনি ইবরাহীম ও তাঁর পরিবারের উপর রহমত বর্ষণ করেছেন। নিশ্চয়ই আপনি প্রশংসিত, মহিমান্বিত। হে আল্লাহ, মুহাম্মাদ ও তাঁর পরিবারের উপর বরকত দান করুন, যেমন আপনি ইবরাহীম ও তাঁর পরিবারের উপর বরকত দান করেছেন। নিশ্চয়ই আপনি প্রশংসিত, মহিমান্বিত।",
+      ur: "اے اللہ، محمد ﷺ اور آل محمد پر رحمتیں بھیج، جیسے تو نے ابراہیم اور آل ابراہیم پر رحمتیں بھیجیں۔ بے شک تو حمد والا بزرگی والا ہے۔ اے اللہ، محمد ﷺ اور آل محمد پر برکتیں نازل فرما، جیسے تو نے ابراہیم اور آل ابراہیم پر برکتیں نازل فرمائیں۔ بے شک تو حمد والا بزرگی والا ہے۔",
+      ar: "اللهم صل على محمد وعلى آل محمد كما صليت على إبراهيم وعلى آل إبراهيم إنك حميد مجيد. اللهم بارك على محمد وعلى آل محمد كما باركت على إبراهيم وعلى آل إبراهيم إنك حميد مجيد.",
+    },
+    source: "Al-Bukhari 3370, Muslim 406 — Durud Ibrahim (recited in Salah)",
+    category: "durud",
+  },
+  {
+    id: "durud-short",
+    arabic: "اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَىٰ نَبِيِّنَا مُحَمَّدٍ",
+    transliteration: "Allahumma salli wa sallim 'ala nabiyyina Muhammad.",
+    translation: "O Allah, send prayers and peace upon our Prophet Muhammad.",
+    translations: {
+      bn: "হে আল্লাহ, আমাদের নবী মুহাম্মাদ ﷺ-এর উপর দরূদ ও সালাম বর্ষণ করুন।",
+      ur: "اے اللہ، ہمارے نبی محمد ﷺ پر درود و سلام بھیج۔",
+      ar: "اللهم صل وسلم على نبينا محمد.",
+    },
+    source: "Short form of Salawat — recommended frequently",
+    category: "durud",
+  },
+  {
+    id: "durud-nariya",
+    arabic: "اللَّهُمَّ صَلِّ صَلَاةً كَامِلَةً وَسَلِّمْ سَلَامًا تَامًّا عَلَىٰ سَيِّدِنَا مُحَمَّدٍ الَّذِي تَنْحَلُّ بِهِ الْعُقَدُ وَتَنْفَرِجُ بِهِ الْكُرَبُ وَتُقْضَىٰ بِهِ الْحَوَائِجُ وَتُنَالُ بِهِ الرَّغَائِبُ وَحُسْنُ الْخَوَاتِمِ وَيُسْتَسْقَى الْغَمَامُ بِوَجْهِهِ الْكَرِيمِ وَعَلَىٰ آلِهِ وَصَحْبِهِ فِي كُلِّ لَمْحَةٍ وَنَفَسٍ بِعَدَدِ كُلِّ مَعْلُومٍ لَكَ",
+    transliteration: "Allahumma salli salatan kamilatan wa sallim salaman tamman 'ala sayyidina Muhammadin-illadhi tanhallu bihil-'uqadu wa tanfariju bihil-kurabu wa tuqdha bihil-hawa'iju wa tunalu bihir-ragha'ibu wa husnul-khawatimi wa yustasqal-ghamamu bi-wajhihil-karimi wa 'ala alihi wa sahbihi fi kulli lamhatin wa nafasin bi-'adadi kulli ma'lumin lak.",
+    translation: "O Allah, bestow complete blessings and perfect peace upon our master Muhammad, through whom knots are untied, hardships are relieved, needs are fulfilled, desires are attained, and good endings are achieved, and rain is sought through his noble face. And upon his family and companions, in every glance and every breath, by the number of everything known to You.",
+    translations: {
+      bn: "হে আল্লাহ, আমাদের সরদার মুহাম্মাদ ﷺ-এর উপর পরিপূর্ণ দরূদ ও সম্পূর্ণ সালাম বর্ষণ করুন, যাঁর মাধ্যমে গিঁট খোলে, কষ্ট দূর হয়, প্রয়োজন পূরণ হয়, আকাঙ্ক্ষা অর্জিত হয়, শুভ পরিণতি লাভ হয় এবং তাঁর মহান চেহারার উসিলায় বৃষ্টি প্রার্থনা করা হয়। এবং তাঁর পরিবার ও সাহাবীদের উপরও, প্রতিটি দৃষ্টিপাত ও শ্বাস-প্রশ্বাসে, আপনার জানা সকল কিছুর সংখ্যায়।",
+      ur: "اے اللہ، ہمارے سردار محمد ﷺ پر کامل درود اور مکمل سلام بھیج، جن کے ذریعے گرہیں کھلتی ہیں، مشکلات دور ہوتی ہیں، حاجتیں پوری ہوتی ہیں، مرادیں حاصل ہوتی ہیں، خاتمہ بالخیر ہوتا ہے، اور ان کے کریم چہرے کے وسیلے سے بارش طلب کی جاتی ہے۔ اور ان کی آل اور اصحاب پر بھی، ہر نظر اور سانس میں، تیرے ہر معلوم کی تعداد کے برابر۔",
+      ar: "اللهم صل صلاة كاملة وسلم سلاماً تاماً على سيدنا محمد الذي تنحل به العقد وتنفرج به الكرب وتقضى به الحوائج وتنال به الرغائب وحسن الخواتم ويستسقى الغمام بوجهه الكريم وعلى آله وصحبه في كل لمحة ونفس بعدد كل معلوم لك.",
+    },
+    source: "Durud Nariya (Salat al-Tafrijiyya) — widely recited for relief from hardships",
+    category: "durud",
+  },
+  {
+    id: "durud-tunjina",
+    arabic: "اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا مُحَمَّدٍ صَلَاةً تُنْجِينَا بِهَا مِنْ جَمِيعِ الْأَهْوَالِ وَالْآفَاتِ، وَتَقْضِي لَنَا بِهَا جَمِيعَ الْحَاجَاتِ، وَتُطَهِّرُنَا بِهَا مِنْ جَمِيعِ السَّيِّئَاتِ، وَتَرْفَعُنَا بِهَا عِنْدَكَ أَعْلَى الدَّرَجَاتِ، وَتُبَلِّغُنَا بِهَا أَقْصَى الْغَايَاتِ، مِنْ جَمِيعِ الْخَيْرَاتِ فِي الْحَيَاةِ وَبَعْدَ الْمَمَاتِ",
+    transliteration: "Allahumma salli 'ala sayyidina Muhammadin salatan tunjina biha min jami'il-ahwali wal-afat, wa taqdhi lana biha jami'al-hajat, wa tutahhiruna biha min jami'is-sayyi'at, wa tarfa'una biha 'indaka a'lad-darajat, wa tuballighuna biha aqsal-ghayat, min jami'il-khayrati fil-hayati wa ba'dal-mamat.",
+    translation: "O Allah, send prayers upon our master Muhammad, prayers that will save us from all fears and calamities, fulfill all our needs, purify us from all sins, elevate us to the highest ranks in Your sight, and deliver us to the utmost goals of all goodness in life and after death.",
+    translations: {
+      bn: "হে আল্লাহ, আমাদের সরদার মুহাম্মাদ ﷺ-এর উপর এমন দরূদ পাঠান যা আমাদের সকল ভয় ও বিপদ থেকে রক্ষা করবে, আমাদের সকল প্রয়োজন পূরণ করবে, সকল পাপ থেকে পবিত্র করবে, আপনার নিকট সর্বোচ্চ মর্যাদায় উন্নীত করবে এবং জীবনে ও মৃত্যুর পরে সকল কল্যাণের চরম লক্ষ্যে পৌঁছে দেবে।",
+      ur: "اے اللہ، ہمارے سردار محمد ﷺ پر ایسا درود بھیج جو ہمیں تمام خوف اور آفات سے بچائے، ہماری تمام حاجتیں پوری کرے، تمام گناہوں سے پاک کرے، تیرے نزدیک بلند ترین درجات تک پہنچائے، اور زندگی میں اور موت کے بعد تمام خیر کی انتہا تک پہنچائے۔",
+      ar: "اللهم صل على سيدنا محمد صلاة تنجينا بها من جميع الأهوال والآفات وتقضي لنا بها جميع الحاجات وتطهرنا بها من جميع السيئات وترفعنا بها عندك أعلى الدرجات وتبلغنا بها أقصى الغايات من جميع الخيرات في الحياة وبعد الممات.",
+    },
+    source: "Durud Tunjina — recited for protection and fulfillment of needs",
+    category: "durud",
+  },
+  {
+    id: "durud-taj",
+    arabic: "اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا وَمَوْلَانَا مُحَمَّدٍ صَاحِبِ التَّاجِ وَالْمِعْرَاجِ وَالْبُرَاقِ وَالْعَلَمِ، دَافِعِ الْبَلَاءِ وَالْوَبَاءِ وَالْقَحْطِ وَالْمَرَضِ وَالْأَلَمِ، اسْمُهُ مَكْتُوبٌ مَرْفُوعٌ مَشْفُوعٌ مَنْقُوشٌ فِي اللَّوْحِ وَالْقَلَمِ، سَيِّدِ الْعَرَبِ وَالْعَجَمِ، جِسْمُهُ مُقَدَّسٌ مُعَطَّرٌ مُطَهَّرٌ مُنَوَّرٌ فِي الْبَيْتِ وَالْحَرَمِ",
+    transliteration: "Allahumma salli 'ala sayyidina wa mawlana Muhammadin sahibit-taji wal-mi'raji wal-buraqi wal-'alam, dafi'il-bala'i wal-waba'i wal-qahti wal-maradi wal-alam, ismuhu maktubun marfu'un mashfu'un manqushun fil-lawhi wal-qalam, sayyidil-'arabi wal-'ajam, jismuhu muqaddasun mu'attarun mutahharun munawwarun fil-bayti wal-haram.",
+    translation: "O Allah, send blessings upon our master and patron Muhammad, the owner of the crown, the Ascension, the Buraq, and the standard. The repeller of affliction, plague, drought, disease, and pain. His name is written, exalted, interceding, and inscribed on the Preserved Tablet and Pen. The leader of Arabs and non-Arabs. His body is sanctified, perfumed, purified, and illuminated in the House and the Sacred Mosque.",
+    translations: {
+      bn: "হে আল্লাহ, আমাদের সরদার ও অভিভাবক মুহাম্মাদ ﷺ-এর উপর দরূদ পাঠান, যিনি তাজ, মি'রাজ, বুরাক ও পতাকার অধিকারী। বিপদ, মহামারী, দুর্ভিক্ষ, রোগ ও যন্ত্রণা দূরকারী। তাঁর নাম লওহে মাহফুজ ও কলমে লিখিত, উন্নীত, সুপারিশকৃত ও খোদিত। আরব ও অনারবের সরদার। তাঁর দেহ পবিত্র, সুগন্ধময়, পরিশুদ্ধ ও আলোকিত বাইতুল্লাহ ও হারামে।",
+      ur: "اے اللہ، ہمارے سردار اور مولا محمد ﷺ پر درود بھیج، جو تاج، معراج، براق اور عَلم کے مالک ہیں۔ بلاؤں، وباؤں، قحط، بیماری اور درد کو دور کرنے والے۔ ان کا نام لوح و قلم میں لکھا، بلند، شفاعت کردہ اور کندہ ہے۔ عرب و عجم کے سردار۔ ان کا جسم بیت اللہ اور حرم میں مقدس، معطر، مطہر اور منور ہے۔",
+      ar: "اللهم صل على سيدنا ومولانا محمد صاحب التاج والمعراج والبراق والعلم دافع البلاء والوباء والقحط والمرض والألم اسمه مكتوب مرفوع مشفوع منقوش في اللوح والقلم سيد العرب والعجم جسمه مقدس معطر مطهر منور في البيت والحرم.",
+    },
+    source: "Durud Taj — popular in South Asia, recited for blessings and protection",
+    category: "durud",
+  },
+  {
+    id: "durud-lakhi",
+    arabic: "اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا مُحَمَّدٍ وَعَلَىٰ آلِ سَيِّدِنَا مُحَمَّدٍ بِعَدَدِ كُلِّ دَاءٍ وَدَوَاءٍ وَبَارِكْ وَسَلِّمْ عَلَيْهِ وَعَلَيْهِمْ كَثِيرًا كَثِيرًا",
+    transliteration: "Allahumma salli 'ala sayyidina Muhammadin wa 'ala ali sayyidina Muhammadin bi-'adadi kulli da'in wa dawa'in wa barik wa sallim 'alayhi wa 'alayhim kathiran kathira.",
+    translation: "O Allah, send blessings upon our master Muhammad and upon the family of our master Muhammad, by the number of every disease and every cure, and bestow abundant peace and blessings upon him and upon them.",
+    translations: {
+      bn: "হে আল্লাহ, আমাদের সরদার মুহাম্মাদ ﷺ ও তাঁর পরিবারের উপর প্রতিটি রোগ ও প্রতিটি ঔষধের সংখ্যায় দরূদ পাঠান এবং তাঁর ও তাঁদের উপর অসংখ্য শান্তি ও বরকত বর্ষণ করুন।",
+      ur: "اے اللہ، ہمارے سردار محمد ﷺ اور ان کی آل پر ہر بیماری اور ہر دوا کی تعداد کے برابر درود بھیج اور ان پر اور ان سب پر بہت بہت سلام اور برکت نازل فرما۔",
+      ar: "اللهم صل على سيدنا محمد وعلى آل سيدنا محمد بعدد كل داء ودواء وبارك وسلم عليه وعليهم كثيراً كثيراً.",
+    },
+    source: "Durud Lakhi — recited 100,000 times in gatherings for immense blessings",
+    category: "durud",
+  },
+  {
+    id: "durud-akbar",
+    arabic: "اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا مُحَمَّدٍ وَعَلَىٰ آلِهِ بِعَدَدِ أَنْفَاسِ الْخَلَائِقِ",
+    transliteration: "Allahumma salli 'ala sayyidina Muhammadin wa 'ala alihi bi-'adadi anfasil-khala'iq.",
+    translation: "O Allah, send blessings upon our master Muhammad and his family, by the number of breaths of all creation.",
+    translations: {
+      bn: "হে আল্লাহ, আমাদের সরদার মুহাম্মাদ ﷺ ও তাঁর পরিবারের উপর সৃষ্টির সকল প্রাণীর শ্বাস-প্রশ্বাসের সংখ্যায় দরূদ পাঠান।",
+      ur: "اے اللہ، ہمارے سردار محمد ﷺ اور ان کی آل پر تمام مخلوقات کی سانسوں کی تعداد کے برابر درود بھیج۔",
+      ar: "اللهم صل على سيدنا محمد وعلى آله بعدد أنفاس الخلائق.",
+    },
+    source: "Durud Akbar — short powerful form with vast reward",
+    category: "durud",
+  },
+  {
+    id: "durud-sharif-simple",
+    arabic: "صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ",
+    transliteration: "Sallallahu 'alayhi wa sallam.",
+    translation: "May Allah's peace and blessings be upon him.",
+    translations: {
+      bn: "আল্লাহ তাঁর উপর শান্তি ও রহমত বর্ষণ করুন।",
+      ur: "اللہ اُن پر رحمت اور سلامتی نازل فرمائے۔",
+      ar: "صلى الله عليه وسلم.",
+    },
+    source: "Standard Salawat — said whenever the Prophet's ﷺ name is mentioned",
+    category: "durud",
+  },
+  {
+    id: "durud-mahi",
+    arabic: "اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا مُحَمَّدٍ النَّبِيِّ الْأُمِّيِّ وَعَلَىٰ آلِهِ وَصَحْبِهِ وَسَلِّمْ",
+    transliteration: "Allahumma salli 'ala sayyidina Muhammadin-Nabiyyil-Ummiyyi wa 'ala alihi wa sahbihi wa sallim.",
+    translation: "O Allah, send blessings upon our master Muhammad, the unlettered Prophet, and upon his family and companions, and grant them peace.",
+    translations: {
+      bn: "হে আল্লাহ, আমাদের সরদার উম্মী নবী মুহাম্মাদ ﷺ এবং তাঁর পরিবার ও সাহাবীদের উপর দরূদ ও সালাম পাঠান।",
+      ur: "اے اللہ، ہمارے سردار نبی اُمّی محمد ﷺ اور ان کی آل اور اصحاب پر درود و سلام بھیج۔",
+      ar: "اللهم صل على سيدنا محمد النبي الأمي وعلى آله وصحبه وسلم.",
+    },
+    source: "Abu Dawud 1508 — Durud on the Unlettered Prophet",
+    category: "durud",
+  },
+  {
+    id: "durud-e-tanjeena",
+    arabic: "اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا مُحَمَّدٍ وَعَلَىٰ آلِ سَيِّدِنَا مُحَمَّدٍ صَلَاةً تُنَجِّينَا بِهَا مِنْ جَمِيعِ الْأَهْوَالِ وَالْآفَاتِ وَتَقْضِي لَنَا جَمِيعَ الْحَاجَاتِ وَتُطَهِّرُنَا بِهَا مِنْ جَمِيعِ السَّيِّئَاتِ وَتَرْفَعُنَا بِهَا أَعْلَى الدَّرَجَاتِ وَتُبَلِّغُنَا بِهَا أَقْصَى الْغَايَاتِ مِنْ جَمِيعِ الْخَيْرَاتِ فِي الْحَيَاةِ وَبَعْدَ الْمَمَاتِ إِنَّكَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ",
+    transliteration: "Allahumma salli 'ala sayyidina Muhammadin wa 'ala ali sayyidina Muhammadin salatan tunajjina biha min jami'il-ahwali wal-afat, wa taqdhi lana jami'al-hajat, wa tutahhiruna biha min jami'is-sayyi'at, wa tarfa'una biha a'lad-darajat, wa tuballighuna biha aqsal-ghayat, min jami'il-khayrati fil-hayati wa ba'dal-mamat, innaka 'ala kulli shay'in Qadeer.",
+    translation: "O Allah, send blessings upon our master Muhammad and the family of our master Muhammad — blessings that save us from all fears and calamities, fulfill all our needs, purify us from all sins, raise us to the highest ranks, and deliver us to the utmost goals of all goodness in this life and after death. Indeed, You are capable of all things.",
+    translations: {
+      bn: "হে আল্লাহ, আমাদের সরদার মুহাম্মাদ ﷺ ও তাঁর পরিবারের উপর এমন দরূদ পাঠান যা আমাদের সকল ভয় ও বিপদ থেকে রক্ষা করবে, সকল প্রয়োজন পূরণ করবে, সকল পাপ থেকে পবিত্র করবে, সর্বোচ্চ মর্যাদায় উন্নীত করবে এবং জীবনে ও মৃত্যুর পরে সকল কল্যাণের চূড়ান্ত লক্ষ্যে পৌঁছে দেবে। নিশ্চয়ই আপনি সবকিছুর উপর সর্বশক্তিমান।",
+      ur: "اے اللہ، ہمارے سردار محمد ﷺ اور ان کی آل پر ایسا درود بھیج جو ہمیں تمام خوف و آفات سے بچائے، تمام حاجتیں پوری کرے، تمام گناہوں سے پاک کرے، بلند ترین درجات تک پہنچائے، اور زندگی اور موت کے بعد تمام خیرات کی انتہا تک پہنچائے۔ بے شک تو ہر چیز پر قادر ہے۔",
+      ar: "اللهم صل على سيدنا محمد وعلى آل سيدنا محمد صلاة تنجينا بها من جميع الأهوال والآفات وتقضي لنا جميع الحاجات وتطهرنا بها من جميع السيئات وترفعنا بها أعلى الدرجات وتبلغنا بها أقصى الغايات من جميع الخيرات في الحياة وبعد الممات إنك على كل شيء قدير.",
+    },
+    source: "Durud Tanjeena — recited for deliverance from difficulties",
+    category: "durud",
+  },
+  {
+    id: "durud-1000-virtues",
+    arabic: "اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ وَأَنْزِلْهُ الْمَقْعَدَ الْمُقَرَّبَ عِنْدَكَ يَوْمَ الْقِيَامَةِ",
+    transliteration: "Allahumma salli 'ala Muhammadin wa anzilhul-maq'adal-muqarraba 'indaka yawmal-qiyamah.",
+    translation: "O Allah, send blessings upon Muhammad and grant him the closest seat near You on the Day of Resurrection.",
+    translations: {
+      bn: "হে আল্লাহ, মুহাম্মাদ ﷺ-এর উপর দরূদ পাঠান এবং কিয়ামতের দিন তাঁকে আপনার নিকটতম আসনে অধিষ্ঠিত করুন।",
+      ur: "اے اللہ، محمد ﷺ پر درود بھیج اور قیامت کے دن انہیں اپنے پاس قریب ترین مقام عطا فرما۔",
+      ar: "اللهم صل على محمد وأنزله المقعد المقرب عندك يوم القيامة.",
+    },
+    source: "At-Tabrani — Hadith on earning the Prophet's ﷺ intercession",
+    category: "durud",
+  },
+
+  // ── Munajat (Supplications & Intimate Prayers to Allah) ─────
+  {
+    id: "munajat-rabbana-atina",
+    arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+    transliteration: "Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanatan wa qina 'adhabannar.",
+    translation: "Our Lord, give us good in this world and good in the Hereafter, and protect us from the punishment of the Fire.",
+    translations: {
+      bn: "হে আমাদের রব, আমাদের দুনিয়াতে কল্যাণ দিন, আখিরাতেও কল্যাণ দিন এবং জাহান্নামের আযাব থেকে রক্ষা করুন।",
+      ur: "اے ہمارے رب، ہمیں دنیا میں بھلائی دے اور آخرت میں بھلائی دے اور ہمیں آگ کے عذاب سے بچا۔",
+      ar: "ربنا آتنا في الدنيا حسنة وفي الآخرة حسنة وقنا عذاب النار.",
+    },
+    source: "Quran 2:201 — Most comprehensive Quranic dua",
+    category: "munajat",
+  },
+  {
+    id: "munajat-rabbana-la-tuzigh",
+    arabic: "رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِنْ لَدُنْكَ رَحْمَةً إِنَّكَ أَنْتَ الْوَهَّابُ",
+    transliteration: "Rabbana la tuzigh qulubana ba'da idh hadaytana wa hab lana min ladunka rahmah, innaka Antal-Wahhab.",
+    translation: "Our Lord, do not let our hearts deviate after You have guided us, and grant us mercy from Yourself. Indeed, You are the Bestower.",
+    translations: {
+      bn: "হে আমাদের রব, আপনি আমাদের হেদায়েত দেওয়ার পর আমাদের অন্তরকে বিপথগামী করবেন না এবং আপনার পক্ষ থেকে আমাদের রহমত দান করুন। নিশ্চয়ই আপনি মহাদাতা।",
+      ur: "اے ہمارے رب، ہدایت دینے کے بعد ہمارے دلوں کو ٹیڑھا نہ کر اور ہمیں اپنے پاس سے رحمت عطا فرما۔ بے شک تو بڑا عطا کرنے والا ہے۔",
+      ar: "ربنا لا تزغ قلوبنا بعد إذ هديتنا وهب لنا من لدنك رحمة إنك أنت الوهاب.",
+    },
+    source: "Quran 3:8",
+    category: "munajat",
+  },
+  {
+    id: "munajat-rabbi-zidni",
+    arabic: "رَبِّ زِدْنِي عِلْمًا",
+    transliteration: "Rabbi zidni 'ilma.",
+    translation: "My Lord, increase me in knowledge.",
+    translations: {
+      bn: "হে আমার রব, আমার জ্ঞান বৃদ্ধি করুন।",
+      ur: "اے میرے رب، میرا علم بڑھا دے۔",
+      ar: "رب زدني علماً.",
+    },
+    source: "Quran 20:114",
+    category: "munajat",
+  },
+  {
+    id: "munajat-rabbana-taqabbal",
+    arabic: "رَبَّنَا تَقَبَّلْ مِنَّا إِنَّكَ أَنْتَ السَّمِيعُ الْعَلِيمُ وَتُبْ عَلَيْنَا إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ",
+    transliteration: "Rabbana taqabbal minna innaka Antas-Sami'ul-'Aleem, wa tub 'alayna innaka Antat-Tawwabur-Raheem.",
+    translation: "Our Lord, accept from us. Indeed, You are the All-Hearing, the All-Knowing. And turn to us in forgiveness. Indeed, You are the Acceptor of repentance, the Most Merciful.",
+    translations: {
+      bn: "হে আমাদের রব, আমাদের থেকে কবুল করুন। নিশ্চয়ই আপনি সর্বশ্রোতা, সর্বজ্ঞ। এবং আমাদের তওবা কবুল করুন। নিশ্চয়ই আপনি তওবা কবুলকারী, পরম দয়ালু।",
+      ur: "اے ہمارے رب، ہم سے قبول فرما۔ بے شک تو سب کچھ سننے والا، جاننے والا ہے۔ اور ہماری توبہ قبول فرما۔ بے شک تو توبہ قبول کرنے والا، رحم کرنے والا ہے۔",
+      ar: "ربنا تقبل منا إنك أنت السميع العليم وتب علينا إنك أنت التواب الرحيم.",
+    },
+    source: "Quran 2:127-128 — Dua of Ibrahim & Ismail",
+    category: "munajat",
+  },
+  {
+    id: "munajat-rabbi-habli",
+    arabic: "رَبِّ هَبْ لِي مِنْ لَدُنْكَ ذُرِّيَّةً طَيِّبَةً إِنَّكَ سَمِيعُ الدُّعَاءِ",
+    transliteration: "Rabbi hab li min ladunka dhurriyyatan tayyibah, innaka Sami'ud-du'a.",
+    translation: "My Lord, grant me from Yourself righteous offspring. Indeed, You are the Hearer of supplication.",
+    translations: {
+      bn: "হে আমার রব, আপনার পক্ষ থেকে আমাকে পবিত্র সন্তান দান করুন। নিশ্চয়ই আপনি দু'আ শ্রবণকারী।",
+      ur: "اے میرے رب، مجھے اپنے پاس سے پاکیزہ اولاد عطا فرما۔ بے شک تو دعا سننے والا ہے۔",
+      ar: "رب هب لي من لدنك ذرية طيبة إنك سميع الدعاء.",
+    },
+    source: "Quran 3:38 — Dua of Zakariyya",
+    category: "munajat",
+  },
+  {
+    id: "munajat-rabbana-dhalamna",
+    arabic: "رَبَّنَا ظَلَمْنَا أَنْفُسَنَا وَإِنْ لَمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُونَنَّ مِنَ الْخَاسِرِينَ",
+    transliteration: "Rabbana dhalamna anfusana wa in lam taghfir lana wa tarhamna lanakoonanna minal-khasireen.",
+    translation: "Our Lord, we have wronged ourselves, and if You do not forgive us and have mercy upon us, we will surely be among the losers.",
+    translations: {
+      bn: "হে আমাদের রব, আমরা নিজেদের উপর জুলুম করেছি। যদি আপনি আমাদের ক্ষমা না করেন এবং দয়া না করেন, তবে আমরা অবশ্যই ক্ষতিগ্রস্তদের অন্তর্ভুক্ত হব।",
+      ur: "اے ہمارے رب، ہم نے اپنی جانوں پر ظلم کیا۔ اگر تو ہمیں معاف نہ کرے اور رحم نہ فرمائے تو ہم نقصان اٹھانے والوں میں سے ہو جائیں گے۔",
+      ar: "ربنا ظلمنا أنفسنا وإن لم تغفر لنا وترحمنا لنكونن من الخاسرين.",
+    },
+    source: "Quran 7:23 — Dua of Adam & Hawa",
+    category: "munajat",
+  },
+  {
+    id: "munajat-la-ilaha-illa-anta",
+    arabic: "لَا إِلَٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
+    transliteration: "La ilaha illa Anta Subhanaka inni kuntu minaz-zalimeen.",
+    translation: "There is no deity except You; exalted are You. Indeed, I have been of the wrongdoers.",
+    translations: {
+      bn: "আপনি ছাড়া কোনো ইলাহ নেই, আপনি পবিত্র। নিশ্চয়ই আমি জালিমদের অন্তর্ভুক্ত ছিলাম।",
+      ur: "تیرے سوا کوئی معبود نہیں، تو پاک ہے۔ بے شک میں ظالموں میں سے تھا۔",
+      ar: "لا إله إلا أنت سبحانك إني كنت من الظالمين.",
+    },
+    source: "Quran 21:87 — Dua of Yunus (Jonah) — never fails when sincerely recited (Tirmidhi 3505)",
+    category: "munajat",
+  },
+  {
+    id: "munajat-hasbi-allah",
+    arabic: "حَسْبِيَ اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ",
+    transliteration: "Hasbiyal-lahu la ilaha illa Huwa, 'alayhi tawakkaltu wa Huwa Rabbul-'Arshil-'Adheem.",
+    translation: "Sufficient for me is Allah; there is no deity except Him. On Him I have relied, and He is the Lord of the Great Throne.",
+    translations: {
+      bn: "আল্লাহই আমার জন্য যথেষ্ট; তিনি ছাড়া কোনো ইলাহ নেই। আমি তাঁর উপরই তাওয়াক্কুল করেছি এবং তিনিই মহান আরশের রব।",
+      ur: "مجھے اللہ کافی ہے، اس کے سوا کوئی معبود نہیں۔ میں نے اسی پر بھروسہ کیا اور وہ عرش عظیم کا رب ہے۔",
+      ar: "حسبي الله لا إله إلا هو عليه توكلت وهو رب العرش العظيم.",
+    },
+    source: "Quran 9:129 — Recite 7 times morning and evening (Abu Dawud 5081)",
+    category: "munajat",
+  },
+  {
+    id: "munajat-rabbij-alni",
+    arabic: "رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِنْ ذُرِّيَّتِي رَبَّنَا وَتَقَبَّلْ دُعَاءِ",
+    transliteration: "Rabbij-'alni muqimas-salati wa min dhurriyyati, Rabbana wa taqabbal du'a.",
+    translation: "My Lord, make me an establisher of prayer, and from my descendants. Our Lord, and accept my supplication.",
+    translations: {
+      bn: "হে আমার রব, আমাকে নামায কায়েমকারী বানান এবং আমার বংশধরদের মধ্য থেকেও। হে আমাদের রব, আমার দু'আ কবুল করুন।",
+      ur: "اے میرے رب، مجھے نماز قائم کرنے والا بنا اور میری اولاد میں سے بھی۔ اے ہمارے رب، میری دعا قبول فرما۔",
+      ar: "رب اجعلني مقيم الصلاة ومن ذريتي ربنا وتقبل دعاء.",
+    },
+    source: "Quran 14:40 — Dua of Ibrahim",
+    category: "munajat",
+  },
+  {
+    id: "munajat-rabbi-awzini",
+    arabic: "رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ وَعَلَىٰ وَالِدَيَّ وَأَنْ أَعْمَلَ صَالِحًا تَرْضَاهُ وَأَدْخِلْنِي بِرَحْمَتِكَ فِي عِبَادِكَ الصَّالِحِينَ",
+    transliteration: "Rabbi awzi'ni an ashkura ni'matakal-lati an'amta 'alayya wa 'ala walidayya wa an a'mala salihan tardahu wa adkhilni bi-rahmatika fi 'ibadikas-saliheen.",
+    translation: "My Lord, enable me to be grateful for Your favor which You have bestowed upon me and upon my parents, and to do righteousness of which You approve. And admit me by Your mercy into the ranks of Your righteous servants.",
+    translations: {
+      bn: "হে আমার রব, আমাকে তৌফিক দিন যেন আমি আপনার সেই নেয়ামতের শুকরিয়া আদায় করি যা আপনি আমাকে ও আমার পিতামাতাকে দান করেছেন এবং যেন আমি এমন সৎকর্ম করি যা আপনি পছন্দ করেন। আর আপনার রহমতে আমাকে আপনার নেক বান্দাদের অন্তর্ভুক্ত করুন।",
+      ur: "اے میرے رب، مجھے توفیق دے کہ میں تیری اس نعمت کا شکر ادا کروں جو تو نے مجھے اور میرے والدین کو عطا کی اور یہ کہ میں ایسے نیک عمل کروں جو تجھے پسند ہوں۔ اور اپنی رحمت سے مجھے اپنے نیک بندوں میں داخل فرما۔",
+      ar: "رب أوزعني أن أشكر نعمتك التي أنعمت علي وعلى والدي وأن أعمل صالحاً ترضاه وأدخلني برحمتك في عبادك الصالحين.",
+    },
+    source: "Quran 27:19 — Dua of Sulaiman",
+    category: "munajat",
+  },
+
   // ── Friday / Jummah ────────────────────────────────────
   {
     id: "friday-salawat",

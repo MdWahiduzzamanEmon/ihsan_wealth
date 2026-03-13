@@ -79,6 +79,11 @@ export interface SalatStats {
   totalOnTime: number;
   totalJamaah: number;
   totalSunnah: number;
+  // Weekly stats (actual last 7 days counts)
+  weeklyAllFardDays: number;
+  weeklyOnTimePrayers: number;
+  weeklyJamaahDays: number;
+  weeklySunnahCount: number;
 }
 
 // ─── Qaza entry ───
@@ -109,7 +114,7 @@ export function useSalatTracker(countryCode?: string) {
   }, [selectedDate, countryCode]);
 
   // ─── Fetch records ───
-  const fetchRecords = useCallback(async () => {
+  const fetchRecords = useCallback(async (): Promise<SalatRecord[]> => {
     const id = ++fetchId.current;
     setIsLoading(true);
     try {
@@ -120,26 +125,28 @@ export function useSalatTracker(countryCode?: string) {
         .order("date", { ascending: false })
         .limit(500);
 
-      if (id !== fetchId.current) return;
+      if (id !== fetchId.current) return [];
       if (error) {
         console.error("Failed to fetch salat records:", error.message);
+        return [];
       } else {
-        setRecords(
-          (data || []).map((row) => ({
-            id: row.id,
-            user_id: row.user_id,
-            date: row.date,
-            prayer_name: row.prayer_name as PrayerName,
-            prayer_type: row.prayer_type as PrayerType,
-            status: row.status as PrayerStatus,
-            in_jamaah: row.in_jamaah,
-            on_time: row.on_time,
-            created_at: row.created_at,
-          }))
-        );
+        const mapped = (data || []).map((row) => ({
+          id: row.id,
+          user_id: row.user_id,
+          date: row.date,
+          prayer_name: row.prayer_name as PrayerName,
+          prayer_type: row.prayer_type as PrayerType,
+          status: row.status as PrayerStatus,
+          in_jamaah: row.in_jamaah,
+          on_time: row.on_time,
+          created_at: row.created_at,
+        }));
+        setRecords(mapped);
+        return mapped;
       }
     } catch (err) {
       console.error("Failed to fetch salat records:", err);
+      return [];
     } finally {
       if (id === fetchId.current) setIsLoading(false);
     }
@@ -151,8 +158,11 @@ export function useSalatTracker(countryCode?: string) {
       setIsLoading(false);
       return;
     }
-    fetchRecords();
-  }, [isAuthenticated, user, fetchRecords]);
+    // Fetch records and refresh streak cache on load
+    fetchRecords().then((fresh) => {
+      if (fresh.length > 0) updateStreakCache(fresh);
+    });
+  }, [isAuthenticated, user, fetchRecords]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ─── Toggle prayer (upsert) ───
   const togglePrayer = useCallback(
@@ -184,9 +194,9 @@ export function useSalatTracker(countryCode?: string) {
         if (error) {
           console.error("Failed to toggle prayer:", error.message);
         } else {
-          await fetchRecords();
-          // Update streak cache in background
-          updateStreakCache();
+          const freshRecords = await fetchRecords();
+          // Update streak cache with fresh records
+          updateStreakCache(freshRecords);
         }
       } catch (err) {
         console.error("Failed to toggle prayer:", err);
@@ -211,8 +221,8 @@ export function useSalatTracker(countryCode?: string) {
         if (error) {
           console.error("Failed to remove prayer:", error.message);
         } else {
-          await fetchRecords();
-          updateStreakCache();
+          const freshRecords = await fetchRecords();
+          updateStreakCache(freshRecords);
         }
       } catch (err) {
         console.error("Failed to remove prayer:", err);
@@ -248,26 +258,30 @@ export function useSalatTracker(countryCode?: string) {
           console.error("Failed to log qaza:", err);
         }
       }
-      await fetchRecords();
-      updateStreakCache();
+      const freshRecords = await fetchRecords();
+      updateStreakCache(freshRecords);
     },
     [supabase, user, fetchRecords]
   );
 
   // ─── Update streak cache ───
-  const updateStreakCache = useCallback(async () => {
+  const updateStreakCache = useCallback(async (freshRecords?: SalatRecord[]) => {
     if (!user) return;
     try {
-      const streak = computeStreak(records);
-      const fardRecords = records.filter((r) => r.prayer_type === "fard" && r.status !== "missed");
+      const recs = freshRecords || records;
+      const streak = computeStreak(recs);
+      const fardRecords = recs.filter((r) => r.prayer_type === "fard" && r.status !== "missed" && !r.prayer_name.includes("_qaza_"));
       const onTimeRecords = fardRecords.filter((r) => r.on_time);
       const jamaahRecords = fardRecords.filter((r) => r.in_jamaah);
-      const sunnahRecords = records.filter((r) => r.prayer_type === "sunnah");
+      const sunnahRecords = recs.filter((r) => r.prayer_type === "sunnah");
+
+      const displayName = user.user_metadata?.name || user.email?.split("@")[0] || "";
 
       await supabase.auth.getSession();
       await supabase.from("salat_streaks").upsert(
         {
           user_id: user.id,
+          display_name: displayName,
           current_streak: streak.current,
           longest_streak: streak.longest,
           total_fard_prayed: fardRecords.length,
@@ -331,6 +345,37 @@ export function useSalatTracker(countryCode?: string) {
     const uniqueDays = new Set(recentRecords.map((r) => r.date)).size;
     const expectedFard = uniqueDays * 5;
 
+    // Weekly stats (last 7 days — actual counts, not percentages)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const sevenDaysStr = getLocalDateStr(sevenDaysAgo);
+    const weeklyRecords = records.filter(
+      (r) => r.date > sevenDaysStr && !r.prayer_name.includes("_qaza_")
+    );
+
+    // Days with all 5 fard completed (count jummah as valid fard on Fridays)
+    const weeklyDateMap = new Map<string, Set<string>>();
+    for (const r of weeklyRecords) {
+      if (r.prayer_type === "fard" && (r.status === "prayed" || r.status === "late")) {
+        if (!weeklyDateMap.has(r.date)) weeklyDateMap.set(r.date, new Set());
+        weeklyDateMap.get(r.date)!.add(r.prayer_name);
+      }
+    }
+    const weeklyAllFardDays = Array.from(weeklyDateMap.values()).filter((s) => s.size >= 5).length;
+
+    // On-time fard prayers this week
+    const weeklyOnTimePrayers = weeklyRecords.filter(
+      (r) => r.prayer_type === "fard" && r.on_time && (r.status === "prayed" || r.status === "late")
+    ).length;
+
+    // Days with at least one jamaah prayer
+    const weeklyJamaahDays = new Set(
+      weeklyRecords.filter((r) => r.in_jamaah && (r.status === "prayed" || r.status === "late")).map((r) => r.date)
+    ).size;
+
+    // Sunnah prayers this week
+    const weeklySunnahCount = weeklyRecords.filter((r) => r.prayer_type === "sunnah").length;
+
     return {
       todayFardCompleted,
       todayFardTotal: 5,
@@ -343,6 +388,10 @@ export function useSalatTracker(countryCode?: string) {
       totalOnTime,
       totalJamaah,
       totalSunnah,
+      weeklyAllFardDays,
+      weeklyOnTimePrayers,
+      weeklyJamaahDays,
+      weeklySunnahCount,
     };
   }, [records, selectedDateRecords]);
 

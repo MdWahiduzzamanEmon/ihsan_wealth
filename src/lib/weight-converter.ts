@@ -1,7 +1,5 @@
 import type { WeightUnit, GoldKarat } from "@/types/zakat";
-
-const GRAMS_PER_OUNCE = 31.1035;
-const GRAMS_PER_TOLA = 11.6638;
+import { GRAMS_PER_OUNCE, GRAMS_PER_TOLA } from "@/lib/constants";
 
 export function toGrams(weight: number, unit: WeightUnit): number {
   switch (unit) {

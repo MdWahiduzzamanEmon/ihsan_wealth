@@ -16,6 +16,8 @@ const FILTER_TEXTS: Record<TransLang, {
     all: "All",
     favorites: "Favorites",
     categories: {
+      durud: "Durud / Salawat",
+      munajat: "Munajat / Prayers",
       friday: "Friday / Jummah",
       "morning-evening": "Morning / Evening",
       "daily-life": "Daily Life",
@@ -34,6 +36,8 @@ const FILTER_TEXTS: Record<TransLang, {
     all: "সব",
     favorites: "পছন্দের",
     categories: {
+      durud: "দুরূদ / সালাওয়াত",
+      munajat: "মুনাজাত / প্রার্থনা",
       friday: "জুমআ",
       "morning-evening": "সকাল / সন্ধ্যা",
       "daily-life": "দৈনন্দিন জীবন",
@@ -52,6 +56,8 @@ const FILTER_TEXTS: Record<TransLang, {
     all: "سب",
     favorites: "پسندیدہ",
     categories: {
+      durud: "درود / صلوات",
+      munajat: "مناجات / دعائیں",
       friday: "جمعہ",
       "morning-evening": "صبح / شام",
       "daily-life": "روزمرہ زندگی",
@@ -70,6 +76,8 @@ const FILTER_TEXTS: Record<TransLang, {
     all: "الكل",
     favorites: "المفضلة",
     categories: {
+      durud: "الصلاة على النبي ﷺ",
+      munajat: "المناجاة",
       friday: "الجمعة",
       "morning-evening": "الصباح والمساء",
       "daily-life": "الحياة اليومية",
@@ -88,6 +96,8 @@ const FILTER_TEXTS: Record<TransLang, {
     all: "Tumü",
     favorites: "Favoriler",
     categories: {
+      durud: "Salavat",
+      munajat: "Münâcât / Dualar",
       friday: "Cuma",
       "morning-evening": "Sabah / Aksam",
       "daily-life": "Günlük Hayat",
@@ -106,6 +116,8 @@ const FILTER_TEXTS: Record<TransLang, {
     all: "Semua",
     favorites: "Kegemaran",
     categories: {
+      durud: "Selawat",
+      munajat: "Munajat / Doa",
       friday: "Jumaat",
       "morning-evening": "Pagi / Petang",
       "daily-life": "Kehidupan Harian",
@@ -124,6 +136,8 @@ const FILTER_TEXTS: Record<TransLang, {
     all: "Semua",
     favorites: "Favorit",
     categories: {
+      durud: "Shalawat",
+      munajat: "Munajat / Doa",
       friday: "Jumat",
       "morning-evening": "Pagi / Sore",
       "daily-life": "Kehidupan Sehari-hari",

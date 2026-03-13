@@ -1,6 +1,8 @@
 export const NISAB_GOLD_GRAMS = 87.48;
 export const NISAB_SILVER_GRAMS = 612.36;
 export const ZAKAT_RATE = 0.025;
+export const GRAMS_PER_OUNCE = 31.1035;
+export const GRAMS_PER_TOLA = 11.6638;
 
 export const TIMEZONE_TO_COUNTRY: Record<string, string> = {
   "Asia/Dhaka": "BD",

@@ -37,11 +37,10 @@ export function useSalatLeaderboard() {
       if (error) {
         console.error("Failed to fetch leaderboard:", error.message);
       } else {
-        // Map to display names (privacy-safe)
         setEntries(
           (data || []).map((row) => ({
             user_id: row.user_id,
-            display_name: maskUserId(row.user_id),
+            display_name: row.display_name || maskUserId(row.user_id),
             current_streak: row.current_streak,
             longest_streak: row.longest_streak,
             total_fard_prayed: row.total_fard_prayed,

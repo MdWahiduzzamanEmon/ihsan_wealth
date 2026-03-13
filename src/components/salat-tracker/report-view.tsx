@@ -121,18 +121,19 @@ export function ReportView({ records, stats, t, getRecordsForRange }: ReportView
     ].filter((d) => d.value > 0);
   }, [periodRecords, t]);
 
-  // Per-prayer breakdown
+  // Per-prayer breakdown (combine dhuhr + jummah since jummah replaces dhuhr on Fridays)
   const prayerBreakdown = useMemo(() => {
     return FARD_PRAYERS.map((prayer) => {
+      const matchNames: string[] = prayer === "dhuhr" ? ["dhuhr", "jummah"] : [prayer];
       const prayerRecords = periodRecords.filter(
-        (r) => r.prayer_name === prayer && r.prayer_type === "fard"
+        (r) => matchNames.includes(r.prayer_name) && r.prayer_type === "fard"
       );
       const total = prayerRecords.length;
       const prayed = prayerRecords.filter(
         (r) => r.status === "prayed" || r.status === "late"
       ).length;
       return {
-        name: prayer,
+        name: prayer === "dhuhr" ? "dhuhr / jummah" : prayer,
         rate: total > 0 ? Math.round((prayed / total) * 100) : 0,
         total,
         prayed,
@@ -140,7 +141,7 @@ export function ReportView({ records, stats, t, getRecordsForRange }: ReportView
     });
   }, [periodRecords]);
 
-  // Heatmap for weekly view
+  // Heatmap for weekly view (on Fridays, show jummah record in dhuhr slot)
   const heatmapData = useMemo(() => {
     if (period !== "weekly") return [];
     const result: { day: string; prayer: string; status: string }[] = [];
@@ -149,9 +150,12 @@ export function ReportView({ records, stats, t, getRecordsForRange }: ReportView
       d.setDate(d.getDate() - i);
       const dateStr = getLocalDateStr(d);
       const dayName = d.toLocaleDateString("en", { weekday: "short" }).slice(0, 2);
+      const isFriday = d.getDay() === 5;
       for (const prayer of FARD_PRAYERS) {
+        // On Fridays, look for jummah record instead of dhuhr
+        const lookupName = (prayer === "dhuhr" && isFriday) ? "jummah" : prayer;
         const record = periodRecords.find(
-          (r) => r.date === dateStr && r.prayer_name === prayer
+          (r) => r.date === dateStr && r.prayer_name === lookupName
         );
         result.push({
           day: dayName,

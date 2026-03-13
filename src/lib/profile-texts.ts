@@ -130,7 +130,7 @@ export const PROFILE_PAGE_TEXTS: Record<TransLang, {
     back: "পিছনে",
     salatTracker: "সালাত ট্র্যাকার",
     noSalatYet: "এখনো নামাজ ট্র্যাকিং ডেটা নেই। আপনার নামাজ ট্র্যাক করা শুরু করুন!",
-    currentStreak: "বর্তমান ধারা",
+    currentStreak: "পর পর দিন",
     completionRate: "সম্পন্নের হার",
     onTimeRate: "সময়মতো",
     jamaahRate: "জামাআত",

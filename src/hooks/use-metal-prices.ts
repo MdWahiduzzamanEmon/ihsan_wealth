@@ -13,8 +13,7 @@ export interface MetalPrices {
   currency: string;
 }
 
-const GRAMS_PER_TOLA = 11.6638;
-const GRAMS_PER_OUNCE = 31.1035;
+import { GRAMS_PER_TOLA, GRAMS_PER_OUNCE } from "@/lib/constants";
 
 // Hardcoded fallback prices (approximate, updated March 2026)
 function getFallbackPrices(currency: string): MetalPrices {

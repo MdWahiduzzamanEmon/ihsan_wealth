@@ -16,7 +16,8 @@ import { staggerContainer, staggerItem, fadeIn } from "@/lib/animations";
 import { formatCurrency } from "@/lib/format";
 import {
   Calendar, Trash2, CheckCircle, ArrowLeft,
-  BarChart3, Loader2, LogIn, Plus, DollarSign, FileText
+  BarChart3, Loader2, LogIn, Plus, DollarSign, FileText,
+  Pencil, X, Check
 } from "lucide-react";
 import { recordToCertificateData } from "@/components/dashboard/zakat-certificate";
 import { CertificatePreviewModal } from "@/components/dashboard/certificate-preview-modal";
@@ -35,7 +36,7 @@ export default function HistoryPage() {
   const lang = getLangFromCountry(formData.country) as TransLang;
   const t = HISTORY_PAGE_TEXTS[lang];
   const isRtl = lang === "ar" || lang === "ur";
-  const { fetchRecords, deleteRecord, markPaid, addPayment, fetchPayments, loading, error } = useZakatRecords();
+  const { fetchRecords, deleteRecord, markPaid, addPayment, fetchPayments, updatePayment, deletePayment, loading, error } = useZakatRecords();
   const [records, setRecords] = useState<ZakatRecord[]>([]);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [compareYears, setCompareYears] = useState<[number, number] | null>(null);
@@ -45,6 +46,10 @@ export default function HistoryPage() {
   const [certificateRecord, setCertificateRecord] = useState<ZakatRecord | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ZakatRecord | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [deletePaymentTarget, setDeletePaymentTarget] = useState<{ payment: ZakatPayment; recordId: string } | null>(null);
+  const [isDeletingPayment, setIsDeletingPayment] = useState(false);
+  const [editingPayment, setEditingPayment] = useState<string | null>(null);
+  const [editPaymentData, setEditPaymentData] = useState({ amount: "", recipient: "", category: "" });
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -91,7 +96,7 @@ export default function HistoryPage() {
         ...prev,
         [recordId]: [result, ...(prev[recordId] || [])],
       }));
-      setShowPaymentForm(null);
+      // Keep form open — just reset fields for the next entry
       setPaymentData({ amount: "", recipient: "", category: "poor", notes: "" });
     }
   };
@@ -99,6 +104,46 @@ export default function HistoryPage() {
   const loadPayments = async (recordId: string) => {
     const data = await fetchPayments(recordId);
     setPayments((prev) => ({ ...prev, [recordId]: data }));
+  };
+
+  const handleDeletePayment = useCallback(async () => {
+    if (!deletePaymentTarget) return;
+    setIsDeletingPayment(true);
+    const success = await deletePayment(deletePaymentTarget.payment.id);
+    if (success) {
+      setPayments((prev) => ({
+        ...prev,
+        [deletePaymentTarget.recordId]: (prev[deletePaymentTarget.recordId] || []).filter(
+          (p) => p.id !== deletePaymentTarget.payment.id
+        ),
+      }));
+    }
+    setIsDeletingPayment(false);
+    setDeletePaymentTarget(null);
+  }, [deletePaymentTarget, deletePayment]);
+
+  const handleStartEditPayment = (payment: ZakatPayment) => {
+    setEditingPayment(payment.id);
+    setEditPaymentData({
+      amount: String(payment.amount),
+      recipient: payment.recipient,
+      category: payment.category,
+    });
+  };
+
+  const handleSaveEditPayment = async (payment: ZakatPayment, recordId: string) => {
+    const updated = await updatePayment(payment.id, {
+      amount: parseFloat(editPaymentData.amount) || payment.amount,
+      recipient: editPaymentData.recipient || payment.recipient,
+      category: editPaymentData.category || payment.category,
+    });
+    if (updated) {
+      setPayments((prev) => ({
+        ...prev,
+        [recordId]: (prev[recordId] || []).map((p) => (p.id === payment.id ? updated : p)),
+      }));
+    }
+    setEditingPayment(null);
   };
 
 
@@ -421,15 +466,82 @@ export default function HistoryPage() {
                           {payments[record.id]?.length > 0 && (
                             <div className="space-y-2">
                               {payments[record.id].map((p) => (
-                                <div key={p.id} className="flex items-center justify-between text-sm bg-muted/50 rounded-lg p-2">
-                                  <div>
-                                    <span className="font-medium">{formatCurrency(p.amount, record.currency)}</span>
-                                    <span className="text-muted-foreground ml-2">to {p.recipient}</span>
-                                    <Badge variant="outline" className="ml-2 text-xs">{p.category}</Badge>
-                                  </div>
-                                  <span className="text-xs text-muted-foreground">
-                                    {new Date(p.paid_at).toLocaleDateString()}
-                                  </span>
+                                <div key={p.id} className="rounded-lg border border-gray-100 bg-muted/50 p-2.5">
+                                  {editingPayment === p.id ? (
+                                    /* Inline edit mode */
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 items-end">
+                                      <Input
+                                        type="number"
+                                        value={editPaymentData.amount}
+                                        onChange={(e) => setEditPaymentData((d) => ({ ...d, amount: e.target.value }))}
+                                        className="h-8 text-sm"
+                                      />
+                                      <Input
+                                        value={editPaymentData.recipient}
+                                        onChange={(e) => setEditPaymentData((d) => ({ ...d, recipient: e.target.value }))}
+                                        className="h-8 text-sm"
+                                      />
+                                      <select
+                                        value={editPaymentData.category}
+                                        onChange={(e) => setEditPaymentData((d) => ({ ...d, category: e.target.value }))}
+                                        className="h-8 w-full rounded-md border text-sm px-2"
+                                      >
+                                        <option value="poor">Poor (Faqir)</option>
+                                        <option value="needy">Needy (Miskin)</option>
+                                        <option value="collector">Collector (Amil)</option>
+                                        <option value="convert">New Muslim</option>
+                                        <option value="debt">Debt Relief</option>
+                                        <option value="fisabilillah">Fi Sabilillah</option>
+                                        <option value="traveler">Traveler (Ibn Sabil)</option>
+                                        <option value="other">Other</option>
+                                      </select>
+                                      <div className="flex gap-1">
+                                        <Button
+                                          size="sm"
+                                          onClick={() => handleSaveEditPayment(p, record.id)}
+                                          className="bg-emerald-600 hover:bg-emerald-700 h-8 flex-1"
+                                        >
+                                          <Check className="h-3.5 w-3.5" />
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => setEditingPayment(null)}
+                                          className="h-8"
+                                        >
+                                          <X className="h-3.5 w-3.5" />
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    /* Display mode */
+                                    <div className="flex items-center justify-between text-sm">
+                                      <div className="flex items-center gap-2 flex-wrap min-w-0">
+                                        <span className="font-medium">{formatCurrency(p.amount, record.currency)}</span>
+                                        <span className="text-muted-foreground">to {p.recipient}</span>
+                                        <Badge variant="outline" className="text-xs">{p.category}</Badge>
+                                        <span className="text-xs text-muted-foreground">
+                                          {new Date(p.paid_at).toLocaleDateString()}
+                                        </span>
+                                      </div>
+                                      <div className="flex items-center gap-1 shrink-0 ml-2">
+                                        <button
+                                          onClick={() => handleStartEditPayment(p)}
+                                          className="p-1.5 rounded-md text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                                          title="Edit"
+                                        >
+                                          <Pencil className="h-3.5 w-3.5" />
+                                        </button>
+                                        <button
+                                          onClick={() => setDeletePaymentTarget({ payment: p, recordId: record.id })}
+                                          className="p-1.5 rounded-md text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                                          title="Delete"
+                                        >
+                                          <Trash2 className="h-3.5 w-3.5" />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
                               ))}
                             </div>
@@ -524,6 +636,18 @@ export default function HistoryPage() {
         loading={isDeleting}
         onConfirm={handleConfirmDelete}
         onCancel={() => setDeleteTarget(null)}
+      />
+
+      <ConfirmDialog
+        open={!!deletePaymentTarget}
+        title={t.deletePaymentTitle || "Delete Payment"}
+        description={t.deletePaymentDesc || "Are you sure you want to delete this payment record? This action cannot be undone."}
+        confirmLabel={t.deleteConfirm}
+        cancelLabel={t.deleteCancel}
+        variant="danger"
+        loading={isDeletingPayment}
+        onConfirm={handleDeletePayment}
+        onCancel={() => setDeletePaymentTarget(null)}
       />
 
       <Footer countryCode={formData.country} />

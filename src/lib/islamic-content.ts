@@ -739,6 +739,8 @@ export const HISTORY_PAGE_TEXTS: Record<TransLang, {
   deleteDescription: string;
   deleteConfirm: string;
   deleteCancel: string;
+  deletePaymentTitle: string;
+  deletePaymentDesc: string;
 }> = {
   en: {
     signInRequired: "Sign In Required",
@@ -775,6 +777,8 @@ export const HISTORY_PAGE_TEXTS: Record<TransLang, {
     deleteDescription: "Are you sure you want to delete this Zakat record? This action cannot be undone.",
     deleteConfirm: "Delete",
     deleteCancel: "Cancel",
+    deletePaymentTitle: "Delete Payment",
+    deletePaymentDesc: "Are you sure you want to delete this payment record? This action cannot be undone.",
   },
   bn: {
     signInRequired: "সাইন ইন প্রয়োজন",
@@ -811,6 +815,8 @@ export const HISTORY_PAGE_TEXTS: Record<TransLang, {
     deleteDescription: "আপনি কি নিশ্চিত যে এই যাকাত রেকর্ড মুছতে চান? এই কাজটি পূর্বাবস্থায় ফেরানো যাবে না।",
     deleteConfirm: "মুছুন",
     deleteCancel: "বাতিল",
+    deletePaymentTitle: "পেমেন্ট মুছুন",
+    deletePaymentDesc: "আপনি কি নিশ্চিত যে এই পেমেন্ট রেকর্ড মুছতে চান? এই কাজটি পূর্বাবস্থায় ফেরানো যাবে না।",
   },
   ur: {
     signInRequired: "سائن ان ضروری ہے",
@@ -847,6 +853,8 @@ export const HISTORY_PAGE_TEXTS: Record<TransLang, {
     deleteDescription: "کیا آپ واقعی اس زکوٰۃ ریکارڈ کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں ہو سکتا۔",
     deleteConfirm: "حذف کریں",
     deleteCancel: "منسوخ",
+    deletePaymentTitle: "ادائیگی حذف کریں",
+    deletePaymentDesc: "کیا آپ واقعی اس ادائیگی کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں ہو سکتا۔",
   },
   ar: {
     signInRequired: "يجب تسجيل الدخول",
@@ -883,6 +891,8 @@ export const HISTORY_PAGE_TEXTS: Record<TransLang, {
     deleteDescription: "هل أنت متأكد من حذف سجل الزكاة هذا؟ لا يمكن التراجع عن هذا الإجراء.",
     deleteConfirm: "حذف",
     deleteCancel: "إلغاء",
+    deletePaymentTitle: "حذف الدفعة",
+    deletePaymentDesc: "هل أنت متأكد من حذف سجل الدفع هذا؟ لا يمكن التراجع عن هذا الإجراء.",
   },
   tr: {
     signInRequired: "Giris Gerekli",
@@ -919,6 +929,8 @@ export const HISTORY_PAGE_TEXTS: Record<TransLang, {
     deleteDescription: "Bu zekat kaydini silmek istediginizden emin misiniz? Bu islem geri alinamaz.",
     deleteConfirm: "Sil",
     deleteCancel: "Iptal",
+    deletePaymentTitle: "Ödemeyi Sil",
+    deletePaymentDesc: "Bu ödeme kaydını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
   },
   ms: {
     signInRequired: "Log Masuk Diperlukan",
@@ -955,6 +967,8 @@ export const HISTORY_PAGE_TEXTS: Record<TransLang, {
     deleteDescription: "Adakah anda pasti mahu memadamkan rekod zakat ini? Tindakan ini tidak boleh dibatalkan.",
     deleteConfirm: "Padam",
     deleteCancel: "Batal",
+    deletePaymentTitle: "Padam Pembayaran",
+    deletePaymentDesc: "Adakah anda pasti mahu memadamkan rekod pembayaran ini? Tindakan ini tidak boleh dibatalkan.",
   },
   id: {
     signInRequired: "Perlu Masuk",
@@ -991,6 +1005,8 @@ export const HISTORY_PAGE_TEXTS: Record<TransLang, {
     deleteDescription: "Apakah Anda yakin ingin menghapus catatan zakat ini? Tindakan ini tidak dapat dibatalkan.",
     deleteConfirm: "Hapus",
     deleteCancel: "Batal",
+    deletePaymentTitle: "Hapus Pembayaran",
+    deletePaymentDesc: "Apakah Anda yakin ingin menghapus catatan pembayaran ini? Tindakan ini tidak dapat dibatalkan.",
   },
 };
 

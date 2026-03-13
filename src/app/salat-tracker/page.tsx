@@ -161,7 +161,7 @@ export default function SalatTrackerPage() {
                     t={t}
                     getRecordsForRange={tracker.getRecordsForRange}
                   />
-                  <SalatReportExport stats={tracker.stats} t={t} />
+                  <SalatReportExport stats={tracker.stats} t={t} countryCode={formData.country} />
                 </div>
               )}
 

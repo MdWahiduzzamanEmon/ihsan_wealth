@@ -177,6 +177,34 @@ export function useZakatRecords() {
     return (data || []) as ZakatPayment[];
   }, [supabase]);
 
+  const updatePayment = useCallback(async (id: string, updates: {
+    amount?: number;
+    recipient?: string;
+    category?: string;
+    notes?: string;
+  }) => {
+    await supabase.auth.getSession();
+    const { data, error: dbError } = await supabase
+      .from("zakat_payments")
+      .update(updates)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (dbError) setError(dbError.message);
+    return data as ZakatPayment | null;
+  }, [supabase]);
+
+  const deletePayment = useCallback(async (id: string) => {
+    await supabase.auth.getSession();
+    const { error: dbError } = await supabase
+      .from("zakat_payments")
+      .delete()
+      .eq("id", id);
+    if (dbError) setError(dbError.message);
+    return !dbError;
+  }, [supabase]);
+
   return {
     loading,
     error,
@@ -186,5 +214,7 @@ export function useZakatRecords() {
     markPaid,
     addPayment,
     fetchPayments,
+    updatePayment,
+    deletePayment,
   };
 }
