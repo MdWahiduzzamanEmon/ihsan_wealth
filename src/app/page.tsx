@@ -15,6 +15,7 @@ import { IhsanAIPromo } from "@/components/home/ihsan-ai-promo";
 import { SalatHomeWidget } from "@/components/salat-tracker/salat-home-widget";
 import { DonationAppeal } from "@/components/home/donation-appeal";
 import { OccasionBanner } from "@/components/home/occasion-banner";
+import { AsmaUlHusnaSection } from "@/components/home/asma-ul-husna-section";
 
 export default function Home() {
   const [formData] = useLocalStorage<ZakatFormData>(
@@ -48,6 +49,7 @@ export default function Home() {
         </div>
 
         <FeaturesGrid />
+        <AsmaUlHusnaSection lang={lang} />
         <DonationAppeal lang={lang} />
         <HadithDuasSection countryCode={countryCode} />
         <PWAInstallGuide lang={lang} />

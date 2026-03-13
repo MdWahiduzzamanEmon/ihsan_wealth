@@ -62,18 +62,17 @@ export function ChatFloatingWidget() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [formData] = useLocalStorage<ZakatFormData>("zakat-calculator-data", DEFAULT_FORM_DATA);
 
-  // Hide floating widget on the dedicated assistant page
-  if (pathname === "/assistant") return null;
-
   useEffect(() => {
     const onScroll = () => setShowScrollTop(window.scrollY > 400);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-  const lang = getLangFromCountry(formData.country) as TransLang;
 
-  // Build a read-only summary of current zakat data for context
+  const lang = getLangFromCountry(formData.country) as TransLang;
   const zakatSummary = buildZakatSummary(formData);
+
+  // Hide floating widget on the dedicated assistant page
+  if (pathname === "/assistant") return null;
 
   return (
     <>

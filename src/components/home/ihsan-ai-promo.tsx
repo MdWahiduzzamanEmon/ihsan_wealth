@@ -7,8 +7,9 @@ import {
   Sparkles,
   BookOpen,
   Calculator,
-  Heart,
+  Activity,
   MessageSquare,
+  Moon,
 } from "lucide-react";
 import type { TransLang } from "@/lib/islamic-content";
 
@@ -18,96 +19,110 @@ const texts: Record<
     title: string;
     subtitle: string;
     btn: string;
-    features: [string, string, string, string];
+    features: [string, string, string, string, string, string];
   }
 > = {
   en: {
-    title: "Meet IhsanAI — Your Islamic Companion",
+    title: "Meet IhsanAI — Your Personal Islamic Assistant",
     subtitle:
-      "AI-powered assistant for Zakat guidance, Islamic Q&A, Dua recommendations, and more",
+      "AI-powered with access to your real data — tracks your Salat, Zakat, Sadaqah, Tasbih, Ramadan progress, and live gold prices. Ask anything Islamic with Quran & Hadith references.",
     btn: "Try IhsanAI",
     features: [
-      "Islamic Q&A",
-      "Zakat Calculator Help",
-      "Dua Finder",
-      "Distribution Planner",
+      "Salat & Ramadan Insights",
+      "Live Gold & Zakat Calc",
+      "Dua Recommendations",
+      "Islamic Q&A with Sources",
+      "Sadaqah & Tasbih Stats",
+      "Zakat Distribution Plan",
     ],
   },
   bn: {
-    title: "IhsanAI-এর সাথে পরিচিত হোন — আপনার ইসলামিক সঙ্গী",
+    title: "IhsanAI — আপনার ব্যক্তিগত ইসলামিক সহায়ক",
     subtitle:
-      "যাকাত গাইডেন্স, ইসলামিক প্রশ্নোত্তর, দোয়া সুপারিশ এবং আরও অনেক কিছুর জন্য AI সহকারী",
+      "আপনার আসল ডেটা দিয়ে চালিত AI — সালাত, যাকাত, সদকা, তাসবীহ, রমজান অগ্রগতি এবং সরাসরি সোনার দাম ট্র্যাক করে। কুরআন ও হাদিসের রেফারেন্সসহ যেকোনো ইসলামিক প্রশ্ন করুন।",
     btn: "IhsanAI ব্যবহার করুন",
     features: [
-      "ইসলামিক প্রশ্নোত্তর",
-      "যাকাত ক্যালকুলেটর সাহায্য",
-      "দোয়া খোঁজক",
-      "বণ্টন পরিকল্পনা",
+      "সালাত ও রমজান বিশ্লেষণ",
+      "সরাসরি সোনার দাম ও যাকাত",
+      "দোয়া সুপারিশ",
+      "কুরআন-হাদিস ভিত্তিক প্রশ্নোত্তর",
+      "সদকা ও তাসবীহ পরিসংখ্যান",
+      "যাকাত বণ্টন পরিকল্পনা",
     ],
   },
   ur: {
-    title: "IhsanAI سے ملیں — آپ کا اسلامی ساتھی",
+    title: "IhsanAI — آپ کا ذاتی اسلامی معاون",
     subtitle:
-      "زکات رہنمائی، اسلامی سوال و جواب، دعا کی سفارشات اور مزید کے لیے AI معاون",
+      "آپ کے اصل ڈیٹا تک رسائی — نماز، زکوٰۃ، صدقہ، تسبیح، رمضان کی پیشرفت اور سونے کی تازہ قیمتیں۔ قرآن و حدیث کے حوالوں سمیت کوئی بھی اسلامی سوال پوچھیں۔",
     btn: "IhsanAI آزمائیں",
     features: [
-      "اسلامی سوال و جواب",
-      "زکات کیلکولیٹر مدد",
-      "دعا تلاش",
-      "تقسیم منصوبہ بندی",
+      "نماز و رمضان بصیرت",
+      "تازہ سونے کی قیمت و زکوٰۃ",
+      "دعا کی سفارشات",
+      "قرآن و حدیث سے سوال و جواب",
+      "صدقہ و تسبیح اعداد و شمار",
+      "زکوٰۃ تقسیم منصوبہ",
     ],
   },
   ar: {
-    title: "تعرف على IhsanAI — رفيقك الإسلامي",
+    title: "IhsanAI — مساعدك الإسلامي الشخصي",
     subtitle:
-      "مساعد ذكي للزكاة والأسئلة الإسلامية وتوصيات الأدعية والمزيد",
+      "ذكاء اصطناعي يصل إلى بياناتك الحقيقية — يتابع صلاتك وزكاتك وصدقاتك وتسبيحك وتقدم رمضان وأسعار الذهب الحية. اسأل أي سؤال إسلامي بمراجع القرآن والحديث.",
     btn: "جرب IhsanAI",
     features: [
-      "أسئلة إسلامية",
-      "مساعدة حاسبة الزكاة",
-      "باحث الأدعية",
-      "مخطط التوزيع",
+      "إحصاءات الصلاة ورمضان",
+      "أسعار الذهب الحية والزكاة",
+      "توصيات الأدعية",
+      "أسئلة إسلامية بالمصادر",
+      "إحصاءات الصدقة والتسبيح",
+      "خطة توزيع الزكاة",
     ],
   },
   tr: {
-    title: "IhsanAI ile Tanışın — İslami Yardımcınız",
+    title: "IhsanAI — Kişisel İslami Asistanınız",
     subtitle:
-      "Zekat rehberliği, İslami Soru-Cevap, Dua önerileri ve daha fazlası için AI asistanı",
+      "Gerçek verilerinize erişen AI — namaz, zekat, sadaka, tesbih, Ramazan ilerlemesi ve canlı altın fiyatlarını takip eder. Kur'an ve Hadis referanslarıyla İslami sorular sorun.",
     btn: "IhsanAI'yi Deneyin",
     features: [
-      "İslami Soru-Cevap",
-      "Zekat Hesaplayıcı Yardımı",
-      "Dua Bulucu",
-      "Dağıtım Planlayıcı",
+      "Namaz ve Ramazan Analizi",
+      "Canlı Altın ve Zekat Hesabı",
+      "Dua Önerileri",
+      "Kaynaklı İslami Soru-Cevap",
+      "Sadaka ve Tesbih İstatistikleri",
+      "Zekat Dağıtım Planı",
     ],
   },
   ms: {
-    title: "Kenali IhsanAI — Teman Islami Anda",
+    title: "IhsanAI — Pembantu Islam Peribadi Anda",
     subtitle:
-      "Pembantu AI untuk panduan Zakat, Soal Jawab Islam, cadangan Doa, dan lagi",
+      "AI dengan akses data sebenar anda — menjejak solat, zakat, sedekah, tasbih, kemajuan Ramadan dan harga emas langsung. Tanya apa sahaja soalan Islam dengan rujukan al-Quran & Hadis.",
     btn: "Cuba IhsanAI",
     features: [
-      "Soal Jawab Islam",
-      "Bantuan Kalkulator Zakat",
-      "Pencari Doa",
-      "Perancang Agihan",
+      "Analisis Solat & Ramadan",
+      "Harga Emas & Zakat Langsung",
+      "Cadangan Doa",
+      "Soal Jawab Islam Bersumber",
+      "Statistik Sedekah & Tasbih",
+      "Pelan Agihan Zakat",
     ],
   },
   id: {
-    title: "Kenali IhsanAI — Pendamping Islami Anda",
+    title: "IhsanAI — Asisten Islam Pribadi Anda",
     subtitle:
-      "Asisten AI untuk panduan Zakat, Tanya Jawab Islam, rekomendasi Doa, dan lainnya",
+      "AI dengan akses data nyata Anda — melacak shalat, zakat, sedekah, tasbih, kemajuan Ramadan dan harga emas langsung. Tanya apa saja soal Islam dengan referensi Al-Quran & Hadis.",
     btn: "Coba IhsanAI",
     features: [
-      "Tanya Jawab Islam",
-      "Bantuan Kalkulator Zakat",
-      "Pencari Doa",
-      "Perencana Distribusi",
+      "Analisis Shalat & Ramadan",
+      "Harga Emas & Zakat Langsung",
+      "Rekomendasi Doa",
+      "Tanya Jawab Islam Bersumber",
+      "Statistik Sedekah & Tasbih",
+      "Rencana Distribusi Zakat",
     ],
   },
 };
 
-const featureIcons = [MessageSquare, Calculator, BookOpen, Heart];
+const featureIcons = [Activity, Calculator, BookOpen, MessageSquare, Moon, Sparkles];
 
 export function IhsanAIPromo({ lang }: { lang: TransLang }) {
   const t = texts[lang] || texts.en;
@@ -188,7 +203,7 @@ export function IhsanAIPromo({ lang }: { lang: TransLang }) {
           </div>
 
           {/* Right / feature pills */}
-          <div className="grid grid-cols-2 gap-2 md:w-64 md:shrink-0">
+          <div className="grid grid-cols-2 gap-2 md:w-72 md:shrink-0 md:grid-cols-2">
             {t.features.map((label, i) => {
               const Icon = featureIcons[i];
               return (

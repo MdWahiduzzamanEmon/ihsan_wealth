@@ -14,6 +14,7 @@ import {
   Infinity,
   BookMarked,
   UserCircle,
+  Heart,
   type LucideIcon,
 } from "lucide-react";
 
@@ -372,6 +373,31 @@ export const APP_FEATURES: AppFeature[] = [
     nav: "more",
     showInGrid: false,
     showInSiteMap: false,
+  },
+  {
+    id: "99-names",
+    href: "/99-names",
+    icon: Heart,
+    iconName: "Heart",
+    label: {
+      en: "99 Names of Allah", bn: "আল্লাহর ৯৯ নাম", ur: "اللہ کے ۹۹ نام",
+      ar: "أسماء الله الحسنى", tr: "Allah'ın 99 İsmi", ms: "99 Nama Allah", id: "99 Nama Allah",
+    },
+    arabic: "أسماء الله الحسنى",
+    description: {
+      en: "Explore the 99 Beautiful Names of Allah with meanings and Quran references",
+      bn: "অর্থ এবং কুরআনের রেফারেন্স সহ আল্লাহর ৯৯টি সুন্দর নাম অন্বেষণ করুন",
+      ur: "معانی اور قرآنی حوالوں کے ساتھ اللہ کے ۹۹ خوبصورت نام دریافت کریں",
+      ar: "استكشف أسماء الله الحسنى التسعة والتسعين مع المعاني والمراجع القرآنية",
+      tr: "Anlamları ve Kur'an referansları ile Allah'ın 99 Güzel İsmi'ni keşfedin",
+      ms: "Terokai 99 Nama Indah Allah dengan makna dan rujukan Al-Quran",
+      id: "Jelajahi 99 Nama Indah Allah dengan makna dan referensi Al-Quran",
+    },
+    color: "from-rose-500 to-pink-700",
+    iconBg: "bg-rose-100 text-rose-700",
+    nav: "more",
+    showInGrid: true,
+    showInSiteMap: true,
   },
   {
     id: "guide",
