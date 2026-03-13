@@ -170,136 +170,424 @@ export function getHijriAdjustment(countryCode: string): number {
 
 // ─── Islamic Events ───
 
-interface IslamicEvent {
-  name: string;
-  description: string;
+export interface IslamicEvent {
+  name: Record<TransLang, string>;
+  description: Record<TransLang, string>;
   type: "celebration" | "observance" | "holy_night" | "historic";
 }
 
 const ISLAMIC_EVENTS: Record<string, IslamicEvent[]> = {
   "1-1": [
     {
-      name: "Islamic New Year",
-      description: "The first day of Muharram marks the beginning of the new Islamic year.",
+      name: {
+        en: "Islamic New Year",
+        bn: "ইসলামী নববর্ষ",
+        ur: "اسلامی نیا سال",
+        ar: "رأس السنة الهجرية",
+        tr: "Hicri Yılbaşı",
+        ms: "Tahun Baru Islam",
+        id: "Tahun Baru Islam",
+      },
+      description: {
+        en: "The first day of Muharram marks the beginning of the new Islamic year.",
+        bn: "মুহাররমের প্রথম দিন ইসলামী নববর্ষের সূচনা করে।",
+        ur: "محرم کا پہلا دن نئے اسلامی سال کا آغاز ہے۔",
+        ar: "اليوم الأول من محرم يمثل بداية السنة الهجرية الجديدة.",
+        tr: "Muharrem ayının ilk günü yeni Hicri yılın başlangıcıdır.",
+        ms: "Hari pertama Muharram menandakan permulaan tahun baru Islam.",
+        id: "Hari pertama Muharram menandai dimulainya tahun baru Islam.",
+      },
       type: "celebration",
     },
   ],
   "10-1": [
     {
-      name: "Day of Ashura",
-      description: "A significant day of fasting. The Prophet (PBUH) fasted on this day and encouraged others to fast on the 9th and 10th of Muharram.",
+      name: {
+        en: "Day of Ashura",
+        bn: "আশুরার দিন",
+        ur: "یوم عاشوراء",
+        ar: "يوم عاشوراء",
+        tr: "Aşure Günü",
+        ms: "Hari Asyura",
+        id: "Hari Asyura",
+      },
+      description: {
+        en: "A significant day of fasting. The Prophet (PBUH) fasted on this day and encouraged others to fast on the 9th and 10th of Muharram.",
+        bn: "একটি গুরুত্বপূর্ণ রোজার দিন। নবী (সা.) এই দিনে রোজা রেখেছিলেন এবং মুহাররমের ৯ ও ১০ তারিখে রোজা রাখতে উৎসাহিত করেছিলেন।",
+        ur: "ایک اہم روزے کا دن۔ نبی کریم ﷺ نے اس دن روزہ رکھا اور محرم کی ۹ اور ۱۰ تاریخ کو روزہ رکھنے کی ترغیب دی۔",
+        ar: "يوم صيام مهم. صام النبي ﷺ في هذا اليوم وحثّ على صيام التاسع والعاشر من محرم.",
+        tr: "Önemli bir oruç günüdür. Hz. Peygamber (SAV) bu gün oruç tutmuş ve Muharrem'in 9. ve 10. günlerinde oruç tutulmasını teşvik etmiştir.",
+        ms: "Hari puasa yang penting. Nabi (SAW) berpuasa pada hari ini dan menggalakkan berpuasa pada 9 dan 10 Muharram.",
+        id: "Hari puasa yang penting. Nabi (SAW) berpuasa pada hari ini dan menganjurkan puasa pada tanggal 9 dan 10 Muharram.",
+      },
       type: "observance",
     },
   ],
   "12-3": [
     {
-      name: "Mawlid an-Nabi",
-      description: "Commemorates the birthday of Prophet Muhammad (PBUH). Celebrated with gatherings, prayers, and recitations of his life.",
+      name: {
+        en: "Mawlid an-Nabi",
+        bn: "মিলাদুন্নবী",
+        ur: "عید میلاد النبی",
+        ar: "المولد النبوي",
+        tr: "Mevlid Kandili",
+        ms: "Maulidur Rasul",
+        id: "Maulid Nabi",
+      },
+      description: {
+        en: "Commemorates the birthday of Prophet Muhammad (PBUH). Celebrated with gatherings, prayers, and recitations of his life.",
+        bn: "নবী মুহাম্মদ (সা.)-এর জন্মদিন স্মরণ করা হয়। সমাবেশ, নামাজ এবং তাঁর জীবনী পাঠের মাধ্যমে পালিত হয়।",
+        ur: "نبی کریم ﷺ کی ولادت کی یاد منائی جاتی ہے۔ محافل، نماز اور آپ ﷺ کی سیرت کی تلاوت کے ساتھ منایا جاتا ہے۔",
+        ar: "إحياء ذكرى مولد النبي محمد ﷺ. يُحتفل بالمجالس والصلوات وقراءة سيرته العطرة.",
+        tr: "Hz. Muhammed'in (SAV) doğumunu anar. Toplantılar, dualar ve hayatının anlatılmasıyla kutlanır.",
+        ms: "Memperingati kelahiran Nabi Muhammad (SAW). Disambut dengan majlis, solat, dan bacaan tentang kehidupan baginda.",
+        id: "Memperingati kelahiran Nabi Muhammad (SAW). Dirayakan dengan majelis, salat, dan pembacaan tentang kehidupan beliau.",
+      },
       type: "celebration",
     },
   ],
   "27-7": [
     {
-      name: "Isra and Mi'raj",
-      description: "The Night Journey and Ascension of Prophet Muhammad (PBUH) from Makkah to Jerusalem and then to the heavens.",
+      name: {
+        en: "Isra and Mi'raj",
+        bn: "ইসরা ও মিরাজ",
+        ur: "شب معراج",
+        ar: "الإسراء والمعراج",
+        tr: "Miraç Kandili",
+        ms: "Israk dan Mikraj",
+        id: "Isra Mi'raj",
+      },
+      description: {
+        en: "The Night Journey and Ascension of Prophet Muhammad (PBUH) from Makkah to Jerusalem and then to the heavens.",
+        bn: "নবী মুহাম্মদ (সা.)-এর মক্কা থেকে জেরুজালেম এবং তারপর আসমানে যাত্রা ও ঊর্ধ্বারোহণের রাত।",
+        ur: "نبی کریم ﷺ کا مکہ سے بیت المقدس اور پھر آسمانوں تک کا سفر اور معراج کی رات۔",
+        ar: "ليلة إسراء ومعراج النبي محمد ﷺ من مكة إلى القدس ثم إلى السماوات العُلا.",
+        tr: "Hz. Muhammed'in (SAV) Mekke'den Kudüs'e ve ardından göklere yükseldiği gece.",
+        ms: "Malam perjalanan dan kenaikan Nabi Muhammad (SAW) dari Mekah ke Baitulmaqdis dan kemudian ke langit.",
+        id: "Malam perjalanan dan kenaikan Nabi Muhammad (SAW) dari Mekah ke Yerusalem dan kemudian ke langit.",
+      },
       type: "holy_night",
     },
   ],
   "15-8": [
     {
-      name: "Shab-e-Barat",
-      description: "The Night of Fortune and Forgiveness. A night of prayer and seeking Allah's mercy and forgiveness.",
+      name: {
+        en: "Shab-e-Barat",
+        bn: "শবে বরাত",
+        ur: "شب برات",
+        ar: "ليلة النصف من شعبان",
+        tr: "Berat Kandili",
+        ms: "Nisfu Syaaban",
+        id: "Nisfu Sya'ban",
+      },
+      description: {
+        en: "The Night of Fortune and Forgiveness. A night of prayer and seeking Allah's mercy and forgiveness.",
+        bn: "ভাগ্য ও ক্ষমার রাত। আল্লাহর রহমত ও ক্ষমা প্রার্থনার রাত।",
+        ur: "نصیب اور مغفرت کی رات۔ اللہ کی رحمت اور مغفرت طلب کرنے کی رات۔",
+        ar: "ليلة القدر والمغفرة. ليلة للصلاة والتضرع لرحمة الله ومغفرته.",
+        tr: "Kader ve Bağışlanma Gecesi. Dua ve Allah'ın rahmetini ve bağışlamasını dileme gecesi.",
+        ms: "Malam Keberuntungan dan Keampunan. Malam berdoa dan memohon rahmat serta keampunan Allah.",
+        id: "Malam Keberuntungan dan Pengampunan. Malam berdoa dan memohon rahmat serta ampunan Allah.",
+      },
       type: "holy_night",
     },
   ],
   "1-9": [
     {
-      name: "Start of Ramadan",
-      description: "The blessed month of fasting begins. Muslims fast from dawn to sunset, increase worship, and seek spiritual growth.",
+      name: {
+        en: "Start of Ramadan",
+        bn: "রমজান শুরু",
+        ur: "رمضان کا آغاز",
+        ar: "بداية رمضان",
+        tr: "Ramazan Başlangıcı",
+        ms: "Permulaan Ramadan",
+        id: "Awal Ramadan",
+      },
+      description: {
+        en: "The blessed month of fasting begins. Muslims fast from dawn to sunset, increase worship, and seek spiritual growth.",
+        bn: "বরকতময় রোজার মাস শুরু হয়। মুসলমানরা ভোর থেকে সূর্যাস্ত পর্যন্ত রোজা রাখেন, ইবাদত বাড়ান এবং আধ্যাত্মিক উন্নতি অর্জন করেন।",
+        ur: "بابرکت روزوں کا مہینہ شروع ہوتا ہے۔ مسلمان فجر سے مغرب تک روزہ رکھتے ہیں، عبادت بڑھاتے ہیں اور روحانی ترقی حاصل کرتے ہیں۔",
+        ar: "يبدأ شهر الصيام المبارك. يصوم المسلمون من الفجر حتى المغرب ويزيدون من العبادة ويسعون للنمو الروحاني.",
+        tr: "Mübarek oruç ayı başlar. Müslümanlar şafaktan gün batımına kadar oruç tutar, ibadeti artırır ve manevi gelişim arar.",
+        ms: "Bulan puasa yang diberkati bermula. Umat Islam berpuasa dari subuh hingga maghrib, meningkatkan ibadat, dan mencari pertumbuhan rohani.",
+        id: "Bulan puasa yang penuh berkah dimulai. Umat Islam berpuasa dari subuh hingga maghrib, meningkatkan ibadah, dan mencari pertumbuhan rohani.",
+      },
       type: "celebration",
     },
   ],
   "17-9": [
     {
-      name: "Battle of Badr",
-      description: "Commemorates the decisive Battle of Badr (2 AH), the first major military victory of Islam.",
+      name: {
+        en: "Battle of Badr",
+        bn: "বদরের যুদ্ধ",
+        ur: "غزوۂ بدر",
+        ar: "غزوة بدر",
+        tr: "Bedir Savaşı",
+        ms: "Perang Badar",
+        id: "Perang Badar",
+      },
+      description: {
+        en: "Commemorates the decisive Battle of Badr (2 AH), the first major military victory of Islam.",
+        bn: "বদরের নির্ণায়ক যুদ্ধ (২ হিজরি) স্মরণ করা হয়, যা ইসলামের প্রথম বড় সামরিক বিজয়।",
+        ur: "غزوۂ بدر (۲ ہجری) کی یاد منائی جاتی ہے، جو اسلام کی پہلی بڑی فوجی فتح تھی۔",
+        ar: "إحياء ذكرى غزوة بدر الحاسمة (٢ هـ)، أول انتصار عسكري كبير في الإسلام.",
+        tr: "İslam'ın ilk büyük askeri zaferi olan Bedir Savaşı'nı (2 H) anar.",
+        ms: "Memperingati Perang Badar yang menentukan (2 H), kemenangan tentera besar pertama Islam.",
+        id: "Memperingati Perang Badar yang menentukan (2 H), kemenangan militer besar pertama Islam.",
+      },
       type: "historic",
     },
   ],
   "21-9": [
     {
-      name: "Laylatul Qadr (possible)",
-      description: "The Night of Power — better than a thousand months. Seek it in the odd nights of the last ten days of Ramadan.",
+      name: {
+        en: "Laylatul Qadr (possible)",
+        bn: "লাইলাতুল কদর (সম্ভাব্য)",
+        ur: "شب قدر (ممکنہ)",
+        ar: "ليلة القدر (محتملة)",
+        tr: "Kadir Gecesi (muhtemel)",
+        ms: "Lailatul Qadar (kemungkinan)",
+        id: "Lailatul Qadar (kemungkinan)",
+      },
+      description: {
+        en: "The Night of Power — better than a thousand months. Seek it in the odd nights of the last ten days of Ramadan.",
+        bn: "কদরের রাত — হাজার মাসের চেয়ে উত্তম। রমজানের শেষ দশ দিনের বেজোড় রাতে এটি তালাশ করুন।",
+        ur: "شب قدر — ہزار مہینوں سے بہتر۔ رمضان کے آخری دس دنوں کی طاق راتوں میں اسے تلاش کریں۔",
+        ar: "ليلة القدر — خير من ألف شهر. تُلتمس في الليالي الوترية من العشر الأواخر من رمضان.",
+        tr: "Kadir Gecesi — bin aydan daha hayırlıdır. Ramazan'ın son on gününün tek gecelerinde arayın.",
+        ms: "Malam Lailatul Qadar — lebih baik daripada seribu bulan. Carilah pada malam-malam ganjil sepuluh hari terakhir Ramadan.",
+        id: "Malam Lailatul Qadar — lebih baik dari seribu bulan. Carilah pada malam-malam ganjil sepuluh hari terakhir Ramadan.",
+      },
       type: "holy_night",
     },
   ],
   "23-9": [
     {
-      name: "Laylatul Qadr (possible)",
-      description: "The Night of Power — better than a thousand months. Seek it in the odd nights of the last ten days of Ramadan.",
+      name: {
+        en: "Laylatul Qadr (possible)",
+        bn: "লাইলাতুল কদর (সম্ভাব্য)",
+        ur: "شب قدر (ممکنہ)",
+        ar: "ليلة القدر (محتملة)",
+        tr: "Kadir Gecesi (muhtemel)",
+        ms: "Lailatul Qadar (kemungkinan)",
+        id: "Lailatul Qadar (kemungkinan)",
+      },
+      description: {
+        en: "The Night of Power — better than a thousand months. Seek it in the odd nights of the last ten days of Ramadan.",
+        bn: "কদরের রাত — হাজার মাসের চেয়ে উত্তম। রমজানের শেষ দশ দিনের বেজোড় রাতে এটি তালাশ করুন।",
+        ur: "شب قدر — ہزار مہینوں سے بہتر۔ رمضان کے آخری دس دنوں کی طاق راتوں میں اسے تلاش کریں۔",
+        ar: "ليلة القدر — خير من ألف شهر. تُلتمس في الليالي الوترية من العشر الأواخر من رمضان.",
+        tr: "Kadir Gecesi — bin aydan daha hayırlıdır. Ramazan'ın son on gününün tek gecelerinde arayın.",
+        ms: "Malam Lailatul Qadar — lebih baik daripada seribu bulan. Carilah pada malam-malam ganjil sepuluh hari terakhir Ramadan.",
+        id: "Malam Lailatul Qadar — lebih baik dari seribu bulan. Carilah pada malam-malam ganjil sepuluh hari terakhir Ramadan.",
+      },
       type: "holy_night",
     },
   ],
   "25-9": [
     {
-      name: "Laylatul Qadr (possible)",
-      description: "The Night of Power — better than a thousand months. Seek it in the odd nights of the last ten days of Ramadan.",
+      name: {
+        en: "Laylatul Qadr (possible)",
+        bn: "লাইলাতুল কদর (সম্ভাব্য)",
+        ur: "شب قدر (ممکنہ)",
+        ar: "ليلة القدر (محتملة)",
+        tr: "Kadir Gecesi (muhtemel)",
+        ms: "Lailatul Qadar (kemungkinan)",
+        id: "Lailatul Qadar (kemungkinan)",
+      },
+      description: {
+        en: "The Night of Power — better than a thousand months. Seek it in the odd nights of the last ten days of Ramadan.",
+        bn: "কদরের রাত — হাজার মাসের চেয়ে উত্তম। রমজানের শেষ দশ দিনের বেজোড় রাতে এটি তালাশ করুন।",
+        ur: "شب قدر — ہزار مہینوں سے بہتر۔ رمضان کے آخری دس دنوں کی طاق راتوں میں اسے تلاش کریں۔",
+        ar: "ليلة القدر — خير من ألف شهر. تُلتمس في الليالي الوترية من العشر الأواخر من رمضان.",
+        tr: "Kadir Gecesi — bin aydan daha hayırlıdır. Ramazan'ın son on gününün tek gecelerinde arayın.",
+        ms: "Malam Lailatul Qadar — lebih baik daripada seribu bulan. Carilah pada malam-malam ganjil sepuluh hari terakhir Ramadan.",
+        id: "Malam Lailatul Qadar — lebih baik dari seribu bulan. Carilah pada malam-malam ganjil sepuluh hari terakhir Ramadan.",
+      },
       type: "holy_night",
     },
   ],
   "27-9": [
     {
-      name: "Laylatul Qadr (most likely)",
-      description: "The Night of Power — better than a thousand months. The 27th is considered the most likely night by many scholars.",
+      name: {
+        en: "Laylatul Qadr (most likely)",
+        bn: "লাইলাতুল কদর (সর্বাধিক সম্ভাব্য)",
+        ur: "شب قدر (سب سے زیادہ متوقع)",
+        ar: "ليلة القدر (الأرجح)",
+        tr: "Kadir Gecesi (en muhtemel)",
+        ms: "Lailatul Qadar (paling mungkin)",
+        id: "Lailatul Qadar (paling mungkin)",
+      },
+      description: {
+        en: "The Night of Power — better than a thousand months. The 27th is considered the most likely night by many scholars.",
+        bn: "কদরের রাত — হাজার মাসের চেয়ে উত্তম। অনেক আলেমের মতে ২৭ তারিখই সবচেয়ে সম্ভাব্য রাত।",
+        ur: "شب قدر — ہزار مہینوں سے بہتر۔ بہت سے علماء کے مطابق ۲۷ویں رات سب سے زیادہ متوقع ہے۔",
+        ar: "ليلة القدر — خير من ألف شهر. يعتبرها كثير من العلماء أرجح ليلة وهي ليلة السابع والعشرين.",
+        tr: "Kadir Gecesi — bin aydan daha hayırlıdır. Birçok alime göre 27. gece en muhtemel gecedir.",
+        ms: "Malam Lailatul Qadar — lebih baik daripada seribu bulan. Malam ke-27 dianggap paling mungkin oleh ramai ulama.",
+        id: "Malam Lailatul Qadar — lebih baik dari seribu bulan. Malam ke-27 dianggap paling mungkin oleh banyak ulama.",
+      },
       type: "holy_night",
     },
   ],
   "29-9": [
     {
-      name: "Laylatul Qadr (possible)",
-      description: "The Night of Power — better than a thousand months. Seek it in the odd nights of the last ten days of Ramadan.",
+      name: {
+        en: "Laylatul Qadr (possible)",
+        bn: "লাইলাতুল কদর (সম্ভাব্য)",
+        ur: "شب قدر (ممکنہ)",
+        ar: "ليلة القدر (محتملة)",
+        tr: "Kadir Gecesi (muhtemel)",
+        ms: "Lailatul Qadar (kemungkinan)",
+        id: "Lailatul Qadar (kemungkinan)",
+      },
+      description: {
+        en: "The Night of Power — better than a thousand months. Seek it in the odd nights of the last ten days of Ramadan.",
+        bn: "কদরের রাত — হাজার মাসের চেয়ে উত্তম। রমজানের শেষ দশ দিনের বেজোড় রাতে এটি তালাশ করুন।",
+        ur: "شب قدر — ہزار مہینوں سے بہتر۔ رمضان کے آخری دس دنوں کی طاق راتوں میں اسے تلاش کریں۔",
+        ar: "ليلة القدر — خير من ألف شهر. تُلتمس في الليالي الوترية من العشر الأواخر من رمضان.",
+        tr: "Kadir Gecesi — bin aydan daha hayırlıdır. Ramazan'ın son on gününün tek gecelerinde arayın.",
+        ms: "Malam Lailatul Qadar — lebih baik daripada seribu bulan. Carilah pada malam-malam ganjil sepuluh hari terakhir Ramadan.",
+        id: "Malam Lailatul Qadar — lebih baik dari seribu bulan. Carilah pada malam-malam ganjil sepuluh hari terakhir Ramadan.",
+      },
       type: "holy_night",
     },
   ],
   "1-10": [
     {
-      name: "Eid al-Fitr",
-      description: "The Festival of Breaking the Fast. A joyous celebration marking the end of Ramadan with special prayers, charity, and festivities.",
+      name: {
+        en: "Eid al-Fitr",
+        bn: "ঈদুল ফিতর",
+        ur: "عید الفطر",
+        ar: "عيد الفطر",
+        tr: "Ramazan Bayramı",
+        ms: "Hari Raya Aidilfitri",
+        id: "Hari Raya Idul Fitri",
+      },
+      description: {
+        en: "The Festival of Breaking the Fast. A joyous celebration marking the end of Ramadan with special prayers, charity, and festivities.",
+        bn: "রোজা ভাঙার উৎসব। বিশেষ নামাজ, দান এবং আনন্দ উৎসবের মাধ্যমে রমজানের সমাপ্তি উদযাপন।",
+        ur: "روزہ کھولنے کا تہوار۔ خصوصی نماز، صدقہ اور خوشیوں کے ساتھ رمضان کے اختتام کا جشن۔",
+        ar: "عيد الفطر المبارك. احتفال بهيج بانتهاء رمضان بصلاة العيد والصدقة والأفراح.",
+        tr: "Oruç Bayramı. Ramazan'ın sonunu özel namazlar, hayır ve şenliklerle kutlayan neşeli bir bayram.",
+        ms: "Perayaan Berbuka Puasa. Sambutan gembira menandakan berakhirnya Ramadan dengan solat khas, sedekah, dan perayaan.",
+        id: "Perayaan Berbuka Puasa. Perayaan gembira menandai berakhirnya Ramadan dengan salat khusus, sedekah, dan perayaan.",
+      },
       type: "celebration",
     },
   ],
   "9-12": [
     {
-      name: "Day of Arafah",
-      description: "The most important day of Hajj. Fasting on this day expiates sins of the previous and coming year for non-pilgrims.",
+      name: {
+        en: "Day of Arafah",
+        bn: "আরাফার দিন",
+        ur: "یوم عرفہ",
+        ar: "يوم عرفة",
+        tr: "Arefe Günü",
+        ms: "Hari Arafah",
+        id: "Hari Arafah",
+      },
+      description: {
+        en: "The most important day of Hajj. Fasting on this day expiates sins of the previous and coming year for non-pilgrims.",
+        bn: "হজের সবচেয়ে গুরুত্বপূর্ণ দিন। হাজি নন এমন ব্যক্তিদের জন্য এই দিনে রোজা রাখলে আগের ও পরের বছরের গুনাহ মাফ হয়।",
+        ur: "حج کا سب سے اہم دن۔ غیر حاجیوں کے لیے اس دن کا روزہ پچھلے اور آنے والے سال کے گناہوں کا کفارہ ہے۔",
+        ar: "أهم أيام الحج. صيام هذا اليوم يكفّر ذنوب السنة الماضية والقادمة لغير الحاج.",
+        tr: "Haccın en önemli günüdür. Hacı olmayanlar için bu gün oruç tutmak, geçmiş ve gelecek yılın günahlarını affettirir.",
+        ms: "Hari terpenting Haji. Berpuasa pada hari ini menghapuskan dosa tahun sebelumnya dan tahun mendatang bagi yang bukan jemaah haji.",
+        id: "Hari terpenting Haji. Berpuasa pada hari ini menghapuskan dosa tahun sebelumnya dan tahun mendatang bagi yang bukan jemaah haji.",
+      },
       type: "observance",
     },
   ],
   "10-12": [
     {
-      name: "Eid al-Adha",
-      description: "The Festival of Sacrifice. Commemorates Prophet Ibrahim's (AS) willingness to sacrifice his son. Includes Qurbani and celebrations.",
+      name: {
+        en: "Eid al-Adha",
+        bn: "ঈদুল আযহা",
+        ur: "عید الاضحی",
+        ar: "عيد الأضحى",
+        tr: "Kurban Bayramı",
+        ms: "Hari Raya Aidiladha",
+        id: "Hari Raya Idul Adha",
+      },
+      description: {
+        en: "The Festival of Sacrifice. Commemorates Prophet Ibrahim's (AS) willingness to sacrifice his son. Includes Qurbani and celebrations.",
+        bn: "কোরবানির উৎসব। নবী ইব্রাহীম (আ.)-এর পুত্রকে কোরবানি দেওয়ার ইচ্ছার স্মরণে। কোরবানি ও উৎসব অন্তর্ভুক্ত।",
+        ur: "قربانی کا تہوار۔ حضرت ابراہیم (ع) کی اپنے بیٹے کو قربان کرنے کی رضامندی کی یاد میں۔ قربانی اور جشن شامل ہیں۔",
+        ar: "عيد الأضحى المبارك. إحياء ذكرى استعداد النبي إبراهيم عليه السلام لذبح ابنه. يشمل الأضحية والاحتفالات.",
+        tr: "Kurban Bayramı. Hz. İbrahim'in (AS) oğlunu kurban etme isteğini anar. Kurban kesimi ve kutlamalar içerir.",
+        ms: "Perayaan Korban. Memperingati kesediaan Nabi Ibrahim (AS) untuk mengorbankan anaknya. Termasuk korban dan perayaan.",
+        id: "Perayaan Kurban. Memperingati kesediaan Nabi Ibrahim (AS) untuk mengorbankan putranya. Termasuk kurban dan perayaan.",
+      },
       type: "celebration",
     },
   ],
   "11-12": [
     {
-      name: "Days of Tashreeq",
-      description: "Days of eating, drinking, and remembrance of Allah. Fasting is prohibited on these days.",
+      name: {
+        en: "Days of Tashreeq",
+        bn: "তাশরীকের দিনসমূহ",
+        ur: "ایام تشریق",
+        ar: "أيام التشريق",
+        tr: "Teşrik Günleri",
+        ms: "Hari-hari Tasyrik",
+        id: "Hari-hari Tasyrik",
+      },
+      description: {
+        en: "Days of eating, drinking, and remembrance of Allah. Fasting is prohibited on these days.",
+        bn: "খাওয়া, পান করা এবং আল্লাহর স্মরণের দিন। এই দিনগুলোতে রোজা রাখা নিষিদ্ধ।",
+        ur: "کھانے پینے اور اللہ کے ذکر کے دن۔ ان دنوں میں روزہ رکھنا منع ہے۔",
+        ar: "أيام أكل وشرب وذكر لله. يحرم الصيام في هذه الأيام.",
+        tr: "Yeme, içme ve Allah'ı anma günleridir. Bu günlerde oruç tutmak yasaktır.",
+        ms: "Hari-hari makan, minum, dan mengingati Allah. Berpuasa dilarang pada hari-hari ini.",
+        id: "Hari-hari makan, minum, dan mengingat Allah. Berpuasa dilarang pada hari-hari ini.",
+      },
       type: "observance",
     },
   ],
   "12-12": [
     {
-      name: "Days of Tashreeq",
-      description: "Days of eating, drinking, and remembrance of Allah. Fasting is prohibited on these days.",
+      name: {
+        en: "Days of Tashreeq",
+        bn: "তাশরীকের দিনসমূহ",
+        ur: "ایام تشریق",
+        ar: "أيام التشريق",
+        tr: "Teşrik Günleri",
+        ms: "Hari-hari Tasyrik",
+        id: "Hari-hari Tasyrik",
+      },
+      description: {
+        en: "Days of eating, drinking, and remembrance of Allah. Fasting is prohibited on these days.",
+        bn: "খাওয়া, পান করা এবং আল্লাহর স্মরণের দিন। এই দিনগুলোতে রোজা রাখা নিষিদ্ধ।",
+        ur: "کھانے پینے اور اللہ کے ذکر کے دن۔ ان دنوں میں روزہ رکھنا منع ہے۔",
+        ar: "أيام أكل وشرب وذكر لله. يحرم الصيام في هذه الأيام.",
+        tr: "Yeme, içme ve Allah'ı anma günleridir. Bu günlerde oruç tutmak yasaktır.",
+        ms: "Hari-hari makan, minum, dan mengingati Allah. Berpuasa dilarang pada hari-hari ini.",
+        id: "Hari-hari makan, minum, dan mengingat Allah. Berpuasa dilarang pada hari-hari ini.",
+      },
       type: "observance",
     },
   ],
   "13-12": [
     {
-      name: "Days of Tashreeq",
-      description: "Days of eating, drinking, and remembrance of Allah. Fasting is prohibited on these days.",
+      name: {
+        en: "Days of Tashreeq",
+        bn: "তাশরীকের দিনসমূহ",
+        ur: "ایام تشریق",
+        ar: "أيام التشريق",
+        tr: "Teşrik Günleri",
+        ms: "Hari-hari Tasyrik",
+        id: "Hari-hari Tasyrik",
+      },
+      description: {
+        en: "Days of eating, drinking, and remembrance of Allah. Fasting is prohibited on these days.",
+        bn: "খাওয়া, পান করা এবং আল্লাহর স্মরণের দিন। এই দিনগুলোতে রোজা রাখা নিষিদ্ধ।",
+        ur: "کھانے پینے اور اللہ کے ذکر کے دن۔ ان دنوں میں روزہ رکھنا منع ہے۔",
+        ar: "أيام أكل وشرب وذكر لله. يحرم الصيام في هذه الأيام.",
+        tr: "Yeme, içme ve Allah'ı anma günleridir. Bu günlerde oruç tutmak yasaktır.",
+        ms: "Hari-hari makan, minum, dan mengingati Allah. Berpuasa dilarang pada hari-hari ini.",
+        id: "Hari-hari makan, minum, dan mengingat Allah. Berpuasa dilarang pada hari-hari ini.",
+      },
       type: "observance",
     },
   ],
@@ -310,8 +598,8 @@ export function getIslamicEvents(hijriDay: number, hijriMonth: number): IslamicE
   return ISLAMIC_EVENTS[key] || [];
 }
 
-export function getIslamicEventNames(hijriDay: number, hijriMonth: number): string[] {
-  return getIslamicEvents(hijriDay, hijriMonth).map((e) => e.name);
+export function getIslamicEventNames(hijriDay: number, hijriMonth: number, lang: TransLang = "en"): string[] {
+  return getIslamicEvents(hijriDay, hijriMonth).map((e) => e.name[lang]);
 }
 
 // Get all events for a given Hijri month

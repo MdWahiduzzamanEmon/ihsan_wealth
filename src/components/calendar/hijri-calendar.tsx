@@ -24,6 +24,7 @@ import {
   getHijriDayName,
   getIslamicEvents,
   type HijriDate,
+  type IslamicEvent,
 } from "@/lib/hijri-utils";
 
 interface CalendarDay {
@@ -31,7 +32,7 @@ interface CalendarDay {
   gregorianDate: Date;
   isCurrentMonth: boolean;
   isToday: boolean;
-  events: { name: string; description: string; type: string }[];
+  events: IslamicEvent[];
 }
 
 interface HijriCalendarProps {
@@ -333,8 +334,8 @@ export function HijriCalendar({ onDateSelect, adjustment = 0, lang = "en" }: Hij
                         >
                           <Star className="h-4 w-4 text-amber-500 fill-amber-400 mt-0.5 shrink-0" />
                           <div>
-                            <p className="font-medium text-sm text-emerald-900">{event.name}</p>
-                            <p className="text-xs text-gray-600 mt-0.5">{event.description}</p>
+                            <p className="font-medium text-sm text-emerald-900">{event.name[lang]}</p>
+                            <p className="text-xs text-gray-600 mt-0.5">{event.description[lang]}</p>
                           </div>
                         </div>
                       ))}

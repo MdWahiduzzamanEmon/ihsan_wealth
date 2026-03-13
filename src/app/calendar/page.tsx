@@ -150,7 +150,7 @@ export default function CalendarPage() {
 
               {/* Islamic Events */}
               <div className="rounded-2xl border border-emerald-200/60 bg-white/80 backdrop-blur-sm p-4 sm:p-5 shadow-lg shadow-emerald-900/5">
-                <IslamicEvents adjustment={hijriAdjust} />
+                <IslamicEvents adjustment={hijriAdjust} lang={lang} />
               </div>
             </motion.div>
           </div>

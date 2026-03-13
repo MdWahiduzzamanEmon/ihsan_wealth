@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Star, Moon, Sparkles, Sword, Calendar } from "lucide-react";
+import type { TransLang } from "@/lib/islamic-content";
 import {
   gregorianToHijri,
   getYearEvents,
@@ -40,11 +41,90 @@ const EVENT_TYPE_CONFIG: Record<
   },
 };
 
+const UI_TEXTS: Record<
+  TransLang,
+  {
+    title: string;
+    upcoming: string;
+    earlier: string;
+    celebration: string;
+    observance: string;
+    holy_night: string;
+    historic: string;
+  }
+> = {
+  en: {
+    title: "Islamic Events",
+    upcoming: "Upcoming Events",
+    earlier: "Earlier This Year",
+    celebration: "Celebration",
+    observance: "Observance",
+    holy_night: "Holy Night",
+    historic: "Historic",
+  },
+  bn: {
+    title: "ইসলামী ঘটনাবলী",
+    upcoming: "আসন্ন ঘটনাসমূহ",
+    earlier: "এই বছরের আগের ঘটনা",
+    celebration: "উৎসব",
+    observance: "পালনীয়",
+    holy_night: "পবিত্র রাত",
+    historic: "ঐতিহাসিক",
+  },
+  ur: {
+    title: "اسلامی واقعات",
+    upcoming: "آنے والے واقعات",
+    earlier: "اس سال پہلے",
+    celebration: "جشن",
+    observance: "تعظیم",
+    holy_night: "مقدس رات",
+    historic: "تاریخی",
+  },
+  ar: {
+    title: "المناسبات الإسلامية",
+    upcoming: "المناسبات القادمة",
+    earlier: "في وقت سابق هذا العام",
+    celebration: "احتفال",
+    observance: "مناسبة",
+    holy_night: "ليلة مباركة",
+    historic: "تاريخي",
+  },
+  tr: {
+    title: "İslami Etkinlikler",
+    upcoming: "Yaklaşan Etkinlikler",
+    earlier: "Bu Yıl Daha Önce",
+    celebration: "Kutlama",
+    observance: "Anma",
+    holy_night: "Mübarek Gece",
+    historic: "Tarihi",
+  },
+  ms: {
+    title: "Peristiwa Islam",
+    upcoming: "Peristiwa Akan Datang",
+    earlier: "Awal Tahun Ini",
+    celebration: "Perayaan",
+    observance: "Peringatan",
+    holy_night: "Malam Mulia",
+    historic: "Bersejarah",
+  },
+  id: {
+    title: "Peristiwa Islam",
+    upcoming: "Peristiwa Mendatang",
+    earlier: "Awal Tahun Ini",
+    celebration: "Perayaan",
+    observance: "Peringatan",
+    holy_night: "Malam Mulia",
+    historic: "Bersejarah",
+  },
+};
+
 interface IslamicEventsProps {
   adjustment?: number;
+  lang?: TransLang;
 }
 
-export function IslamicEvents({ adjustment = 0 }: IslamicEventsProps) {
+export function IslamicEvents({ adjustment = 0, lang = "en" }: IslamicEventsProps) {
+  const t = UI_TEXTS[lang];
   const todayHijri = useMemo(() => gregorianToHijri(new Date(), adjustment), [adjustment]);
 
   const yearEvents = useMemo(() => getYearEvents(todayHijri.year), [todayHijri.year]);
@@ -54,13 +134,13 @@ export function IslamicEvents({ adjustment = 0 }: IslamicEventsProps) {
     // Deduplicate by name + month + day
     const seen = new Set<string>();
     return yearEvents.filter((e) => {
-      const key = `${e.month}-${e.day}-${e.events[0]?.name}`;
+      const key = `${e.month}-${e.day}-${e.events[0]?.name[lang]}`;
       if (seen.has(key)) return false;
       seen.add(key);
       // Only include first event per day for cleaner display
       return true;
     });
-  }, [yearEvents]);
+  }, [yearEvents, lang]);
 
   // Split into upcoming and past
   const { upcoming, past } = useMemo(() => {
@@ -94,12 +174,16 @@ export function IslamicEvents({ adjustment = 0 }: IslamicEventsProps) {
     show: { opacity: 1, x: 0 },
   };
 
+  const getTypeBadge = (type: string) => {
+    return t[type as keyof typeof t] || type.charAt(0).toUpperCase() + type.slice(1);
+  };
+
   return (
     <div className="w-full">
       <div className="flex items-center gap-2 mb-5">
         <Calendar className="h-5 w-5 text-emerald-700" />
         <h2 className="text-lg font-semibold text-emerald-900">
-          Islamic Events — {todayHijri.year} AH
+          {t.title} — {todayHijri.year} AH
         </h2>
       </div>
 
@@ -107,7 +191,7 @@ export function IslamicEvents({ adjustment = 0 }: IslamicEventsProps) {
       {upcoming.length > 0 && (
         <div className="mb-6">
           <h3 className="text-sm font-medium text-emerald-600 mb-3 uppercase tracking-wider">
-            Upcoming Events
+            {t.upcoming}
           </h3>
           <motion.div
             variants={containerVariants}
@@ -146,16 +230,14 @@ export function IslamicEvents({ adjustment = 0 }: IslamicEventsProps) {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="font-semibold text-sm text-gray-900">{event.name}</h4>
+                        <h4 className="font-semibold text-sm text-gray-900">{event.name[lang]}</h4>
                         <span
                           className={`
                           inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium
                           bg-white/80 ${config.color} border ${config.borderColor}
                         `}
                         >
-                          {event.type === "holy_night"
-                            ? "Holy Night"
-                            : event.type.charAt(0).toUpperCase() + event.type.slice(1)}
+                          {getTypeBadge(event.type)}
                         </span>
                       </div>
                       <p className="text-xs text-gray-500 mt-0.5">
@@ -167,7 +249,7 @@ export function IslamicEvents({ adjustment = 0 }: IslamicEventsProps) {
                         })}
                       </p>
                       <p className="text-xs text-gray-600 mt-1.5 leading-relaxed">
-                        {event.description}
+                        {event.description[lang]}
                       </p>
                     </div>
                   </div>
@@ -182,7 +264,7 @@ export function IslamicEvents({ adjustment = 0 }: IslamicEventsProps) {
       {past.length > 0 && (
         <div>
           <h3 className="text-sm font-medium text-gray-400 mb-3 uppercase tracking-wider">
-            Earlier This Year
+            {t.earlier}
           </h3>
           <div className="space-y-1.5">
             {past.map((item, idx) => {
@@ -195,7 +277,7 @@ export function IslamicEvents({ adjustment = 0 }: IslamicEventsProps) {
                   className="flex items-center gap-3 rounded-lg border border-gray-100 bg-gray-50/50 px-3 py-2 text-gray-400"
                 >
                   <div className="h-1.5 w-1.5 rounded-full bg-gray-300 shrink-0" />
-                  <span className="text-xs flex-1 truncate">{event.name}</span>
+                  <span className="text-xs flex-1 truncate">{event.name[lang]}</span>
                   <span className="text-[10px] shrink-0">
                     {item.day} {monthName.english}
                   </span>
