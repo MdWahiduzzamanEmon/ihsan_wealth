@@ -72,7 +72,7 @@ export async function POST(request: Request) {
       },
     },
     temperature: 0.4,
-    maxTokens: 1500,
+    maxTokens: 3000,
     streaming: false,
   });
 
@@ -97,7 +97,7 @@ export async function POST(request: Request) {
 
   // Detect query types for fallback (when tool calling not supported)
   const lastUserMsg = messages[messages.length - 1]?.content?.toLowerCase() || "";
-  const isPersonalQuery = /\b(my|history|record|payment|sadaqah|summary|paid|owe|due|how much)\b/i.test(lastUserMsg);
+  const isPersonalQuery = /\b(my|history|record|payment|sadaqah|summary|paid|owe|due|how much|salat|namaz|namaj|prayer|streak|tasbih|dhikr|ramadan|fasting|qaza)\b|নামাজ|নামায|তাসবীহ|যাকাত|সদকা|রোজা|রমজান|نماز|تسبیح|زکات|صدقہ|روزہ|صلاة|زكاة|صدقة|تسبيح|صيام/i.test(lastUserMsg);
   const isMetalQuery = /\b(gold|silver|nisab|price|rate|metal|tola|gram|ounce|সোনা|রূপা|سونا|چاندی|ذهب|فضة|altın|gümüş|emas|perak)\b/i.test(lastUserMsg);
 
   // Fallback: pre-fetch data and inject into system prompt when tool calling is not available
