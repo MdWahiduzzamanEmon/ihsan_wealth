@@ -208,16 +208,8 @@ export async function POST(request: Request) {
           const toolCalls = response.tool_calls;
           const hasToolCalls = toolCallSupported && toolCalls && toolCalls.length > 0 && tools.length > 0;
 
-          // If response has text content, stream it regardless of tool calls
-          const responseText = extractText(response);
-          if (responseText.trim()) {
-            await streamText(responseText);
-            didStream = true;
-            // If we got text, we're done even if there were also tool calls
-            break;
-          }
-
-          // Process tool calls if present
+          // Process tool calls first — even if the model sent partial text alongside,
+          // defer streaming until tool results are available so the final response is complete.
           if (hasToolCalls) {
             currentMessages.push(response);
 
@@ -247,7 +239,12 @@ export async function POST(request: Request) {
             continue;
           }
 
-          // No text and no tool calls — break out
+          // No tool calls — stream any text content and finish
+          const responseText = extractText(response);
+          if (responseText.trim()) {
+            await streamText(responseText);
+            didStream = true;
+          }
           break;
         }
 

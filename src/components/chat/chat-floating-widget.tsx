@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 import { ChatPanel } from "./chat-panel";
@@ -56,9 +57,13 @@ function IhsanAIIcon({ className }: { className?: string }) {
 }
 
 export function ChatFloatingWidget() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [formData] = useLocalStorage<ZakatFormData>("zakat-calculator-data", DEFAULT_FORM_DATA);
+
+  // Hide floating widget on the dedicated assistant page
+  if (pathname === "/assistant") return null;
 
   useEffect(() => {
     const onScroll = () => setShowScrollTop(window.scrollY > 400);
