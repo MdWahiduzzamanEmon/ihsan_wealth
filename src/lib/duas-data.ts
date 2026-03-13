@@ -1,4 +1,5 @@
 export type DuaCategory =
+  | "friday"
   | "morning-evening"
   | "meals"
   | "prayer"
@@ -21,6 +22,7 @@ export interface Dua {
 }
 
 export const DUA_CATEGORIES: { id: DuaCategory; label: string; labelAr: string; emoji: string }[] = [
+  { id: "friday", label: "Friday / Jummah", labelAr: "الجمعة", emoji: "🕌" },
   { id: "morning-evening", label: "Morning / Evening", labelAr: "الصباح والمساء", emoji: "🌅" },
   { id: "daily-life", label: "Daily Life", labelAr: "الحياة اليومية", emoji: "🏠" },
   { id: "meals", label: "Meals", labelAr: "الطعام", emoji: "🍽" },
@@ -34,6 +36,74 @@ export const DUA_CATEGORIES: { id: DuaCategory; label: string; labelAr: string; 
 ];
 
 export const DUAS: Dua[] = [
+  // ── Friday / Jummah ────────────────────────────────────
+  {
+    id: "friday-salawat",
+    arabic: "اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ وَعَلَىٰ آلِ مُحَمَّدٍ، كَمَا صَلَّيْتَ عَلَىٰ إِبْرَاهِيمَ وَعَلَىٰ آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ. اللَّهُمَّ بَارِكْ عَلَىٰ مُحَمَّدٍ وَعَلَىٰ آلِ مُحَمَّدٍ، كَمَا بَارَكْتَ عَلَىٰ إِبْرَاهِيمَ وَعَلَىٰ آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ",
+    transliteration: "Allahumma salli 'ala Muhammadin wa 'ala ali Muhammad, kama sallayta 'ala Ibrahima wa 'ala ali Ibrahim, innaka Hameedun Majeed. Allahumma barik 'ala Muhammadin wa 'ala ali Muhammad, kama barakta 'ala Ibrahima wa 'ala ali Ibrahim, innaka Hameedun Majeed.",
+    translation: "O Allah, send prayers upon Muhammad and upon the family of Muhammad, as You sent prayers upon Ibrahim and upon the family of Ibrahim. You are indeed Praiseworthy, Glorious. O Allah, bless Muhammad and the family of Muhammad, as You blessed Ibrahim and the family of Ibrahim. You are indeed Praiseworthy, Glorious.",
+    translations: {
+      bn: "হে আল্লাহ, মুহাম্মাদ ও তাঁর পরিবারের উপর রহমত বর্ষণ করুন, যেমন আপনি ইবরাহীম ও তাঁর পরিবারের উপর রহমত বর্ষণ করেছেন। নিশ্চয়ই আপনি প্রশংসিত, মহিমান্বিত। হে আল্লাহ, মুহাম্মাদ ও তাঁর পরিবারের উপর বরকত দান করুন, যেমন আপনি ইবরাহীম ও তাঁর পরিবারের উপর বরকত দান করেছেন। নিশ্চয়ই আপনি প্রশংসিত, মহিমান্বিত।",
+    },
+    source: "Al-Bukhari 3370 — Send abundant Salawat on Friday (Abu Dawud 1047)",
+    category: "friday",
+  },
+  {
+    id: "friday-dua-asr-maghrib",
+    arabic: "لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ",
+    transliteration: "La ilaha illallahu wahdahu la shareeka lah, lahul-mulku wa lahul-hamdu wa huwa 'ala kulli shay'in qadeer.",
+    translation: "None has the right to be worshipped except Allah, alone, without partner. To Him belongs all sovereignty and praise, and He is over all things omnipotent. (Recite between Asr and Maghrib on Friday — the hour of acceptance)",
+    translations: {
+      bn: "আল্লাহ ছাড়া কোনো ইলাহ নেই, তিনি একক, তাঁর কোনো শরীক নেই। সকল সার্বভৌমত্ব ও প্রশংসা তাঁরই এবং তিনি সকল কিছুর উপর ক্ষমতাবান। (জুমআর দিনে আসর ও মাগরিবের মধ্যে পড়ুন — দু'আ কবুলের সময়)",
+    },
+    source: "Sahih Muslim 852, Abu Dawud 1046 — Hour of acceptance on Friday",
+    category: "friday",
+  },
+  {
+    id: "friday-kahf-first10",
+    arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَنْزَلَ عَلَىٰ عَبْدِهِ الْكِتَابَ وَلَمْ يَجْعَلْ لَهُ عِوَجًا ۜ قَيِّمًا لِيُنْذِرَ بَأْسًا شَدِيدًا مِنْ لَدُنْهُ وَيُبَشِّرَ الْمُؤْمِنِينَ الَّذِينَ يَعْمَلُونَ الصَّالِحَاتِ أَنَّ لَهُمْ أَجْرًا حَسَنًا",
+    transliteration: "Alhamdu lillahil-ladhi anzala 'ala 'abdihil-Kitaba wa lam yaj'al lahu 'iwaja. Qayyimal-liyundhira ba'san shadeedam-min ladunhu wa yubashshiral-mu'mineenal-ladheena ya'maloonas-salihati anna lahum ajran hasana.",
+    translation: "All praise is due to Allah, who has sent down upon His Servant the Book and has not made therein any deviance. [He has made it] straight, to warn of severe punishment from Him and to give good tidings to the believers who do righteous deeds that they will have a good reward. (First verses of Surah Al-Kahf — recite on Friday for light between two Fridays)",
+    translations: {
+      bn: "সকল প্রশংসা আল্লাহর যিনি তাঁর বান্দার উপর কিতাব অবতীর্ণ করেছেন এবং তাতে কোনো বক্রতা রাখেননি। সরল, যাতে তাঁর পক্ষ থেকে কঠিন শাস্তি সম্পর্কে সতর্ক করেন এবং মুমিনদের সুসংবাদ দেন যারা সৎকর্ম করে, তাদের জন্য রয়েছে উত্তম প্রতিদান। (সূরা কাহফের প্রথম আয়াত — জুমআর দিনে পাঠ করলে দুই জুমআর মধ্যে নূর থাকবে)",
+    },
+    source: "Quran 18:1-2 — Sahih al-Jami 6470",
+    category: "friday",
+  },
+  {
+    id: "friday-dua-forgiveness",
+    arabic: "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ",
+    transliteration: "Rabbighfir li wa tub 'alayya innaka Antat-Tawwabur-Raheem.",
+    translation: "My Lord, forgive me and accept my repentance. Indeed, You are the Acceptor of repentance, the Most Merciful. (Seek forgiveness abundantly on Friday)",
+    translations: {
+      bn: "হে আমার রব, আমাকে ক্ষমা করুন এবং আমার তওবা কবুল করুন। নিশ্চয়ই আপনি তওবা কবুলকারী, পরম দয়ালু। (জুমআর দিনে বেশি বেশি ইস্তিগফার করুন)",
+    },
+    source: "At-Tirmidhi 3434 — Recommended on Friday",
+    category: "friday",
+  },
+  {
+    id: "friday-surah-kahf-dua",
+    arabic: "رَبَّنَا آتِنَا مِنْ لَدُنْكَ رَحْمَةً وَهَيِّئْ لَنَا مِنْ أَمْرِنَا رَشَدًا",
+    transliteration: "Rabbana atina min ladunka rahmatan wa hayyi' lana min amrina rashada.",
+    translation: "Our Lord, grant us from Yourself mercy and prepare for us from our affair right guidance. (Dua of the People of the Cave — Surah Al-Kahf 18:10)",
+    translations: {
+      bn: "হে আমাদের রব, আপনার পক্ষ থেকে আমাদের রহমত দান করুন এবং আমাদের কাজকর্মে সঠিক পথের ব্যবস্থা করুন। (আসহাবে কাহফের দু'আ — সূরা কাহফ ১৮:১০)",
+    },
+    source: "Quran 18:10 (Surah Al-Kahf — Dua of the People of the Cave)",
+    category: "friday",
+  },
+  {
+    id: "friday-surah-mulk-dua",
+    arabic: "قُلْ هُوَ الرَّحْمَٰنُ آمَنَّا بِهِ وَعَلَيْهِ تَوَكَّلْنَا ۖ فَسَتَعْلَمُونَ مَنْ هُوَ فِي ضَلَالٍ مُبِينٍ",
+    transliteration: "Qul Huwar-Rahmanu amanna bihi wa 'alayhi tawakkalna fasata'lamoona man huwa fi dalalim-mubeen.",
+    translation: "Say, He is the Most Merciful; we have believed in Him, and upon Him we have relied. And you will come to know who is in clear error. (Surah Al-Mulk 67:29 — The surah that intercedes for its reciter)",
+    translations: {
+      bn: "বলুন, তিনি পরম দয়ালু, আমরা তাঁর প্রতি ঈমান এনেছি এবং তাঁরই উপর তাওয়াক্কুল করেছি। শীঘ্রই তোমরা জানতে পারবে কে সুস্পষ্ট ভ্রান্তিতে। (সূরা আল-মুলক ৬৭:২৯ — যে সূরা তার পাঠকারীর জন্য সুপারিশ করবে)",
+    },
+    source: "Quran 67:29 — At-Tirmidhi 2891 (Surah Al-Mulk intercedes)",
+    category: "friday",
+  },
+
   // ── Morning / Evening ──────────────────────────────────
   {
     id: "morning-1",

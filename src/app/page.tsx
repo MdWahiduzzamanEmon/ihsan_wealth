@@ -9,7 +9,6 @@ import { BismillahBanner } from "@/components/islamic/bismillah-banner";
 import { HadithDuasSection } from "@/components/islamic/hadith-duas-section";
 import { FeaturesGrid } from "@/components/layout/features-grid";
 import { HeroSection } from "@/components/home/hero-section";
-import { NextPrayerWidget } from "@/components/home/next-prayer-widget";
 import { LoggedInDashboard } from "@/components/home/logged-in-dashboard";
 import { PWAInstallGuide } from "@/components/home/pwa-install-guide";
 import { IhsanAIPromo } from "@/components/home/ihsan-ai-promo";
@@ -33,7 +32,6 @@ export default function Home() {
       <main className="flex-1">
         <HeroSection lang={lang} />
         <OccasionBanner lang={lang} countryCode={countryCode} />
-        <NextPrayerWidget lang={lang} />
         <IhsanAIPromo lang={lang} />
         <SalatHomeWidget />
         <LoggedInDashboard lang={lang} countryCode={countryCode} />

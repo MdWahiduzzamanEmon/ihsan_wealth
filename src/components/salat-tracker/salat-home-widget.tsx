@@ -8,9 +8,11 @@ import { useSalatTracker, FARD_PRAYERS, type PrayerName, type PrayerStatus } fro
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { SALAT_TRACKER_TEXTS } from "@/lib/salat-tracker-texts";
 import { getLangFromCountry, type TransLang } from "@/lib/islamic-content";
+import { isFriday } from "@/lib/hijri-utils";
 import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 import { PrayerCheckCard } from "./prayer-check-card";
+import { JummahCard } from "./jummah-card";
 
 export function SalatHomeWidget() {
   const { isAuthenticated } = useAuth();
@@ -42,6 +44,11 @@ export function SalatHomeWidget() {
   const handleRemove = (prayerName: PrayerName) => {
     tracker.removePrayer(prayerName);
   };
+
+  const friday = isFriday();
+  const fardPrayers = friday
+    ? FARD_PRAYERS.filter((p) => p !== "dhuhr")
+    : FARD_PRAYERS;
 
   const completionPercent = Math.round((stats.todayFardCompleted / 5) * 100);
 
@@ -92,7 +99,16 @@ export function SalatHomeWidget() {
 
         {/* Prayer cards */}
         <div className="p-3 space-y-1.5">
-          {FARD_PRAYERS.map((prayer) => (
+          {friday && (
+            <JummahCard
+              record={selectedDateRecords.find((r) => r.prayer_name === "jummah")}
+              t={t}
+              onToggleStatus={handleToggleStatus}
+              onToggleJamaah={handleToggleJamaah}
+              onRemove={handleRemove}
+            />
+          )}
+          {fardPrayers.map((prayer) => (
             <PrayerCheckCard
               key={prayer}
               prayerName={prayer}

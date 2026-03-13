@@ -12,6 +12,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { staggerItem } from "@/lib/animations";
+import { isFriday } from "@/lib/hijri-utils";
 import type { PrayerName } from "@/hooks/use-prayer-times";
 
 interface PrayerInfo {
@@ -94,6 +95,10 @@ export function PrayerCard({
   const info = PRAYER_INFO[prayer];
   const Icon = info.icon;
 
+  // On Friday, show "Jummah" instead of "Dhuhr"
+  const displayEnglish = prayer === "dhuhr" && isFriday() ? "Jummah" : info.english;
+  const displayArabic = prayer === "dhuhr" && isFriday() ? "الجمعة" : info.arabic;
+
   return (
     <motion.div
       variants={staggerItem}
@@ -150,9 +155,9 @@ export function PrayerCard({
             <span
               className={`font-semibold text-sm ${isCurrent ? "text-emerald-800" : isNext ? "text-amber-800" : "text-gray-800"}`}
             >
-              {info.english}
+              {displayEnglish}
             </span>
-            <span className="font-arabic text-xs text-gray-400">{info.arabic}</span>
+            <span className="font-arabic text-xs text-gray-400">{displayArabic}</span>
           </div>
 
           {/* Status label */}

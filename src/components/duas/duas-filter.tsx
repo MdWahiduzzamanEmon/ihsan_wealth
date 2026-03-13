@@ -16,6 +16,7 @@ const FILTER_TEXTS: Record<TransLang, {
     all: "All",
     favorites: "Favorites",
     categories: {
+      friday: "Friday / Jummah",
       "morning-evening": "Morning / Evening",
       "daily-life": "Daily Life",
       meals: "Meals",
@@ -33,6 +34,7 @@ const FILTER_TEXTS: Record<TransLang, {
     all: "সব",
     favorites: "পছন্দের",
     categories: {
+      friday: "জুমআ",
       "morning-evening": "সকাল / সন্ধ্যা",
       "daily-life": "দৈনন্দিন জীবন",
       meals: "খাবার",
@@ -50,6 +52,7 @@ const FILTER_TEXTS: Record<TransLang, {
     all: "سب",
     favorites: "پسندیدہ",
     categories: {
+      friday: "جمعہ",
       "morning-evening": "صبح / شام",
       "daily-life": "روزمرہ زندگی",
       meals: "کھانا",
@@ -67,6 +70,7 @@ const FILTER_TEXTS: Record<TransLang, {
     all: "الكل",
     favorites: "المفضلة",
     categories: {
+      friday: "الجمعة",
       "morning-evening": "الصباح والمساء",
       "daily-life": "الحياة اليومية",
       meals: "الطعام",
@@ -84,6 +88,7 @@ const FILTER_TEXTS: Record<TransLang, {
     all: "Tumü",
     favorites: "Favoriler",
     categories: {
+      friday: "Cuma",
       "morning-evening": "Sabah / Aksam",
       "daily-life": "Günlük Hayat",
       meals: "Yemek",
@@ -101,6 +106,7 @@ const FILTER_TEXTS: Record<TransLang, {
     all: "Semua",
     favorites: "Kegemaran",
     categories: {
+      friday: "Jumaat",
       "morning-evening": "Pagi / Petang",
       "daily-life": "Kehidupan Harian",
       meals: "Makan",
@@ -118,6 +124,7 @@ const FILTER_TEXTS: Record<TransLang, {
     all: "Semua",
     favorites: "Favorit",
     categories: {
+      friday: "Jumat",
       "morning-evening": "Pagi / Sore",
       "daily-life": "Kehidupan Sehari-hari",
       meals: "Makan",

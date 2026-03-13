@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { staggerContainer, fadeIn, slideUp } from "@/lib/animations";
 import { CALCULATION_METHODS } from "@/lib/prayer-times-calc";
-import { formatHijriDateArabic } from "@/lib/hijri-utils";
+import { formatHijriDateArabic, isFriday } from "@/lib/hijri-utils";
 import { PrayerCard } from "@/components/prayer-times/prayer-card";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
@@ -55,6 +55,10 @@ export function PrayerTimesDisplay({ state, t, lang }: PrayerTimesDisplayProps) 
 
   const [formData] = useLocalStorage<ZakatFormData>("zakat-calculator-data", DEFAULT_FORM_DATA);
   const locationName = useReverseGeocode(latitude, longitude);
+  const friday = isFriday();
+
+  // On Friday, display "jummah" instead of "dhuhr" for next prayer
+  const displayNextPrayer = nextPrayer === "dhuhr" && friday ? "jummah" : nextPrayer;
 
   const now = new Date();
   const dateLocale = lang === "bn" ? "bn-BD" : lang === "ur" ? "ur-PK" : lang === "ar" ? "ar-SA" : lang === "tr" ? "tr-TR" : lang === "ms" ? "ms-MY" : lang === "id" ? "id-ID" : "en-US";
@@ -140,7 +144,7 @@ export function PrayerTimesDisplay({ state, t, lang }: PrayerTimesDisplayProps) 
                 {t.nextPrayer}
               </p>
               <p className="mt-1 text-2xl font-bold capitalize">
-                {nextPrayer}
+                {displayNextPrayer}
               </p>
               <p className="text-sm text-emerald-200">{prayerTimes[nextPrayer]}</p>
             </div>

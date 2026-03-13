@@ -1,18 +1,18 @@
 import type { TransLang } from "@/lib/islamic-content";
 import {
-  Calculator,
+  Coins,
   Clock,
-  ClipboardCheck,
+  ListChecks,
   Compass,
   BookOpen,
-  BookOpenText,
-  CalendarDays,
-  Heart,
+  HandHelping,
+  Calendar,
+  HandCoins,
   History,
-  Bot,
-  HelpCircle,
-  Hash,
-  BookHeart,
+  Sparkles,
+  Lightbulb,
+  Infinity,
+  BookMarked,
   UserCircle,
   type LucideIcon,
 } from "lucide-react";
@@ -51,8 +51,8 @@ export const APP_FEATURES: AppFeature[] = [
   {
     id: "calculator",
     href: "/calculator",
-    icon: Calculator,
-    iconName: "Calculator",
+    icon: Coins,
+    iconName: "Coins",
     label: {
       en: "Zakat Calculator", bn: "যাকাত ক্যালকুলেটর", ur: "زکوٰۃ کیلکولیٹر",
       ar: "حاسبة الزكاة", tr: "Zekat Hesaplayici", ms: "Kalkulator Zakat", id: "Kalkulator Zakat",
@@ -101,8 +101,8 @@ export const APP_FEATURES: AppFeature[] = [
   {
     id: "salat-tracker",
     href: "/salat-tracker",
-    icon: ClipboardCheck,
-    iconName: "ClipboardCheck",
+    icon: ListChecks,
+    iconName: "ListChecks",
     label: {
       en: "Salat Tracker", bn: "সালাত ট্র্যাকার", ur: "نماز ٹریکر",
       ar: "متتبع الصلاة", tr: "Namaz Takipçisi", ms: "Penjejak Solat", id: "Pelacak Shalat",
@@ -151,8 +151,8 @@ export const APP_FEATURES: AppFeature[] = [
   {
     id: "quran",
     href: "/quran",
-    icon: BookOpenText,
-    iconName: "BookOpenText",
+    icon: BookOpen,
+    iconName: "BookOpen",
     label: {
       en: "Quran", bn: "কুরআন", ur: "قرآن",
       ar: "القرآن", tr: "Kuran", ms: "Al-Quran", id: "Al-Quran",
@@ -176,8 +176,8 @@ export const APP_FEATURES: AppFeature[] = [
   {
     id: "duas",
     href: "/duas",
-    icon: BookOpen,
-    iconName: "BookOpen",
+    icon: HandHelping,
+    iconName: "HandHelping",
     label: {
       en: "Duas", bn: "দু'আ", ur: "دعائیں",
       ar: "الأدعية", tr: "Dualar", ms: "Doa", id: "Doa",
@@ -201,8 +201,8 @@ export const APP_FEATURES: AppFeature[] = [
   {
     id: "tasbih",
     href: "/tasbih",
-    icon: Hash,
-    iconName: "Hash",
+    icon: Infinity,
+    iconName: "Infinity",
     label: {
       en: "Tasbih", bn: "তাসবিহ", ur: "تسبیح",
       ar: "التسبيح", tr: "Tesbih", ms: "Tasbih", id: "Tasbih",
@@ -226,8 +226,8 @@ export const APP_FEATURES: AppFeature[] = [
   {
     id: "hadith",
     href: "/hadith",
-    icon: BookHeart,
-    iconName: "BookHeart",
+    icon: BookMarked,
+    iconName: "BookMarked",
     label: {
       en: "Hadith", bn: "হাদিস", ur: "حদیث",
       ar: "الحديث", tr: "Hadis", ms: "Hadis", id: "Hadis",
@@ -251,8 +251,8 @@ export const APP_FEATURES: AppFeature[] = [
   {
     id: "calendar",
     href: "/calendar",
-    icon: CalendarDays,
-    iconName: "CalendarDays",
+    icon: Calendar,
+    iconName: "Calendar",
     label: {
       en: "Calendar", bn: "ক্যালেন্ডার", ur: "کیلنڈر",
       ar: "التقويم", tr: "Takvim", ms: "Kalendar", id: "Kalender",
@@ -276,8 +276,8 @@ export const APP_FEATURES: AppFeature[] = [
   {
     id: "sadaqah",
     href: "/sadaqah",
-    icon: Heart,
-    iconName: "Heart",
+    icon: HandCoins,
+    iconName: "HandCoins",
     label: {
       en: "Sadaqah", bn: "সদকা", ur: "صدقہ",
       ar: "الصدقة", tr: "Sadaka", ms: "Sedekah", id: "Sedekah",
@@ -326,8 +326,8 @@ export const APP_FEATURES: AppFeature[] = [
   {
     id: "assistant",
     href: "/assistant",
-    icon: Bot,
-    iconName: "Bot",
+    icon: Sparkles,
+    iconName: "Sparkles",
     label: {
       en: "IhsanAI", bn: "AI সহায়ক", ur: "AI معاون",
       ar: "مساعد AI", tr: "AI Asistan", ms: "Pembantu AI", id: "Asisten AI",
@@ -376,8 +376,8 @@ export const APP_FEATURES: AppFeature[] = [
   {
     id: "guide",
     href: "/guide",
-    icon: HelpCircle,
-    iconName: "HelpCircle",
+    icon: Lightbulb,
+    iconName: "Lightbulb",
     label: {
       en: "Guide", bn: "গাইড", ur: "گائیڈ",
       ar: "الدليل", tr: "Rehber", ms: "Panduan", id: "Panduan",

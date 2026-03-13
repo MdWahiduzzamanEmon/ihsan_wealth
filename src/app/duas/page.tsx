@@ -7,19 +7,29 @@ import { DUAS, type DuaCategory } from "@/lib/duas-data";
 import { DuaCard } from "@/components/duas/dua-card";
 import { DuasFilter } from "@/components/duas/duas-filter";
 import { staggerContainer } from "@/lib/animations";
-import { getLangFromCountry, DUAS_PAGE_TEXTS, type TransLang } from "@/lib/islamic-content";
+import {
+  getLangFromCountry,
+  DUAS_PAGE_TEXTS,
+  type TransLang,
+} from "@/lib/islamic-content";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { BookOpen } from "lucide-react";
+import { isFriday } from "@/lib/hijri-utils";
 
 export default function DuasPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState<DuaCategory | "all">("all");
+  const [activeCategory, setActiveCategory] = useState<DuaCategory | "all">(
+    () => (isFriday() ? "friday" : "all"),
+  );
   const [showFavorites, setShowFavorites] = useState(false);
   const { favorites: favoriteDuas, toggleFavorite } = useFavoriteDuas();
-  const [formData] = useLocalStorage<ZakatFormData>("zakat-calculator-data", DEFAULT_FORM_DATA);
+  const [formData] = useLocalStorage<ZakatFormData>(
+    "zakat-calculator-data",
+    DEFAULT_FORM_DATA,
+  );
   const lang = getLangFromCountry(formData.country) as TransLang;
   const t = DUAS_PAGE_TEXTS[lang];
 
@@ -44,7 +54,7 @@ export default function DuasPage() {
           d.arabic.includes(searchQuery) ||
           d.transliteration.toLowerCase().includes(q) ||
           d.translation.toLowerCase().includes(q) ||
-          d.source.toLowerCase().includes(q)
+          d.source.toLowerCase().includes(q),
       );
     }
 
@@ -54,7 +64,10 @@ export default function DuasPage() {
   const isRtl = lang === "ar" || lang === "ur";
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20" dir={isRtl ? "rtl" : "ltr"}>
+    <div
+      className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20"
+      dir={isRtl ? "rtl" : "ltr"}
+    >
       <Header countryCode={formData.country} />
 
       {/* Main content */}
@@ -116,7 +129,9 @@ export default function DuasPage() {
             </motion.div>
           ) : (
             <div className="text-center py-16">
-              <p className="font-arabic text-4xl text-emerald-200 mb-3">{lang === "ar" ? "لا نتائج" : t.noResultsTitle}</p>
+              <p className="font-arabic text-4xl text-emerald-200 mb-3">
+                {lang === "ar" ? "لا نتائج" : t.noResultsTitle}
+              </p>
               <p className="text-gray-400 text-sm">
                 {showFavorites ? t.noFavorites : t.noSearchResults}
               </p>

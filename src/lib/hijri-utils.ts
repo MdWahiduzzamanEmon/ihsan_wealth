@@ -1,6 +1,8 @@
 // ─── Hijri (Islamic) Calendar Utilities ───
 // Uses Intl.DateTimeFormat with the Islamic Umm al-Qura calendar for accuracy
 
+import type { TransLang } from "@/lib/islamic-content";
+
 export interface HijriDate {
   year: number;
   month: number;
