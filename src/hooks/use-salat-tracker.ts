@@ -47,7 +47,7 @@ const PRAYER_TYPE_MAP: Record<PrayerName, PrayerType> = {
   asr: "fard",
   maghrib: "fard",
   isha: "fard",
-  jummah: "wajib",
+  jummah: "fard",
   eid_al_fitr: "wajib",
   eid_al_adha: "wajib",
   sunnah_fajr: "sunnah",
