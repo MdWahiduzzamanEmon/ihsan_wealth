@@ -12,6 +12,7 @@ import { HeroSection } from "@/components/home/hero-section";
 import { LoggedInDashboard } from "@/components/home/logged-in-dashboard";
 import { PWAInstallGuide } from "@/components/home/pwa-install-guide";
 import { IhsanAIPromo } from "@/components/home/ihsan-ai-promo";
+import { ZakatPromo } from "@/components/home/zakat-promo";
 import { SalatHomeWidget } from "@/components/salat-tracker/salat-home-widget";
 import { DonationAppeal } from "@/components/home/donation-appeal";
 import { OccasionBanner } from "@/components/home/occasion-banner";
@@ -33,6 +34,7 @@ export default function Home() {
       <main className="flex-1">
         <HeroSection lang={lang} />
         <OccasionBanner lang={lang} countryCode={countryCode} />
+        <ZakatPromo lang={lang} />
         <IhsanAIPromo lang={lang} />
         <SalatHomeWidget />
         <LoggedInDashboard lang={lang} countryCode={countryCode} />
