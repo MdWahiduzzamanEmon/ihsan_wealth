@@ -28,7 +28,7 @@ export const viewport: Viewport = {
   maximumScale: 5,
 };
 
-const BASE_URL = "https://ihsanwealth.onrender.com";
+const BASE_URL = "https://ihsan-wealth.onrender.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -78,7 +78,7 @@ export const metadata: Metadata = {
       "Your complete Islamic companion — Zakat calculator, Holy Quran with tafsir, prayer times, Qibla finder, duas, Hijri calendar, and Sadaqah tracker. Free & open source.",
     images: [
       {
-        url: "/og-image.png",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
         alt: "IhsanWealth — Your Complete Islamic Companion",
@@ -90,7 +90,7 @@ export const metadata: Metadata = {
     title: "IhsanWealth — Zakat Calculator, Quran & Islamic Tools",
     description:
       "Free Islamic companion app: Zakat calculator, Quran with tafsir, prayer times, Qibla, duas, Hijri calendar & more.",
-    images: ["/og-image.png"],
+    images: ["/opengraph-image"],
   },
   robots: {
     index: true,
