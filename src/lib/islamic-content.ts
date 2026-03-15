@@ -25,6 +25,10 @@ const COUNTRY_TO_LANG: Record<string, TransLang> = {
   EU: "en",
 };
 
+export function isRTLLang(lang: TransLang): boolean {
+  return lang === "ar" || lang === "ur";
+}
+
 export function getLangFromCountry(countryCode: string): TransLang {
   return COUNTRY_TO_LANG[countryCode] || "en";
 }

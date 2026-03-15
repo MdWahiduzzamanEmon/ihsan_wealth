@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUp } from "lucide-react";
@@ -69,7 +69,7 @@ export function ChatFloatingWidget() {
   }, []);
 
   const lang = getLangFromCountry(formData.country) as TransLang;
-  const zakatSummary = buildZakatSummary(formData);
+  const zakatSummary = useMemo(() => buildZakatSummary(formData), [formData]);
 
   // Hide floating widget on the dedicated assistant page
   if (pathname === "/assistant") return null;

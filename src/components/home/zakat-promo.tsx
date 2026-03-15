@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { fadeIn } from "@/lib/animations";
 import Link from "next/link";
 import { Calculator, Coins, Scale, Globe, ShieldCheck, Layers, ArrowRight } from "lucide-react";
-import type { TransLang } from "@/lib/islamic-content";
+import { isRTLLang, type TransLang } from "@/lib/islamic-content";
 
 const texts: Record<
   TransLang,
@@ -78,7 +78,7 @@ const featureIcons = [Coins, Scale, Globe, Layers, ShieldCheck, Calculator];
 
 export function ZakatPromo({ lang }: { lang: TransLang }) {
   const t = texts[lang] || texts.en;
-  const isRTL = lang === "ar" || lang === "ur";
+  const isRTL = isRTLLang(lang);
 
   return (
     <motion.section
