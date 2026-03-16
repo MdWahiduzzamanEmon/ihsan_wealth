@@ -40,11 +40,25 @@ export default function NinetyNineNamesPage() {
 
   const [search, setSearch] = useState("");
   const [highlightId, setHighlightId] = useState<number | null>(null);
+  const [activeId, setActiveId] = useState<number | null>(null);
   const { speak, speaking, loading } = useArabicSpeech({ lang: "ar" });
 
-  const handleSpeak = useCallback((arabic: string) => {
-    speak(arabic);
-  }, [speak]);
+  const handleSpeak = useCallback((id: number, arabic: string) => {
+    if (activeId === id && speaking) {
+      speak(arabic); // toggles off
+      setActiveId(null);
+    } else {
+      setActiveId(id);
+      speak(arabic);
+    }
+  }, [speak, speaking, activeId]);
+
+  // Clear activeId when audio finishes
+  useEffect(() => {
+    if (!speaking && !loading && activeId !== null) {
+      setActiveId(null);
+    }
+  }, [speaking, loading]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle hash-based scrolling
   useEffect(() => {
@@ -117,39 +131,48 @@ export default function NinetyNineNamesPage() {
               animate="animate"
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
             >
-              {filtered.map((name) => (
+              {filtered.map((name) => {
+                const isActive = activeId === name.id;
+                const isLoading = isActive && loading;
+                const isSpeaking = isActive && speaking;
+                return (
                 <motion.div
                   key={name.id}
                   id={`name-${name.id}`}
                   variants={staggerItem}
-                  className={`group rounded-xl border bg-white p-4 sm:p-5 transition-all duration-300 hover:shadow-md hover:border-emerald-200 ${
+                  onClick={() => handleSpeak(name.id, name.arabic)}
+                  className={`group rounded-xl border bg-white p-4 sm:p-5 transition-all duration-300 cursor-pointer hover:shadow-md hover:border-emerald-200 ${
                     highlightId === name.id
                       ? "border-emerald-400 ring-2 ring-emerald-100 shadow-md"
+                      : isActive
+                      ? "border-emerald-300 ring-2 ring-emerald-100 shadow-sm"
                       : "border-gray-100"
                   }`}
                 >
                   <div className="flex items-start gap-3">
                     {/* Number badge */}
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-xs font-bold text-emerald-700 border border-emerald-100">
+                    <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold border transition-colors ${
+                      isActive ? "bg-emerald-600 text-white border-emerald-600" : "bg-emerald-50 text-emerald-700 border-emerald-100"
+                    }`}>
                       {name.id}
                     </div>
 
                     <div className="flex-1 min-w-0">
                       {/* Arabic name + speak button */}
                       <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handleSpeak(name.arabic)}
-                          className="font-arabic text-2xl text-gray-800 group-hover:text-emerald-700 transition-colors leading-tight cursor-pointer hover:underline decoration-emerald-200"
+                        <span
+                          className={`font-arabic text-2xl transition-colors leading-tight ${isActive ? "text-emerald-700" : "text-gray-800 group-hover:text-emerald-700"}`}
                           dir="rtl"
                         >
                           {name.arabic}
-                        </button>
-                        <button
-                          onClick={() => handleSpeak(name.arabic)}
-                          className="shrink-0 p-1 rounded-full hover:bg-emerald-50 transition-colors"
-                        >
-                          <Volume2 className="h-3.5 w-3.5 text-emerald-500 opacity-60 hover:opacity-100" />
-                        </button>
+                        </span>
+                        <span className="shrink-0 p-1 rounded-full">
+                          {isLoading ? (
+                            <Loader2 className="h-3.5 w-3.5 text-emerald-500 animate-spin" />
+                          ) : (
+                            <Volume2 className={`h-3.5 w-3.5 transition-all ${isSpeaking ? "text-emerald-600 opacity-100" : "text-emerald-500 opacity-60 group-hover:opacity-100"}`} />
+                          )}
+                        </span>
                       </div>
 
                       {/* Transliteration */}
@@ -177,7 +200,8 @@ export default function NinetyNineNamesPage() {
                     </div>
                   </div>
                 </motion.div>
-              ))}
+              );
+              })}
             </motion.div>
           )}
         </div>

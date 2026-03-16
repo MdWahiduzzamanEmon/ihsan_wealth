@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Amiri } from "next/font/google";
 import { AuthProvider } from "@/components/providers/auth-provider";
 import { ServiceWorkerRegister } from "@/components/providers/sw-register";
 import { ChatFloatingWidget } from "@/components/chat/chat-floating-widget";
+import { FloatingIslamicDecor } from "@/components/ui/floating-islamic-decor";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -123,6 +124,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${amiri.variable} antialiased`}
       >
         <AuthProvider>
+          <FloatingIslamicDecor />
           {children}
           <ChatFloatingWidget />
         </AuthProvider>

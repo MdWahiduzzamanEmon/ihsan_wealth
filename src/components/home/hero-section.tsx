@@ -164,8 +164,8 @@ export function HeroSection({ lang }: HeroSectionProps) {
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-b from-emerald-950 via-emerald-900 to-emerald-950" />
 
-        {/* Islamic geometric pattern */}
-        <div className="absolute inset-0 opacity-[0.06]">
+        {/* Islamic geometric pattern — more visible */}
+        <div className="absolute inset-0 opacity-[0.13]">
           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <pattern
@@ -180,7 +180,7 @@ export function HeroSection({ lang }: HeroSectionProps) {
                   d="M30 0L60 30L30 60L0 30Z"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="0.5"
+                  strokeWidth="0.7"
                 />
                 <circle
                   cx="30"
@@ -188,7 +188,7 @@ export function HeroSection({ lang }: HeroSectionProps) {
                   r="12"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="0.3"
+                  strokeWidth="0.4"
                 />
                 <circle
                   cx="30"
@@ -196,12 +196,12 @@ export function HeroSection({ lang }: HeroSectionProps) {
                   r="4"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="0.3"
+                  strokeWidth="0.4"
                 />
                 <path
                   d="M30 0L30 60M0 30L60 30"
                   stroke="currentColor"
-                  strokeWidth="0.15"
+                  strokeWidth="0.2"
                 />
               </pattern>
             </defs>
@@ -214,11 +214,16 @@ export function HeroSection({ lang }: HeroSectionProps) {
           </svg>
         </div>
 
-        {/* Radial glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-radial from-emerald-600/20 via-transparent to-transparent rounded-full blur-3xl" />
+        {/* Top-center radial glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-radial-[at_50%_0%] from-emerald-500/30 via-emerald-700/10 to-transparent blur-3xl" />
 
-        {/* Calligraphy watermark */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none overflow-hidden">
+        {/* Left ambient glow */}
+        <div className="absolute top-1/4 -left-20 w-72 h-72 rounded-full bg-emerald-600/15 blur-3xl" />
+        {/* Right ambient glow */}
+        <div className="absolute bottom-1/4 -right-20 w-72 h-72 rounded-full bg-amber-500/10 blur-3xl" />
+
+        {/* Calligraphy watermark — more visible */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-[0.07] pointer-events-none select-none overflow-hidden">
           <p
             className="font-arabic text-[120px] sm:text-[180px] text-white whitespace-nowrap leading-none"
             dir="rtl"
@@ -226,6 +231,9 @@ export function HeroSection({ lang }: HeroSectionProps) {
             بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
           </p>
         </div>
+
+        {/* Top shimmer line */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent" />
       </div>
 
       <div className="relative mx-auto max-w-5xl px-4 py-10 sm:py-14">
@@ -237,7 +245,7 @@ export function HeroSection({ lang }: HeroSectionProps) {
           {/* Brand identity */}
           <motion.div
             variants={staggerItem}
-            className="text-center mb-8 sm:mb-10"
+            className="text-center mb-8 sm:mb-10 md:block hidden"
           >
             <div className="inline-flex items-center gap-3 mb-4">
               <div className="relative">
@@ -377,8 +385,8 @@ export function HeroSection({ lang }: HeroSectionProps) {
         </motion.div>
       </div>
 
-      {/* Bottom fade into page background */}
-      <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-emerald-50/30 to-transparent" />
+      {/* Bottom fade into white page */}
+      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white/8 to-transparent" />
     </section>
   );
 }

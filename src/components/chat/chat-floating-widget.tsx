@@ -14,46 +14,44 @@ import { LANG_TO_CURRENCY } from "@/lib/chat/constants";
 
 function IhsanAIIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 48 48" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
-      {/* Outer glow ring */}
-      <circle cx="24" cy="24" r="22" stroke="url(#ai-glow)" strokeWidth="1.5" opacity="0.6" />
-      {/* Inner circle */}
-      <circle cx="24" cy="24" r="17" fill="url(#ai-bg)" />
-      {/* Islamic geometric pattern — interlocking diamond */}
-      <path
-        d="M24 11L31 18H37L30 25L33 33H27L24 37L21 33H15L18 25L11 18H17Z"
-        fill="none"
-        stroke="url(#ai-accent)"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-        opacity="0.85"
-      />
-      {/* Inner diamond */}
-      <path
-        d="M24 16L29 21L24 30L19 21Z"
-        fill="url(#ai-accent)"
-        opacity="0.9"
-      />
-      {/* Center circle — AI brain dot */}
-      <circle cx="24" cy="22" r="2.5" fill="white" opacity="0.95" />
-      {/* Radiating dots */}
-      <circle cx="24" cy="14" r="1" fill="white" opacity="0.6" />
-      <circle cx="30.5" cy="18.5" r="1" fill="white" opacity="0.6" />
-      <circle cx="17.5" cy="18.5" r="1" fill="white" opacity="0.6" />
+    <svg viewBox="0 0 40 40" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="ai-glow" x1="2" y1="2" x2="46" y2="46">
-          <stop stopColor="#fbbf24" />
-          <stop offset="1" stopColor="#10b981" />
+        <linearGradient id="spark-a" x1="0" y1="0" x2="1" y2="1">
+          <stop stopColor="#ffffff" />
+          <stop offset="1" stopColor="#d1fae5" />
         </linearGradient>
-        <linearGradient id="ai-bg" x1="7" y1="7" x2="41" y2="41">
-          <stop stopColor="#059669" />
-          <stop offset="1" stopColor="#064e3b" />
-        </linearGradient>
-        <linearGradient id="ai-accent" x1="15" y1="11" x2="33" y2="37">
-          <stop stopColor="#ffffff" stopOpacity="0.95" />
-          <stop offset="1" stopColor="#a7f3d0" stopOpacity="0.8" />
+        <linearGradient id="spark-b" x1="0" y1="0" x2="1" y2="1">
+          <stop stopColor="#fde68a" />
+          <stop offset="1" stopColor="#fbbf24" />
         </linearGradient>
       </defs>
+
+      {/* Large center star — slow breathe */}
+      <motion.path
+        d="M20 4 C20.6 12.4 21.6 13.4 30 14 C21.6 14.6 20.6 15.6 20 24 C19.4 15.6 18.4 14.6 10 14 C18.4 13.4 19.4 12.4 20 4Z"
+        fill="url(#spark-a)"
+        style={{ transformBox: "fill-box", transformOrigin: "center" }}
+        animate={{ scale: [1, 1.12, 0.94, 1.07, 1], opacity: [1, 0.8, 1, 0.9, 1] }}
+        transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut", delay: 0 }}
+      />
+
+      {/* Medium top-right star — faster flicker */}
+      <motion.path
+        d="M31.5 24.5 C31.7 27.3 32.2 27.8 35 28 C32.2 28.2 31.7 28.7 31.5 31.5 C31.3 28.7 30.8 28.2 28 28 C30.8 27.8 31.3 27.3 31.5 24.5Z"
+        fill="url(#spark-b)"
+        style={{ transformBox: "fill-box", transformOrigin: "center" }}
+        animate={{ scale: [1, 1.25, 0.85, 1.15, 1], opacity: [0.9, 1, 0.6, 1, 0.9] }}
+        transition={{ duration: 2.1, repeat: Infinity, ease: "easeInOut", delay: 0.9 }}
+      />
+
+      {/* Tiny bottom-left star — slowest, dreamy */}
+      <motion.path
+        d="M10 28 C10.1 29.4 10.6 29.9 12 30 C10.6 30.1 10.1 30.6 10 32 C9.9 30.6 9.4 30.1 8 30 C9.4 29.9 9.9 29.4 10 28Z"
+        fill="white"
+        style={{ transformBox: "fill-box", transformOrigin: "center" }}
+        animate={{ scale: [1, 1.4, 0.7, 1.2, 1], opacity: [0.7, 1, 0.4, 0.85, 0.7] }}
+        transition={{ duration: 2.7, repeat: Infinity, ease: "easeInOut", delay: 1.6 }}
+      />
     </svg>
   );
 }

@@ -305,8 +305,8 @@ export const APP_FEATURES: AppFeature[] = [
     icon: History,
     iconName: "History",
     label: {
-      en: "History", bn: "ইতিহাস", ur: "ہسٹری",
-      ar: "السجل", tr: "Gecmis", ms: "Sejarah", id: "Riwayat",
+      en: "Zakat History", bn: "যাকাত ইতিহাস", ur: "زکوٰۃ ہسٹری",
+      ar: "سجل الزكاة", tr: "Zekat Gecmisi", ms: "Sejarah Zakat", id: "Riwayat Zakat",
     },
     arabic: "سجل الزكاة",
     description: {
