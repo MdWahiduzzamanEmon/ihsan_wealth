@@ -10,10 +10,12 @@ import { ChatInput } from "./chat-input";
 import type { TransLang } from "@/lib/islamic-content";
 import type { ChatFeature } from "@/types/chat";
 import { CHAT_TEXTS } from "@/lib/chat/constants";
+import type { MetalPrices } from "@/hooks/use-metal-prices";
 
 interface ChatPanelProps {
   lang: TransLang;
   zakatSummary?: string;
+  metalPrices?: MetalPrices | null;
   /** Full-page mode (taller) vs widget mode */
   fullPage?: boolean;
   /** Close callback for floating widget */
@@ -23,9 +25,9 @@ interface ChatPanelProps {
   onFeatureChange?: (f: ChatFeature) => void;
 }
 
-export function ChatPanel({ lang, zakatSummary, fullPage = false, onClose, externalFeature, onFeatureChange }: ChatPanelProps) {
+export function ChatPanel({ lang, zakatSummary, metalPrices, fullPage = false, onClose, externalFeature, onFeatureChange }: ChatPanelProps) {
   const { messages, isStreaming, feature: internalFeature, setFeature: setInternalFeature, sendMessage, stopStreaming, clearChat } =
-    useChat({ language: lang, zakatSummary });
+    useChat({ language: lang, zakatSummary, metalPrices });
   const feature = externalFeature ?? internalFeature;
   const setFeature = onFeatureChange ?? setInternalFeature;
   const scrollRef = useRef<HTMLDivElement>(null);

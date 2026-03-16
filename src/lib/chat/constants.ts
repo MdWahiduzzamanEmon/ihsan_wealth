@@ -4,6 +4,16 @@ import type { TransLang } from "@/lib/islamic-content";
 export const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 export const OPENROUTER_MODEL = "stepfun/step-3.5-flash:free";
 
+export const LANG_TO_CURRENCY: Record<string, string> = {
+  en: "USD",
+  bn: "BDT",
+  ur: "PKR",
+  ar: "SAR",
+  tr: "TRY",
+  ms: "MYR",
+  id: "IDR",
+};
+
 export const FEATURE_CONFIG: Record<
   ChatFeature,
   { icon: string; labelKey: string; color: string }

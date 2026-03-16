@@ -23,6 +23,7 @@ interface RequestBody {
   feature: ChatFeature;
   language: string;
   zakatSummary?: string;
+  metalPricesContext?: string;
 }
 
 export async function POST(request: Request) {
@@ -38,7 +39,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  const { messages, feature, language, zakatSummary } = body;
+  const { messages, feature, language, zakatSummary, metalPricesContext } = body;
   if (!messages?.length || !feature) {
     return NextResponse.json({ error: "Missing messages or feature" }, { status: 400 });
   }
@@ -76,24 +77,27 @@ export async function POST(request: Request) {
     streaming: false,
   });
 
-  // Build tools — metal prices for everyone, Supabase tools for authenticated users
-  const origin = new URL(request.url).origin;
-  const metalTool = createMetalPriceTool(origin);
+  // Build tools — only Supabase tools (metal prices are pre-fetched from the client)
   const supabaseTools = user ? createSupabaseTools(supabase, user.id) : [];
-  const tools = [metalTool, ...supabaseTools];
+  // Include metal price tool only as fallback when client didn't send prices
+  const origin = new URL(request.url).origin;
+  const metalTool = metalPricesContext ? null : createMetalPriceTool(origin);
+  const tools = [...(metalTool ? [metalTool] : []), ...supabaseTools];
 
   let modelWithTools = model;
   let toolCallSupported = false;
 
-  try {
-    modelWithTools = model.bindTools(tools) as typeof model;
-    toolCallSupported = true;
-  } catch {
-    // Model doesn't support tool calling — will use fallback
+  if (tools.length > 0) {
+    try {
+      modelWithTools = model.bindTools(tools) as typeof model;
+      toolCallSupported = true;
+    } catch {
+      // Model doesn't support tool calling — will use fallback
+    }
   }
 
   // Resolve the user's preferred currency from their language
-  const userCurrency = LANG_TO_CURRENCY[language] || "USD";
+  const userCurrency = LANG_TO_CURRENCY[language] || "BDT";
 
   // Detect query types for fallback (when tool calling not supported)
   const lastUserMsg = messages[messages.length - 1]?.content?.toLowerCase() || "";
@@ -105,12 +109,16 @@ export async function POST(request: Request) {
   if (!toolCallSupported) {
     const parts: string[] = [];
 
-    // Fetch metal prices if asked — use the user's local currency
+    // Inject pre-fetched metal prices or invoke the tool as fallback
     if (isMetalQuery) {
-      try {
-        const metalRes = await metalTool.invoke({ currency: userCurrency });
-        if (metalRes) parts.push(`Live Metal Prices:\n${metalRes}`);
-      } catch { /* ignore */ }
+      if (metalPricesContext) {
+        parts.push(`Live Metal Prices:\n${metalPricesContext}`);
+      } else if (metalTool) {
+        try {
+          const metalRes = await metalTool.invoke({ currency: userCurrency });
+          if (metalRes) parts.push(`Live Metal Prices:\n${metalRes}`);
+        } catch { /* ignore */ }
+      }
     }
 
     // Fetch user data if authenticated and asking personal questions
@@ -136,12 +144,21 @@ export async function POST(request: Request) {
   }
 
   // Build LangChain messages
-  const toolInstructions = toolCallSupported
-    ? `\n\nYou have access to tools: get_live_metal_prices (fetch current gold/silver prices and nisab), ` +
-      (user ? "get_zakat_records, get_zakat_payments, get_sadaqah_records, get_user_summary (query user's database). " : "") +
-      `When calling get_live_metal_prices, ALWAYS use currency="${userCurrency}" (the user's local currency). ` +
-      "Use tools when the user asks about current prices, nisab values, their history, or personal data. ALWAYS use tools for real data — never make up numbers."
-    : dataContext;
+  const metalPricesNote = metalPricesContext
+    ? `\n\n## Current Metal Prices (already fetched — use this directly, do NOT call any price tool):\n${metalPricesContext}`
+    : "";
+
+  let toolInstructions = metalPricesNote;
+  if (toolCallSupported) {
+    const toolNames: string[] = [];
+    if (metalTool) toolNames.push(`get_live_metal_prices (use currency="${userCurrency}")`);
+    if (supabaseTools.length > 0) toolNames.push("get_zakat_records, get_zakat_payments, get_sadaqah_records, get_user_summary, get_tasbih_sessions, get_salat_records, get_ramadan_progress");
+    if (toolNames.length > 0) {
+      toolInstructions += `\n\nYou have access to tools: ${toolNames.join(", ")}. Use them for real data — never make up numbers.`;
+    }
+  } else {
+    toolInstructions += dataContext;
+  }
 
   const authContext = user
     ? "\n\nThe user is logged in." + toolInstructions

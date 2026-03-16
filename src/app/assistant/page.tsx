@@ -10,12 +10,16 @@ import { buildZakatSummary } from "@/lib/chat/build-zakat-summary";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
 import type { ChatFeature } from "@/types/chat";
+import { useMetalPrices } from "@/hooks/use-metal-prices";
+import { LANG_TO_CURRENCY } from "@/lib/chat/constants";
 
 export default function AssistantPage() {
   const [formData] = useLocalStorage<ZakatFormData>("zakat-calculator-data", DEFAULT_FORM_DATA);
   const lang = getLangFromCountry(formData.country) as TransLang;
   const zakatSummary = buildZakatSummary(formData);
   const [feature, setFeature] = useState<ChatFeature>("islamic-qa");
+  const currency = LANG_TO_CURRENCY[lang] || "BDT";
+  const { prices: metalPrices } = useMetalPrices(currency);
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20">
@@ -33,6 +37,7 @@ export default function AssistantPage() {
             <ChatPanel
               lang={lang}
               zakatSummary={zakatSummary}
+              metalPrices={metalPrices}
               fullPage
               externalFeature={feature}
               onFeatureChange={setFeature}

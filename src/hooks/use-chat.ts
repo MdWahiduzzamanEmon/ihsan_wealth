@@ -3,13 +3,33 @@
 import { useState, useCallback, useRef } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import type { ChatMessage, ChatFeature } from "@/types/chat";
+import type { MetalPrices } from "@/hooks/use-metal-prices";
+import { NISAB_GOLD_GRAMS, NISAB_SILVER_GRAMS } from "@/lib/constants";
 
 interface UseChatOptions {
   language: string;
   zakatSummary?: string;
+  metalPrices?: MetalPrices | null;
 }
 
-export function useChat({ language, zakatSummary }: UseChatOptions) {
+function formatMetalPricesContext(prices: MetalPrices): string {
+  const goldNisab = prices.goldPricePerGram * NISAB_GOLD_GRAMS;
+  const silverNisab = prices.silverPricePerGram * NISAB_SILVER_GRAMS;
+  return [
+    `Live Metal Prices (${prices.currency}):`,
+    `  Gold: ${prices.goldPricePerGram.toFixed(2)} per gram | ${prices.goldPricePerOunce.toFixed(2)} per troy ounce`,
+    `  Silver: ${prices.silverPricePerGram.toFixed(2)} per gram | ${prices.silverPricePerOunce.toFixed(2)} per troy ounce`,
+    ``,
+    `Nisab Thresholds (${prices.currency}):`,
+    `  Gold Nisab (${NISAB_GOLD_GRAMS}g): ${goldNisab.toFixed(2)}`,
+    `  Silver Nisab (${NISAB_SILVER_GRAMS}g): ${silverNisab.toFixed(2)}`,
+    ``,
+    `Source: ${prices.live ? "Live market data" : "Estimated (offline fallback)"}`,
+    `Updated: ${prices.timestamp}`,
+  ].join("\n");
+}
+
+export function useChat({ language, zakatSummary, metalPrices }: UseChatOptions) {
   const { session } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -64,6 +84,7 @@ export function useChat({ language, zakatSummary }: UseChatOptions) {
             feature,
             language,
             zakatSummary,
+            metalPricesContext: metalPrices ? formatMetalPricesContext(metalPrices) : undefined,
           }),
           signal: controller.signal,
         });
@@ -135,7 +156,7 @@ export function useChat({ language, zakatSummary }: UseChatOptions) {
         abortRef.current = null;
       }
     },
-    [messages, isStreaming, feature, language, zakatSummary, session],
+    [messages, isStreaming, feature, language, zakatSummary, metalPrices, session],
   );
 
   const stopStreaming = useCallback(() => {

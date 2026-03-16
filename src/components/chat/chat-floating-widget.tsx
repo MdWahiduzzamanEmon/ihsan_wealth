@@ -9,6 +9,8 @@ import { getLangFromCountry, type TransLang } from "@/lib/islamic-content";
 import { buildZakatSummary } from "@/lib/chat/build-zakat-summary";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { DEFAULT_FORM_DATA, type ZakatFormData } from "@/types/zakat";
+import { useMetalPrices } from "@/hooks/use-metal-prices";
+import { LANG_TO_CURRENCY } from "@/lib/chat/constants";
 
 function IhsanAIIcon({ className }: { className?: string }) {
   return (
@@ -70,6 +72,8 @@ export function ChatFloatingWidget() {
 
   const lang = getLangFromCountry(formData.country) as TransLang;
   const zakatSummary = useMemo(() => buildZakatSummary(formData), [formData]);
+  const currency = LANG_TO_CURRENCY[lang] || "BDT";
+  const { prices: metalPrices } = useMetalPrices(currency);
 
   // Hide floating widget on the dedicated assistant page
   if (pathname === "/assistant") return null;
@@ -155,7 +159,7 @@ export function ChatFloatingWidget() {
                 border border-gray-200
                 bg-white overflow-hidden"
             >
-              <ChatPanel lang={lang} zakatSummary={zakatSummary} onClose={() => setOpen(false)} />
+              <ChatPanel lang={lang} zakatSummary={zakatSummary} metalPrices={metalPrices} onClose={() => setOpen(false)} />
             </motion.div>
           </>
         )}
