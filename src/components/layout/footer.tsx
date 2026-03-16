@@ -215,7 +215,7 @@ export function Footer({ countryCode = "BD" }: FooterProps) {
             <p className="text-[11px] text-emerald-400/60">
               &copy; {new Date().getFullYear()} IhsanWealth. Built with care by{" "}
               <a
-                href="https://github.com/MdWahiduzzamanEmon"
+                href="https://www.linkedin.com/in/md-wahiduzzaman-emon-51b559173/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-emerald-300/60 hover:text-emerald-200 transition-colors"
