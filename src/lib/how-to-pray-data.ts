@@ -80,6 +80,7 @@ import { TAHAJJUD_PRAYER } from "@/lib/prayers/tahajjud";
 import { JANAZAH_PRAYER } from "@/lib/prayers/janazah";
 import { QADHA_PRAYER } from "@/lib/prayers/qadha";
 import { ISTIKHARA_PRAYER } from "@/lib/prayers/istikhara";
+import { LAYLATUL_QADR_PRAYER } from "@/lib/prayers/laylatul-qadr";
 
 export const ALL_PRAYERS: PrayerInfo[] = [
   // Daily prayers
@@ -97,4 +98,5 @@ export const ALL_PRAYERS: PrayerInfo[] = [
   TAHAJJUD_PRAYER,
   QADHA_PRAYER,
   ISTIKHARA_PRAYER,
+  LAYLATUL_QADR_PRAYER,
 ];

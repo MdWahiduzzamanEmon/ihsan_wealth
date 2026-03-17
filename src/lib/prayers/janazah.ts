@@ -5,7 +5,7 @@ export const JANAZAH_PRAYER: PrayerInfo = {
   id: "janazah",
   name: { en: "Janazah (Funeral)", bn: "জানাযা (দাফন)", ur: "جنازہ (نمازِ جنازہ)", ar: "صلاة الجنازة", tr: "Cenaze Namazı", ms: "Solat Jenazah", id: "Shalat Jenazah" },
   arabicName: "صلاة الجنازة",
-  type: "fard",
+  type: "special",
   category: "special",
   totalRakats: "No Ruku/Sajdah — 4 Takbirs standing",
   rakatBreakdown: { en: "4 Takbirs — entirely standing, no Ruku or Sajdah", bn: "৪ তাকবীর — সম্পূর্ণ দাঁড়িয়ে, কোনো রুকু বা সিজদা নেই", ur: "۴ تکبیریں — مکمل طور پر کھڑے ہو کر، کوئی رکوع یا سجدہ نہیں", ar: "٤ تكبيرات — وقوفاً بالكامل، بلا ركوع أو سجود", tr: "4 Tekbir — tamamen ayakta, rüku veya secde yok", ms: "4 Takbir — sepenuhnya berdiri, tiada rukuk atau sujud", id: "4 Takbir — sepenuhnya berdiri, tidak ada rukuk atau sujud" },

@@ -5,7 +5,7 @@ export const JUMMAH_PRAYER: PrayerInfo = {
   id: "jummah",
   name: { en: "Jummah (Friday)", bn: "জুমা (শুক্রবার)", ur: "جمعہ", ar: "الجمعة", tr: "Cuma", ms: "Jumaat", id: "Jumat" },
   arabicName: "صلاة الجمعة",
-  type: "fard",
+  type: "wajib",
   category: "special",
   totalRakats: "14",
   rakatBreakdown: { en: "4 Sunnah + 2 Fard + 4 Sunnah + 2 Sunnah + 2 Nafl", bn: "৪ সুন্নাত + ২ ফরজ + ৪ সুন্নাত + ২ সুন্নাত + ২ নফল", ur: "۴ سنت + ۲ فرض + ۴ سنت + ۲ سنت + ۲ نفل", ar: "٤ سنة + ٢ فرض + ٤ سنة + ٢ سنة + ٢ نفل", tr: "4 Sünnet + 2 Farz + 4 Sünnet + 2 Sünnet + 2 Nafile", ms: "4 Sunat + 2 Fardhu + 4 Sunat + 2 Sunat + 2 Sunat", id: "4 Sunnah + 2 Fardhu + 4 Sunnah + 2 Sunnah + 2 Nafilah" },
