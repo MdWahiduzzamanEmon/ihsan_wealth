@@ -3,9 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { BookOpen, HandHelping, BookMarked, Calendar } from "lucide-react";
+import { BookOpen, HandHelping, BookMarked, Calendar, Users } from "lucide-react";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 import { CurrentPrayerWidget } from "@/components/home/current-prayer-widget";
+import { useVisitorCount } from "@/hooks/use-visitor-count";
 import type { TransLang } from "@/lib/islamic-content";
 
 const HERO_TEXTS: Record<
@@ -147,6 +148,16 @@ const HERO_TEXTS: Record<
 
 const FEATURE_ICONS = [BookOpen, HandHelping, BookMarked, Calendar];
 
+const VISITOR_LABELS: Record<TransLang, string> = {
+  en: "Muslims visited",
+  bn: "মুসলিম পরিদর্শন করেছেন",
+  ur: "مسلمان آئے",
+  ar: "مسلم زاروا",
+  tr: "Müslüman ziyaret etti",
+  ms: "Muslim melawat",
+  id: "Muslim mengunjungi",
+};
+
 interface HeroSectionProps {
   lang: TransLang;
 }
@@ -154,6 +165,7 @@ interface HeroSectionProps {
 export function HeroSection({ lang }: HeroSectionProps) {
   const t = HERO_TEXTS[lang];
   const isRTL = lang === "ar" || lang === "ur";
+  const visitorCount = useVisitorCount();
 
   return (
     <section
@@ -273,6 +285,17 @@ export function HeroSection({ lang }: HeroSectionProps) {
             <p className="text-sm sm:text-base font-semibold text-emerald-100/80">
               {t.tagline}
             </p>
+
+            {visitorCount !== null && (
+              <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-white/[0.07] border border-white/10 px-4 py-1.5">
+                <Users className="h-3.5 w-3.5 text-emerald-400/80" />
+                <span className="text-xs font-medium text-emerald-200/80">
+                  <span className="text-amber-300 font-bold">{visitorCount.toLocaleString()}</span>
+                  {" "}{VISITOR_LABELS[lang]}
+                </span>
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              </div>
+            )}
           </motion.div>
 
           {/* Two-column: About (3) + Quran (2) */}

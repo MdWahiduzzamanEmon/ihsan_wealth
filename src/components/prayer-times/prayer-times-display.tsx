@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   MapPin,
@@ -7,6 +8,7 @@ import {
   Calendar,
   Clock,
   Loader2,
+  GraduationCap,
 } from "lucide-react";
 import { staggerContainer, fadeIn, slideUp } from "@/lib/animations";
 import { CALCULATION_METHODS } from "@/lib/prayer-times-calc";
@@ -244,6 +246,26 @@ export function PrayerTimesDisplay({ state, t, lang }: PrayerTimesDisplayProps) 
               <span className="font-mono text-sm font-semibold text-violet-700">{prayerTimes.tahajjud}</span>
             </div>
           </div>
+
+          {/* How to Pray link */}
+          <Link href="/how-to-pray" className="block mt-4">
+            <div className="rounded-xl border border-orange-200/60 bg-gradient-to-r from-orange-50 to-amber-50 p-4 transition-all hover:shadow-md hover:border-orange-300">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-orange-500 to-amber-600 shadow-sm">
+                  <GraduationCap className="h-5 w-5 text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-orange-900">
+                    {lang === "bn" ? "নামাজ শিখুন" : lang === "ur" ? "نماز سیکھیں" : lang === "ar" ? "تعلم كيفية الصلاة" : lang === "tr" ? "Namaz Nasıl Kılınır" : lang === "ms" ? "Cara Solat" : lang === "id" ? "Cara Shalat" : "Learn How to Pray"}
+                  </p>
+                  <p className="text-xs text-orange-700/70">
+                    {lang === "bn" ? "ওজু, ৫ ওয়াক্ত নামাজ, জুমা, ঈদ, জানাযা সহ সম্পূর্ণ গাইড" : lang === "ur" ? "وضو، ۵ وقت نماز، جمعہ، عید، جنازہ کی مکمل رہنمائی" : lang === "ar" ? "دليل شامل للوضوء والصلوات الخمس والجمعة والعيد والجنازة" : lang === "tr" ? "Abdest, 5 vakit namaz, Cuma, Bayram, Cenaze rehberi" : lang === "ms" ? "Panduan lengkap Wudu, 5 solat harian, Jumaat, Eid, Jenazah" : lang === "id" ? "Panduan lengkap Wudu, 5 shalat harian, Jumat, Ied, Jenazah" : "Complete guide to Wudu, 5 daily prayers, Jummah, Eid, Janazah & more"}
+                  </p>
+                </div>
+                <span className="text-orange-400 text-lg">&rarr;</span>
+              </div>
+            </div>
+          </Link>
         </>
       )}
     </motion.div>

@@ -6,7 +6,7 @@ import { useLocalStorage } from "@/hooks/use-local-storage";
 import { useMetalPrices } from "@/hooks/use-metal-prices";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { calculateZakat } from "@/lib/zakat-calculator";
-import { COUNTRIES, STEP_LABELS } from "@/lib/constants";
+import { COUNTRIES, TOTAL_STEPS, STEP_LABEL_KEYS } from "@/lib/constants";
 import { DEFAULT_FORM_DATA, type ZakatFormData, type ZakatResult } from "@/types/zakat";
 import { getLangFromCountry } from "@/lib/islamic-content";
 import { t } from "@/lib/form-translations";
@@ -77,7 +77,7 @@ export function CalculatorWizard() {
     return calculateZakat(formData, prices.goldPricePerGram, prices.silverPricePerGram);
   }, [showResults, formData, prices]);
 
-  const totalSteps = STEP_LABELS.length;
+  const totalSteps = TOTAL_STEPS;
   const isLastStep = currentStep === totalSteps - 2;
   const isSummary = currentStep === totalSteps - 1;
 
@@ -193,7 +193,7 @@ export function CalculatorWizard() {
   return (
     <div id="calculator-wizard-top" className="mx-auto max-w-4xl px-4 py-8">
       <div className="mb-8">
-        <StepIndicator currentStep={currentStep} />
+        <StepIndicator currentStep={currentStep} lang={lang} />
       </div>
 
       {pricesError && (

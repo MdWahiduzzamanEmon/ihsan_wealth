@@ -69,18 +69,20 @@ export const COUNTRIES: CountryInfo[] = [
   { code: "EU", name: "Europe (EUR)", currency: "EUR", currencySymbol: "€", flag: "🇪🇺", locale: "de-DE" },
 ];
 
-export const STEP_LABELS = [
-  "Country",
-  "Cash",
-  "Gold & Silver",
-  "Investments",
-  "Business",
-  "Property",
-  "Agriculture",
-  "Loans & Debts",
-  "Fitr & Settings",
-  "Summary",
+export const STEP_LABEL_KEYS = [
+  "stepCountry",
+  "stepCash",
+  "stepGoldSilver",
+  "stepInvestments",
+  "stepBusiness",
+  "stepProperty",
+  "stepAgriculture",
+  "stepLoans",
+  "stepFitr",
+  "stepSummary",
 ];
+
+export const TOTAL_STEPS = STEP_LABEL_KEYS.length;
 
 export const BREAKDOWN_COLORS = [
   "#16a34a", // green

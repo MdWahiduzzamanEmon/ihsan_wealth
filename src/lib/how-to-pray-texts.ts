@@ -1,0 +1,26 @@
+import type { TransLang } from "@/lib/islamic-content";
+
+export const HOW_TO_PRAY_TEXTS: Record<string, Record<TransLang, string>> = {
+  pageTitle: { en: "How to Pray", bn: "নামাজ শিক্ষা", ur: "نماز سیکھیں", ar: "كيفية الصلاة", tr: "Namaz Nasıl Kılınır", ms: "Cara Solat", id: "Cara Shalat" },
+  pageSubtitle: { en: "Complete guide to performing Salah — from Wudu to every prayer", bn: "ওজু থেকে প্রতিটি নামাজ পর্যন্ত — সালাত আদায়ের সম্পূর্ণ গাইড", ur: "وضو سے ہر نماز تک — نماز ادا کرنے کی مکمل رہنمائی", ar: "دليل شامل لأداء الصلاة — من الوضوء إلى كل صلاة", tr: "Abdest'ten her namaza — Namaz kılmanın eksiksiz rehberi", ms: "Panduan lengkap menunaikan Solat — dari Wudu hingga setiap solat", id: "Panduan lengkap menunaikan Shalat — dari Wudu hingga setiap shalat" },
+  wuduSection: { en: "Wudu (Ablution)", bn: "ওজু (পবিত্রতা)", ur: "وضو (طہارت)", ar: "الوضوء", tr: "Abdest", ms: "Wudu (Wuduk)", id: "Wudu (Wudhu)" },
+  dailyPrayers: { en: "5 Daily Prayers", bn: "পাঁচ ওয়াক্ত নামাজ", ur: "پانچ وقت کی نماز", ar: "الصلوات الخمس", tr: "Beş Vakit Namaz", ms: "5 Solat Harian", id: "5 Shalat Harian" },
+  specialPrayers: { en: "Special Prayers", bn: "বিশেষ নামাজ", ur: "خصوصی نمازیں", ar: "صلوات خاصة", tr: "Özel Namazlar", ms: "Solat Khas", id: "Shalat Khusus" },
+  step: { en: "Step", bn: "ধাপ", ur: "مرحلہ", ar: "خطوة", tr: "Adım", ms: "Langkah", id: "Langkah" },
+  rakats: { en: "Rakats", bn: "রাকাত", ur: "رکعات", ar: "ركعات", tr: "Rekat", ms: "Rakaat", id: "Rakaat" },
+  time: { en: "Time", bn: "সময়", ur: "وقت", ar: "الوقت", tr: "Vakit", ms: "Waktu", id: "Waktu" },
+  action: { en: "Action", bn: "কাজ", ur: "عمل", ar: "العمل", tr: "Hareket", ms: "Tindakan", id: "Tindakan" },
+  recitation: { en: "Recitation", bn: "পাঠ", ur: "تلاوت", ar: "التلاوة", tr: "Okuma", ms: "Bacaan", id: "Bacaan" },
+  meaning: { en: "Meaning", bn: "অর্থ", ur: "معنی", ar: "المعنى", tr: "Anlam", ms: "Makna", id: "Makna" },
+  fard: { en: "Fard (Obligatory)", bn: "ফরজ (বাধ্যতামূলক)", ur: "فرض (لازمی)", ar: "فرض (واجب)", tr: "Farz (Zorunlu)", ms: "Fardhu (Wajib)", id: "Fardhu (Wajib)" },
+  sunnah: { en: "Sunnah", bn: "সুন্নাত", ur: "سنت", ar: "سنة", tr: "Sünnet", ms: "Sunat", id: "Sunnah" },
+  nafl: { en: "Nafl (Voluntary)", bn: "নফল (ঐচ্ছিক)", ur: "نفل (اختیاری)", ar: "نفل (تطوعي)", tr: "Nafile (İsteğe Bağlı)", ms: "Sunat (Sukarela)", id: "Nafl (Sukarela)" },
+  wajib: { en: "Wajib (Necessary)", bn: "ওয়াজিব (আবশ্যক)", ur: "واجب (ضروری)", ar: "واجب", tr: "Vacip (Gerekli)", ms: "Wajib (Perlu)", id: "Wajib (Perlu)" },
+  prerequisites: { en: "Prerequisites", bn: "পূর্বশর্ত", ur: "شرائط", ar: "الشروط", tr: "Ön Koşullar", ms: "Prasyarat", id: "Prasyarat" },
+  prerequisitesList: { en: "Clean body, clean clothes, clean place, facing Qibla, proper covering of body", bn: "পরিষ্কার শরীর, পরিষ্কার কাপড়, পরিষ্কার জায়গা, কিবলামুখী, শরীর ঢাকা", ur: "صاف جسم، صاف کپڑے، صاف جگہ، قبلہ رخ، جسم ڈھکا ہوا", ar: "طهارة البدن والثوب والمكان، استقبال القبلة، ستر العورة", tr: "Temiz beden, temiz elbise, temiz yer, Kıble'ye dönük, vücudu örtmek", ms: "Badan bersih, pakaian bersih, tempat bersih, menghadap Kiblat, menutup aurat", id: "Badan bersih, pakaian bersih, tempat bersih, menghadap Kiblat, menutup aurat" },
+  backToTop: { en: "Back to Top", bn: "উপরে যান", ur: "اوپر جائیں", ar: "العودة للأعلى", tr: "Başa Dön", ms: "Kembali ke Atas", id: "Kembali ke Atas" },
+  searchPlaceholder: { en: "Search prayers...", bn: "নামাজ খুঁজুন...", ur: "نماز تلاش کریں...", ar: "ابحث عن الصلوات...", tr: "Namaz ara...", ms: "Cari solat...", id: "Cari shalat..." },
+  showSteps: { en: "Show Steps", bn: "ধাপ দেখুন", ur: "مراحل دیکھیں", ar: "عرض الخطوات", tr: "Adımları Göster", ms: "Tunjuk Langkah", id: "Tampilkan Langkah" },
+  hideSteps: { en: "Hide Steps", bn: "ধাপ লুকান", ur: "مراحل چھپائیں", ar: "إخفاء الخطوات", tr: "Adımları Gizle", ms: "Sembunyikan Langkah", id: "Sembunyikan Langkah" },
+  notes: { en: "Special Notes", bn: "বিশেষ নোট", ur: "خصوصی نوٹ", ar: "ملاحظات خاصة", tr: "Özel Notlar", ms: "Nota Khas", id: "Catatan Khusus" },
+};
