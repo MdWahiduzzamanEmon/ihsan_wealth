@@ -17,6 +17,7 @@ import { SalatHomeWidget } from "@/components/salat-tracker/salat-home-widget";
 import { DonationAppeal } from "@/components/home/donation-appeal";
 import { OccasionBanner } from "@/components/home/occasion-banner";
 import { AsmaUlHusnaSection } from "@/components/home/asma-ul-husna-section";
+import { EidPromoBanner } from "@/components/home/eid-promo-banner";
 
 export default function Home() {
   const [formData] = useLocalStorage<ZakatFormData>(
@@ -33,6 +34,7 @@ export default function Home() {
       <Header countryCode={countryCode} />
       <main className="flex-1">
         <HeroSection lang={lang} />
+        <EidPromoBanner lang={lang} countryCode={countryCode} />
         <OccasionBanner lang={lang} countryCode={countryCode} />
         <ZakatPromo lang={lang} />
         <IhsanAIPromo lang={lang} />
