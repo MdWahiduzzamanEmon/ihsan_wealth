@@ -156,29 +156,27 @@ export function EidCardCreator({ lang, message, onMessageChange, onSuccess }: Ei
     } catch { /* cancelled */ }
   }, [message, t.eidMubarak, handleDownload, getCardBlob]);
 
-  // WhatsApp share — send card image via native share (mobile) or text link (desktop)
+  // WhatsApp share — download card first, then open WhatsApp directly
   const handleWhatsApp = useCallback(async () => {
+    // Step 1: Download the card image so user has it
     try {
       const result = await getCardBlob();
       if (result) {
-        const file = new File([result.blob], "eid-mubarak-card.png", { type: "image/png" });
-        // Mobile: native share with image → user picks WhatsApp
-        if (navigator.share && navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            text: `${t.eidMubarak}\n\n${message || ""}`,
-            files: [file],
-          });
-          return;
-        }
+        const link = document.createElement("a");
+        link.download = "eid-mubarak-card.png";
+        link.href = result.dataUrl;
+        link.click();
       }
-    } catch {
-      // User cancelled or share failed — fall through to text fallback
-    }
-    // Desktop fallback: text-only via wa.me
+    } catch { /* ignore download error */ }
+
+    // Step 2: Open WhatsApp directly with message text
+    // User can attach the just-downloaded image in WhatsApp
     const text = encodeURIComponent(
-      `${t.eidMubarak}\n\n${message || ""}\n\n🌙 Create your own Eid card:\nhttps://ihsan-wealth.onrender.com/eid`
+      `${t.eidMubarak}\n\n${message || ""}\n\n🌙 https://ihsan-wealth.onrender.com/eid`
     );
-    window.open(`https://wa.me/?text=${text}`, "_blank");
+    setTimeout(() => {
+      window.open(`https://wa.me/?text=${text}`, "_blank");
+    }, 500);
   }, [message, t.eidMubarak, getCardBlob]);
 
   // Copy to clipboard
