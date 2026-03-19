@@ -32,6 +32,9 @@ import { EidPhotoFrame } from "@/components/eid/eid-photo-frame";
 import { EidSavingsCalculator } from "@/components/eid/eid-savings-calculator";
 import { EidCaptionGenerator } from "@/components/eid/eid-caption-generator";
 import { EidConfetti } from "@/components/eid/eid-confetti";
+import { EidStatsBanner } from "@/components/eid/eid-stats-banner";
+import { useEidStats } from "@/hooks/use-eid-stats";
+import { useAuth } from "@/components/providers/auth-provider";
 import { EID_PAGE_TEXTS } from "@/lib/eid-content";
 import { fadeIn, slideUp } from "@/lib/animations";
 
@@ -51,6 +54,8 @@ export default function EidPage() {
   const [cardMessage, setCardMessage] = useState("");
   const [showConfetti, setShowConfetti] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+  const { globalStats, myStats, trackAction, isLoading: statsLoading } = useEidStats();
+  const { isAuthenticated } = useAuth();
 
   const handleSelectMessage = useCallback((message: string) => {
     setCardMessage(message);
@@ -147,6 +152,11 @@ export default function EidPage() {
         <EidCountdown lang={lang} countryCode={countryCode} />
         <EidReminder lang={lang} />
 
+        {/* Stats Banner */}
+        {!statsLoading && (
+          <EidStatsBanner lang={lang} globalStats={globalStats} myStats={myStats} isAuthenticated={isAuthenticated} />
+        )}
+
         {/* Back link */}
         <div className="mx-auto max-w-5xl px-4 mt-4">
           <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-emerald-700 transition-colors">
@@ -188,7 +198,7 @@ export default function EidPage() {
                   <h2 className="text-xl font-bold text-gray-800">{t.cardCreatorTitle}</h2>
                   <p className="text-sm text-gray-500 mt-1">{t.cardCreatorSubtitle}</p>
                 </div>
-                <EidCardCreator lang={lang} message={cardMessage} onMessageChange={setCardMessage} onSuccess={triggerConfetti} />
+                <EidCardCreator lang={lang} message={cardMessage} onMessageChange={setCardMessage} onSuccess={triggerConfetti} trackAction={trackAction} />
               </motion.div>
             )}
             {activeTab === "messages" && (
@@ -202,12 +212,12 @@ export default function EidPage() {
             )}
             {activeTab === "stickers" && (
               <motion.div key="stickers" variants={fadeIn} initial="initial" animate="animate" exit="exit">
-                <EidStickerPack lang={lang} />
+                <EidStickerPack lang={lang} trackAction={trackAction} />
               </motion.div>
             )}
             {activeTab === "frames" && (
               <motion.div key="frames" variants={fadeIn} initial="initial" animate="animate" exit="exit">
-                <EidPhotoFrame lang={lang} />
+                <EidPhotoFrame lang={lang} trackAction={trackAction} />
               </motion.div>
             )}
             {activeTab === "checklist" && (

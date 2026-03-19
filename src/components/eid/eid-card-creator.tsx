@@ -32,6 +32,7 @@ interface EidCardCreatorProps {
   message: string;
   onMessageChange: (msg: string) => void;
   onSuccess?: () => void;
+  trackAction?: (action: "download" | "share" | "whatsapp" | "email" | "clipboard", details?: { design?: string; layout?: string }) => void;
 }
 
 type TextSize = "small" | "medium" | "large";
@@ -61,7 +62,7 @@ const EXPORT_DIMENSIONS: Record<CardLayout, { width: number; height: number }> =
   square: { width: 1080, height: 1080 },
 };
 
-export function EidCardCreator({ lang, message, onMessageChange, onSuccess }: EidCardCreatorProps) {
+export function EidCardCreator({ lang, message, onMessageChange, onSuccess, trackAction }: EidCardCreatorProps) {
   const t = EID_PAGE_TEXTS[lang];
   const isRTL = lang === "ar" || lang === "ur";
 
@@ -133,12 +134,13 @@ export function EidCardCreator({ lang, message, onMessageChange, onSuccess }: Ei
       link.href = result.dataUrl;
       link.click();
       onSuccess?.();
+      trackAction?.("download", { design: selectedDesign.id, layout });
     } catch (err) {
       console.error("Download failed:", err);
     } finally {
       setDownloading(false);
     }
-  }, [getCardBlob, onSuccess]);
+  }, [getCardBlob, onSuccess, trackAction, selectedDesign.id, layout]);
 
   // Share (native OS share sheet)
   const handleShare = useCallback(async () => {
@@ -153,31 +155,18 @@ export function EidCardCreator({ lang, message, onMessageChange, onSuccess }: Ei
       } else {
         handleDownload();
       }
+      trackAction?.("share", { design: selectedDesign.id, layout });
     } catch { /* cancelled */ }
-  }, [message, t.eidMubarak, handleDownload, getCardBlob]);
+  }, [message, t.eidMubarak, handleDownload, getCardBlob, trackAction, selectedDesign.id, layout]);
 
-  // WhatsApp share — download card first, then open WhatsApp directly
-  const handleWhatsApp = useCallback(async () => {
-    // Step 1: Download the card image so user has it
-    try {
-      const result = await getCardBlob();
-      if (result) {
-        const link = document.createElement("a");
-        link.download = "eid-mubarak-card.png";
-        link.href = result.dataUrl;
-        link.click();
-      }
-    } catch { /* ignore download error */ }
-
-    // Step 2: Open WhatsApp directly with message text
-    // User can attach the just-downloaded image in WhatsApp
+  // WhatsApp share — open WhatsApp directly with message text
+  const handleWhatsApp = useCallback(() => {
     const text = encodeURIComponent(
       `${t.eidMubarak}\n\n${message || ""}\n\n🌙 https://ihsan-wealth.onrender.com/eid`
     );
-    setTimeout(() => {
-      window.open(`https://wa.me/?text=${text}`, "_blank");
-    }, 500);
-  }, [message, t.eidMubarak, getCardBlob]);
+    window.open(`https://wa.me/?text=${text}`, "_blank");
+    trackAction?.("whatsapp", { design: selectedDesign.id, layout });
+  }, [message, t.eidMubarak, trackAction, selectedDesign.id, layout]);
 
   // Copy to clipboard
   const handleCopyClipboard = useCallback(async () => {
@@ -190,9 +179,10 @@ export function EidCardCreator({ lang, message, onMessageChange, onSuccess }: Ei
         ]);
         setCopiedClipboard(true);
         setTimeout(() => setCopiedClipboard(false), 2000);
+        trackAction?.("clipboard", { design: selectedDesign.id, layout });
       }
     } catch { /* unsupported */ }
-  }, [getCardBlob]);
+  }, [getCardBlob, trackAction, selectedDesign.id, layout]);
 
   const scrollDesigns = (dir: "left" | "right") => {
     designScrollRef.current?.scrollBy({ left: dir === "left" ? -200 : 200, behavior: "smooth" });
@@ -428,7 +418,7 @@ export function EidCardCreator({ lang, message, onMessageChange, onSuccess }: Ei
       {/* Email Modal */}
       <AnimatePresence>
         {showEmailModal && (
-          <EmailCaptchaModal lang={lang} t={t} message={message} eidMubarak={t.eidMubarak} onClose={() => setShowEmailModal(false)} />
+          <EmailCaptchaModal lang={lang} t={t} message={message} eidMubarak={t.eidMubarak} onClose={() => setShowEmailModal(false)} onSent={() => trackAction?.("email", { design: selectedDesign.id, layout })} />
         )}
       </AnimatePresence>
     </div>
@@ -437,12 +427,13 @@ export function EidCardCreator({ lang, message, onMessageChange, onSuccess }: Ei
 
 // ─── Email Captcha Modal ───
 
-function EmailCaptchaModal({ lang, t, message, eidMubarak, onClose }: {
+function EmailCaptchaModal({ lang, t, message, eidMubarak, onClose, onSent }: {
   lang: TransLang;
   t: (typeof EID_PAGE_TEXTS)["en"];
   message: string;
   eidMubarak: string;
   onClose: () => void;
+  onSent?: () => void;
 }) {
   const isRTL = lang === "ar" || lang === "ur";
   const [email, setEmail] = useState("");
@@ -463,6 +454,7 @@ function EmailCaptchaModal({ lang, t, message, eidMubarak, onClose }: {
     const subject = encodeURIComponent(t.emailSubject);
     const body = encodeURIComponent(`${t.emailBody}\n\n---\n\n${message}\n\n— ${eidMubarak}\n\nSent from IhsanWealth (ihsan-wealth.onrender.com)`);
     window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    onSent?.();
     onClose();
   };
 

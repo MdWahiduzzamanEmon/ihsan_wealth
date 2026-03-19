@@ -9,6 +9,7 @@ import { staggerContainer, staggerItem } from "@/lib/animations";
 
 interface EidStickerPackProps {
   lang: TransLang;
+  trackAction?: (action: "sticker_download") => void;
 }
 
 interface Sticker {
@@ -149,7 +150,7 @@ const STICKERS: Sticker[] = [
   },
 ];
 
-export function EidStickerPack({ lang }: EidStickerPackProps) {
+export function EidStickerPack({ lang, trackAction }: EidStickerPackProps) {
   const t = EID_PAGE_TEXTS[lang];
   const isRTL = lang === "ar" || lang === "ur";
   const [downloadedId, setDownloadedId] = useState<string | null>(null);
@@ -167,6 +168,7 @@ export function EidStickerPack({ lang }: EidStickerPackProps) {
       link.click();
       setDownloadedId(sticker.id);
       setTimeout(() => setDownloadedId(null), 2000);
+      trackAction?.("sticker_download");
     } catch (err) {
       console.error("Sticker download failed:", err);
     }

@@ -9,6 +9,7 @@ import type { TransLang } from "@/lib/islamic-content";
 
 interface EidPhotoFrameProps {
   lang: TransLang;
+  trackAction?: (action: "frame_download") => void;
 }
 
 interface FrameStyle {
@@ -182,7 +183,7 @@ const FRAME_STYLES: FrameStyle[] = [
   },
 ];
 
-export function EidPhotoFrame({ lang }: EidPhotoFrameProps) {
+export function EidPhotoFrame({ lang, trackAction }: EidPhotoFrameProps) {
   const t = EID_PAGE_TEXTS[lang];
   const isRTL = lang === "ar" || lang === "ur";
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
@@ -214,12 +215,13 @@ export function EidPhotoFrame({ lang }: EidPhotoFrameProps) {
       link.download = `eid-photo-${Date.now()}.png`;
       link.href = dataUrl;
       link.click();
+      trackAction?.("frame_download");
     } catch (err) {
       console.error("Download failed:", err);
     } finally {
       setDownloading(false);
     }
-  }, []);
+  }, [trackAction]);
 
   const placeholder = (
     <div className="w-full aspect-[4/3] bg-gray-800/50 flex flex-col items-center justify-center gap-2">
