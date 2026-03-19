@@ -31,6 +31,7 @@ interface EidCardCreatorProps {
   lang: TransLang;
   message: string;
   onMessageChange: (msg: string) => void;
+  onSuccess?: () => void;
 }
 
 type TextSize = "small" | "medium" | "large";
@@ -60,7 +61,7 @@ const EXPORT_DIMENSIONS: Record<CardLayout, { width: number; height: number }> =
   square: { width: 1080, height: 1080 },
 };
 
-export function EidCardCreator({ lang, message, onMessageChange }: EidCardCreatorProps) {
+export function EidCardCreator({ lang, message, onMessageChange, onSuccess }: EidCardCreatorProps) {
   const t = EID_PAGE_TEXTS[lang];
   const isRTL = lang === "ar" || lang === "ur";
 
@@ -137,12 +138,13 @@ export function EidCardCreator({ lang, message, onMessageChange }: EidCardCreato
       link.download = `eid-mubarak-card-${Date.now()}.png`;
       link.href = result.dataUrl;
       link.click();
+      onSuccess?.();
     } catch (err) {
       console.error("Download failed:", err);
     } finally {
       setDownloading(false);
     }
-  }, [getCardBlob]);
+  }, [getCardBlob, onSuccess]);
 
   // Share (native OS share sheet)
   const handleShare = useCallback(async () => {
@@ -189,6 +191,33 @@ export function EidCardCreator({ lang, message, onMessageChange }: EidCardCreato
 
   return (
     <div className="space-y-6">
+      {/* Live Card Preview (top) */}
+      <div className="flex justify-center px-2 pb-4">
+        <EidCardAnimatedWrapper
+          cardRef={cardRef}
+          design={selectedDesign}
+          message={message}
+          name={name}
+          recipientName=""
+          messageSize={SIZE_MAP[messageSize]}
+          nameSize={NAME_SIZE_MAP[nameSize]}
+          isRTL={isRTL}
+          eidMubarakText={t.eidMubarak}
+          layout={layout}
+          fontClass={fontStyle.className}
+          toLabel=""
+          fromLabel={t.fromLabel}
+          replayLabel={t.replayAnimation}
+        />
+      </div>
+
+      {/* Customization section divider */}
+      <div className="flex items-center gap-4 my-2">
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-300/40 to-transparent" />
+        <span className="text-emerald-400/50 text-xs font-medium">{t.cardSettings}</span>
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-300/40 to-transparent" />
+      </div>
+
       {/* Step 1: Layout Picker */}
       <div>
         <h3 className="text-sm font-semibold text-emerald-800 mb-3 flex items-center gap-2">
@@ -361,60 +390,26 @@ export function EidCardCreator({ lang, message, onMessageChange }: EidCardCreato
         )}
       </AnimatePresence>
 
-      {/* Card Preview */}
-      <div>
-        <h3 className="text-sm font-semibold text-emerald-800 mb-3 flex items-center gap-2">
-          <span className="h-5 w-5 rounded-full bg-emerald-100 flex items-center justify-center text-xs font-bold text-emerald-700">5</span>
-          {t.preview}
-        </h3>
-        <div className="flex justify-center px-2 pb-6">
-          <EidCardAnimatedWrapper
-            cardRef={cardRef}
-            design={selectedDesign}
-            message={message}
-            name={name}
-            recipientName=""
-            messageSize={SIZE_MAP[messageSize]}
-            nameSize={NAME_SIZE_MAP[nameSize]}
-            isRTL={isRTL}
-            eidMubarakText={t.eidMubarak}
-            layout={layout}
-            fontClass={fontStyle.className}
-            toLabel=""
-            fromLabel={t.fromLabel}
-            replayLabel={t.replayAnimation}
-          />
-        </div>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex flex-wrap gap-2 justify-center pt-2">
+      {/* Action Buttons (bottom) */}
+      <div className="flex flex-wrap gap-2 justify-center pt-4">
         <Button onClick={handleDownload} disabled={downloading} className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2 rounded-xl px-5 h-10">
           {downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
           {t.download}
         </Button>
-
         <Button onClick={handleShare} variant="outline" className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 gap-2 rounded-xl px-5 h-10">
           <Share2 className="h-4 w-4" />
           {t.share}
         </Button>
-
         <Button onClick={handleWhatsApp} variant="outline" className="border-green-400 text-green-700 hover:bg-green-50 gap-2 rounded-xl px-5 h-10">
           <MessageCircle className="h-4 w-4" />
           {t.shareWhatsApp}
         </Button>
-
         {"ClipboardItem" in (typeof window !== "undefined" ? window : {}) && (
-          <Button
-            onClick={handleCopyClipboard}
-            variant="outline"
-            className={`gap-2 rounded-xl px-5 h-10 ${copiedClipboard ? "border-emerald-400 text-emerald-600 bg-emerald-50" : "border-gray-300 text-gray-600 hover:bg-gray-50"}`}
-          >
+          <Button onClick={handleCopyClipboard} variant="outline" className={`gap-2 rounded-xl px-5 h-10 ${copiedClipboard ? "border-emerald-400 text-emerald-600 bg-emerald-50" : "border-gray-300 text-gray-600 hover:bg-gray-50"}`}>
             {copiedClipboard ? <Check className="h-4 w-4" /> : <Clipboard className="h-4 w-4" />}
             {copiedClipboard ? t.copiedToClipboard : t.copyToClipboard}
           </Button>
         )}
-
         <Button onClick={() => setShowEmailModal(true)} variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-50 gap-2 rounded-xl px-5 h-10">
           <Mail className="h-4 w-4" />
           {t.shareEmail}

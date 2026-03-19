@@ -559,6 +559,38 @@ export const EID_PAGE_TEXTS: Record<TransLang, {
   minutes: string;
   seconds: string;
   eidToday: string;
+  // Sticker Pack
+  stickerPack: string;
+  stickerPackSubtitle: string;
+  downloadSticker: string;
+  // Photo Frame
+  photoFrame: string;
+  photoFrameSubtitle: string;
+  uploadPhoto: string;
+  chooseFrame: string;
+  downloadFrame: string;
+  changePhoto: string;
+  // Eidi Calculator
+  eidiCalculator: string;
+  eidiCalculatorSubtitle: string;
+  relativeName: string;
+  amount: string;
+  addRelative: string;
+  totalEidi: string;
+  shareResult: string;
+  // Caption Generator
+  captionGenerator: string;
+  captionGeneratorSubtitle: string;
+  generateCaptions: string;
+  copyCaption: string;
+  hashtags: string;
+  copyHashtags: string;
+  generatingCaptions: string;
+  // Fun Zone
+  funZone: string;
+  // Background Music
+  musicOn: string;
+  musicOff: string;
 }> = {
   en: {
     pageTitle: "Eid Mubarak!",
@@ -624,6 +656,32 @@ export const EID_PAGE_TEXTS: Record<TransLang, {
     minutes: "Min",
     seconds: "Sec",
     eidToday: "Today is Eid!",
+    stickerPack: "Sticker Pack",
+    stickerPackSubtitle: "Download Eid stickers for WhatsApp & social media",
+    downloadSticker: "Download",
+    photoFrame: "Photo Frame",
+    photoFrameSubtitle: "Add a beautiful Eid frame to your photo",
+    uploadPhoto: "Upload Photo",
+    chooseFrame: "Choose Frame",
+    downloadFrame: "Download Photo",
+    changePhoto: "Change Photo",
+    eidiCalculator: "Eidi Calculator",
+    eidiCalculatorSubtitle: "How much Eidi did you collect?",
+    relativeName: "Name",
+    amount: "Amount",
+    addRelative: "Add More",
+    totalEidi: "Total Eidi",
+    shareResult: "Share Result",
+    captionGenerator: "Caption Generator",
+    captionGeneratorSubtitle: "AI-powered Eid captions for social media",
+    generateCaptions: "Generate Captions",
+    copyCaption: "Copy",
+    hashtags: "Hashtags",
+    copyHashtags: "Copy Hashtags",
+    generatingCaptions: "Generating...",
+    funZone: "Fun Zone",
+    musicOn: "Music On",
+    musicOff: "Music Off",
   },
   bn: {
     pageTitle: "ঈদ মোবারক!",
@@ -689,6 +747,32 @@ export const EID_PAGE_TEXTS: Record<TransLang, {
     minutes: "মিনিট",
     seconds: "সেকেন্ড",
     eidToday: "আজ ঈদ!",
+    stickerPack: "স্টিকার প্যাক",
+    stickerPackSubtitle: "হোয়াটসঅ্যাপ ও সোশ্যাল মিডিয়ার জন্য ঈদ স্টিকার ডাউনলোড করুন",
+    downloadSticker: "ডাউনলোড",
+    photoFrame: "ফটো ফ্রেম",
+    photoFrameSubtitle: "আপনার ছবিতে সুন্দর ঈদ ফ্রেম যোগ করুন",
+    uploadPhoto: "ছবি আপলোড",
+    chooseFrame: "ফ্রেম বেছে নিন",
+    downloadFrame: "ছবি ডাউনলোড",
+    changePhoto: "ছবি পরিবর্তন",
+    eidiCalculator: "ঈদী ক্যালকুলেটর",
+    eidiCalculatorSubtitle: "কত ঈদী পেলেন?",
+    relativeName: "নাম",
+    amount: "পরিমাণ",
+    addRelative: "আরো যোগ করুন",
+    totalEidi: "মোট ঈদী",
+    shareResult: "শেয়ার করুন",
+    captionGenerator: "ক্যাপশন জেনারেটর",
+    captionGeneratorSubtitle: "সোশ্যাল মিডিয়ার জন্য AI ঈদ ক্যাপশন",
+    generateCaptions: "ক্যাপশন তৈরি",
+    copyCaption: "কপি",
+    hashtags: "হ্যাশট্যাগ",
+    copyHashtags: "হ্যাশট্যাগ কপি",
+    generatingCaptions: "তৈরি হচ্ছে...",
+    funZone: "মজার জোন",
+    musicOn: "মিউজিক চালু",
+    musicOff: "মিউজিক বন্ধ",
   },
   ur: {
     pageTitle: "عید مبارک!",
@@ -754,6 +838,11 @@ export const EID_PAGE_TEXTS: Record<TransLang, {
     minutes: "منٹ",
     seconds: "سیکنڈ",
     eidToday: "آج عید ہے!",
+    stickerPack: "سٹیکر پیک", stickerPackSubtitle: "واٹس ایپ اور سوشل میڈیا کے لیے عید سٹیکرز ڈاؤنلوڈ کریں", downloadSticker: "ڈاؤنلوڈ",
+    photoFrame: "فوٹو فریم", photoFrameSubtitle: "اپنی تصویر میں خوبصورت عید فریم لگائیں", uploadPhoto: "تصویر اپلوڈ", chooseFrame: "فریم چنیں", downloadFrame: "تصویر ڈاؤنلوڈ", changePhoto: "تصویر بدلیں",
+    eidiCalculator: "عیدی کیلکولیٹر", eidiCalculatorSubtitle: "کتنی عیدی ملی؟", relativeName: "نام", amount: "رقم", addRelative: "مزید شامل کریں", totalEidi: "کل عیدی", shareResult: "شیئر کریں",
+    captionGenerator: "کیپشن جنریٹر", captionGeneratorSubtitle: "سوشل میڈیا کے لیے AI عید کیپشن", generateCaptions: "کیپشن بنائیں", copyCaption: "کاپی", hashtags: "ہیش ٹیگز", copyHashtags: "ہیش ٹیگ کاپی", generatingCaptions: "بن رہا ہے...",
+    funZone: "تفریحی زون", musicOn: "موسیقی چالو", musicOff: "موسیقی بند",
   },
   ar: {
     pageTitle: "عيد مبارك!",
@@ -819,6 +908,11 @@ export const EID_PAGE_TEXTS: Record<TransLang, {
     minutes: "دقائق",
     seconds: "ثوانٍ",
     eidToday: "اليوم عيد!",
+    stickerPack: "حزمة ملصقات", stickerPackSubtitle: "حمّل ملصقات العيد للواتساب ووسائل التواصل", downloadSticker: "تحميل",
+    photoFrame: "إطار صورة", photoFrameSubtitle: "أضف إطار عيد جميل لصورتك", uploadPhoto: "رفع صورة", chooseFrame: "اختر إطار", downloadFrame: "تحميل الصورة", changePhoto: "تغيير الصورة",
+    eidiCalculator: "حاسبة العيدية", eidiCalculatorSubtitle: "كم جمعت من العيدية؟", relativeName: "الاسم", amount: "المبلغ", addRelative: "إضافة المزيد", totalEidi: "إجمالي العيدية", shareResult: "مشاركة النتيجة",
+    captionGenerator: "مولد التعليقات", captionGeneratorSubtitle: "تعليقات عيد بالذكاء الاصطناعي", generateCaptions: "إنشاء تعليقات", copyCaption: "نسخ", hashtags: "هاشتاغ", copyHashtags: "نسخ الهاشتاغ", generatingCaptions: "جارٍ الإنشاء...",
+    funZone: "منطقة المرح", musicOn: "تشغيل الموسيقى", musicOff: "إيقاف الموسيقى",
   },
   tr: {
     pageTitle: "Bayramınız Mübarek Olsun!",
@@ -884,6 +978,11 @@ export const EID_PAGE_TEXTS: Record<TransLang, {
     minutes: "Dk",
     seconds: "Sn",
     eidToday: "Bugün Bayram!",
+    stickerPack: "Çıkartma Paketi", stickerPackSubtitle: "WhatsApp ve sosyal medya için bayram çıkartmaları indirin", downloadSticker: "İndir",
+    photoFrame: "Fotoğraf Çerçevesi", photoFrameSubtitle: "Fotoğrafınıza güzel bir bayram çerçevesi ekleyin", uploadPhoto: "Fotoğraf Yükle", chooseFrame: "Çerçeve Seç", downloadFrame: "Fotoğrafı İndir", changePhoto: "Fotoğraf Değiştir",
+    eidiCalculator: "Bayram Harçlığı", eidiCalculatorSubtitle: "Ne kadar harçlık topladınız?", relativeName: "İsim", amount: "Tutar", addRelative: "Daha Ekle", totalEidi: "Toplam Harçlık", shareResult: "Sonucu Paylaş",
+    captionGenerator: "Altyazı Oluşturucu", captionGeneratorSubtitle: "Sosyal medya için AI bayram altyazıları", generateCaptions: "Altyazı Oluştur", copyCaption: "Kopyala", hashtags: "Hashtag", copyHashtags: "Hashtag Kopyala", generatingCaptions: "Oluşturuluyor...",
+    funZone: "Eğlence Alanı", musicOn: "Müzik Açık", musicOff: "Müzik Kapalı",
   },
   ms: {
     pageTitle: "Selamat Hari Raya!",
@@ -949,6 +1048,11 @@ export const EID_PAGE_TEXTS: Record<TransLang, {
     minutes: "Min",
     seconds: "Saat",
     eidToday: "Hari ini Hari Raya!",
+    stickerPack: "Pek Pelekat", stickerPackSubtitle: "Muat turun pelekat Raya untuk WhatsApp & media sosial", downloadSticker: "Muat Turun",
+    photoFrame: "Bingkai Foto", photoFrameSubtitle: "Tambah bingkai Raya cantik pada foto anda", uploadPhoto: "Muat Naik Foto", chooseFrame: "Pilih Bingkai", downloadFrame: "Muat Turun Foto", changePhoto: "Tukar Foto",
+    eidiCalculator: "Kalkulator Duit Raya", eidiCalculatorSubtitle: "Berapa duit raya anda kumpul?", relativeName: "Nama", amount: "Jumlah", addRelative: "Tambah Lagi", totalEidi: "Jumlah Duit Raya", shareResult: "Kongsi Keputusan",
+    captionGenerator: "Penjana Kapsyen", captionGeneratorSubtitle: "Kapsyen Raya AI untuk media sosial", generateCaptions: "Jana Kapsyen", copyCaption: "Salin", hashtags: "Hashtag", copyHashtags: "Salin Hashtag", generatingCaptions: "Menjana...",
+    funZone: "Zon Seronok", musicOn: "Muzik Hidup", musicOff: "Muzik Mati",
   },
   id: {
     pageTitle: "Selamat Hari Raya!",
@@ -1014,5 +1118,10 @@ export const EID_PAGE_TEXTS: Record<TransLang, {
     minutes: "Min",
     seconds: "Det",
     eidToday: "Hari ini Hari Raya!",
+    stickerPack: "Paket Stiker", stickerPackSubtitle: "Unduh stiker Hari Raya untuk WhatsApp & media sosial", downloadSticker: "Unduh",
+    photoFrame: "Bingkai Foto", photoFrameSubtitle: "Tambahkan bingkai Hari Raya cantik pada foto Anda", uploadPhoto: "Unggah Foto", chooseFrame: "Pilih Bingkai", downloadFrame: "Unduh Foto", changePhoto: "Ganti Foto",
+    eidiCalculator: "Kalkulator THR", eidiCalculatorSubtitle: "Berapa THR yang Anda kumpulkan?", relativeName: "Nama", amount: "Jumlah", addRelative: "Tambah Lagi", totalEidi: "Total THR", shareResult: "Bagikan Hasil",
+    captionGenerator: "Generator Keterangan", captionGeneratorSubtitle: "Keterangan Hari Raya AI untuk media sosial", generateCaptions: "Buat Keterangan", copyCaption: "Salin", hashtags: "Tagar", copyHashtags: "Salin Tagar", generatingCaptions: "Membuat...",
+    funZone: "Zona Seru", musicOn: "Musik Hidup", musicOff: "Musik Mati",
   },
 };

@@ -11,6 +11,9 @@ import {
   Moon,
   Star,
   ListChecks,
+  Sticker,
+  ImagePlus,
+  Sparkles,
 } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { getLangFromCountry, type TransLang } from "@/lib/islamic-content";
@@ -24,10 +27,16 @@ import { EidCountdown } from "@/components/eid/eid-countdown";
 import { EidTakbeerPlayer } from "@/components/eid/eid-takbeer-player";
 import { EidChecklist } from "@/components/eid/eid-checklist";
 import { EidReminder } from "@/components/eid/eid-reminder";
+import { EidStickerPack } from "@/components/eid/eid-sticker-pack";
+import { EidPhotoFrame } from "@/components/eid/eid-photo-frame";
+import { EidSavingsCalculator } from "@/components/eid/eid-savings-calculator";
+import { EidCaptionGenerator } from "@/components/eid/eid-caption-generator";
+import { EidConfetti } from "@/components/eid/eid-confetti";
+import { EidBackgroundMusic } from "@/components/eid/eid-background-music";
 import { EID_PAGE_TEXTS } from "@/lib/eid-content";
 import { fadeIn, slideUp } from "@/lib/animations";
 
-type Tab = "card" | "messages" | "checklist";
+type Tab = "card" | "messages" | "checklist" | "stickers" | "frames" | "captions" | "fun";
 
 export default function EidPage() {
   const [formData] = useLocalStorage<ZakatFormData>(
@@ -41,6 +50,7 @@ export default function EidPage() {
 
   const [activeTab, setActiveTab] = useState<Tab>("card");
   const [cardMessage, setCardMessage] = useState("");
+  const [showConfetti, setShowConfetti] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const handleSelectMessage = useCallback((message: string) => {
@@ -51,10 +61,27 @@ export default function EidPage() {
     }, 400);
   }, []);
 
+  const triggerConfetti = useCallback(() => {
+    setShowConfetti(true);
+  }, []);
+
+  const tabs: { id: Tab; icon: React.ElementType; label: string }[] = [
+    { id: "card", icon: Palette, label: t.createCard },
+    { id: "messages", icon: MessageSquareHeart, label: t.browseMessages },
+    { id: "stickers", icon: Sticker, label: t.stickerPack },
+    { id: "frames", icon: ImagePlus, label: t.photoFrame },
+    { id: "captions", icon: Sparkles, label: t.captionGenerator },
+    { id: "checklist", icon: ListChecks, label: t.eidChecklist },
+    { id: "fun", icon: PartyPopper, label: t.eidiCalculator },
+  ];
+
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-emerald-50/30 via-white to-amber-50/20">
       <BismillahBanner countryCode={countryCode} />
       <Header countryCode={countryCode} />
+
+      {/* Confetti overlay */}
+      <EidConfetti trigger={showConfetti} onComplete={() => setShowConfetti(false)} />
 
       <main className="flex-1">
         {/* Hero Banner */}
@@ -95,101 +122,64 @@ export default function EidPage() {
           </div>
 
           <div className="relative mx-auto max-w-5xl px-4 py-12 text-center" dir={isRTL ? "rtl" : "ltr"}>
-            <motion.p
-              variants={slideUp}
-              initial="initial"
-              animate="animate"
-              className="font-arabic text-2xl text-amber-300/60 mb-3"
-              dir="rtl"
-            >
+            <motion.p variants={slideUp} initial="initial" animate="animate" className="font-arabic text-2xl text-amber-300/60 mb-3" dir="rtl">
               اللَّهُ أَكْبَرُ اللَّهُ أَكْبَرُ لَا إِلَٰهَ إِلَّا اللَّهُ
             </motion.p>
 
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              className="inline-flex items-center gap-3 mb-4"
-            >
+            <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2, type: "spring", stiffness: 200 }} className="inline-flex items-center gap-3 mb-4">
               <PartyPopper className="h-8 w-8 text-amber-400" />
               <h1 className="text-4xl md:text-5xl font-bold text-white">{t.pageTitle}</h1>
               <PartyPopper className="h-8 w-8 text-amber-400 scale-x-[-1]" />
             </motion.div>
 
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="text-emerald-200/80 text-sm md:text-base max-w-lg mx-auto"
-            >
+            <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="text-emerald-200/80 text-sm md:text-base max-w-lg mx-auto">
               {t.pageSubtitle}
             </motion.p>
 
-            {/* Takbeer Player + second line */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="flex flex-col items-center gap-3 mt-4"
-            >
-              <p className="font-arabic text-sm text-amber-200/40" dir="rtl">
-                وَاللَّهُ أَكْبَرُ وَلِلَّهِ الْحَمْدُ
-              </p>
-              <EidTakbeerPlayer lang={lang} />
+            {/* Takbeer + Background Music */}
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="flex flex-col items-center gap-3 mt-4">
+              <p className="font-arabic text-sm text-amber-200/40" dir="rtl">وَاللَّهُ أَكْبَرُ وَلِلَّهِ الْحَمْدُ</p>
+              <div className="flex items-center gap-2">
+                <EidTakbeerPlayer lang={lang} />
+                <EidBackgroundMusic lang={lang} />
+              </div>
             </motion.div>
           </div>
         </motion.div>
 
-        {/* Countdown Timer */}
+        {/* Countdown */}
         <EidCountdown lang={lang} countryCode={countryCode} />
-
-        {/* Reminder */}
         <EidReminder lang={lang} />
 
         {/* Back link */}
         <div className="mx-auto max-w-5xl px-4 mt-4">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-emerald-700 transition-colors"
-          >
+          <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-emerald-700 transition-colors">
             <ArrowLeft className="h-3.5 w-3.5" />
             {t.back}
           </Link>
         </div>
 
-        {/* Tab Switcher — 3 tabs */}
+        {/* Tab Switcher — 6 tabs, horizontally scrollable */}
         <div ref={contentRef} className="mx-auto max-w-5xl px-4 mt-6 scroll-mt-4">
-          <div className="flex gap-1 bg-gray-100 p-1 rounded-xl w-fit mx-auto">
-            <button
-              type="button"
-              onClick={() => setActiveTab("card")}
-              className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                activeTab === "card" ? "bg-white text-emerald-700 shadow-sm" : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              <Palette className="h-4 w-4" />
-              <span className="hidden sm:inline">{t.createCard}</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("messages")}
-              className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                activeTab === "messages" ? "bg-white text-emerald-700 shadow-sm" : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              <MessageSquareHeart className="h-4 w-4" />
-              <span className="hidden sm:inline">{t.browseMessages}</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("checklist")}
-              className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                activeTab === "checklist" ? "bg-white text-emerald-700 shadow-sm" : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              <ListChecks className="h-4 w-4" />
-              <span className="hidden sm:inline">{t.eidChecklist}</span>
-            </button>
+          <div className="overflow-x-auto scrollbar-hide max-w-full">
+            <div className="flex gap-1 bg-gray-100 p-1 rounded-xl w-fit mx-auto min-w-max">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                      activeTab === tab.id ? "bg-white text-emerald-700 shadow-sm" : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">{tab.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 
@@ -202,7 +192,7 @@ export default function EidPage() {
                   <h2 className="text-xl font-bold text-gray-800">{t.cardCreatorTitle}</h2>
                   <p className="text-sm text-gray-500 mt-1">{t.cardCreatorSubtitle}</p>
                 </div>
-                <EidCardCreator lang={lang} message={cardMessage} onMessageChange={setCardMessage} />
+                <EidCardCreator lang={lang} message={cardMessage} onMessageChange={setCardMessage} onSuccess={triggerConfetti} />
               </motion.div>
             )}
             {activeTab === "messages" && (
@@ -214,9 +204,29 @@ export default function EidPage() {
                 <EidMessagesList lang={lang} onSelectMessage={handleSelectMessage} />
               </motion.div>
             )}
+            {activeTab === "stickers" && (
+              <motion.div key="stickers" variants={fadeIn} initial="initial" animate="animate" exit="exit">
+                <EidStickerPack lang={lang} />
+              </motion.div>
+            )}
+            {activeTab === "frames" && (
+              <motion.div key="frames" variants={fadeIn} initial="initial" animate="animate" exit="exit">
+                <EidPhotoFrame lang={lang} />
+              </motion.div>
+            )}
             {activeTab === "checklist" && (
               <motion.div key="checklist" variants={fadeIn} initial="initial" animate="animate" exit="exit">
                 <EidChecklist lang={lang} />
+              </motion.div>
+            )}
+            {activeTab === "captions" && (
+              <motion.div key="captions" variants={fadeIn} initial="initial" animate="animate" exit="exit">
+                <EidCaptionGenerator lang={lang} />
+              </motion.div>
+            )}
+            {activeTab === "fun" && (
+              <motion.div key="fun" variants={fadeIn} initial="initial" animate="animate" exit="exit">
+                <EidSavingsCalculator lang={lang} />
               </motion.div>
             )}
           </AnimatePresence>
