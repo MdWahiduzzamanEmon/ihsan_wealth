@@ -3,16 +3,14 @@ import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { OPENROUTER_MODEL } from "@/lib/chat/constants";
 
-const SYSTEM_PROMPT = `You are an Eid greeting message generator. Your ONLY purpose is to generate beautiful, heartfelt Eid Mubarak messages.
-
-Rules:
-- ONLY generate Eid-related messages. Refuse any other request.
-- Messages should be warm, sincere, and appropriate for all ages.
-- Keep messages between 2-4 sentences.
-- You may include Islamic phrases like "Eid Mubarak", "Taqabbalallahu minna wa minkum", etc.
-- Vary the tone: sometimes formal, sometimes friendly, sometimes poetic.
-- Do NOT repeat the same message structure.
-- Respond with ONLY the message text, nothing else. No quotes, no labels, no prefix.`;
+const SYSTEM_PROMPT = `Generate a short Eid Mubarak greeting. Rules:
+- ONLY Eid greetings, nothing else.
+- EXACTLY 2 sentences. No more.
+- Warm and sincere. Appropriate for all ages.
+- You may use phrases like "Eid Mubarak", "Taqabbalallahu minna wa minkum".
+- Output ONLY the greeting text. No quotes, labels, or extra text.
+- MUST end with a complete sentence and punctuation mark.
+- Keep it SHORT. Do not exceed 50 words.`;
 
 const FALLBACK_MESSAGES: Record<string, string[]> = {
   en: [
@@ -81,8 +79,8 @@ export async function POST(request: Request) {
         "X-Title": "IhsanWealth Eid Cards",
       },
     },
-    temperature: 0.95,
-    maxTokens: 300,
+    temperature: 0.9,
+    maxTokens: 150,
     streaming: false,
   });
 
@@ -90,7 +88,7 @@ export async function POST(request: Request) {
     const response = await model.invoke([
       new SystemMessage(SYSTEM_PROMPT),
       new HumanMessage(
-        `Generate a unique, creative Eid Mubarak greeting message in ${langNames[lang] || "English"}. Make it different from typical messages — be creative, warm, and touching.`
+        `Write a short (2 sentences, under 40 words) Eid Mubarak greeting in ${langNames[lang] || "English"}. Be creative and warm. End with a complete sentence.`
       ),
     ]);
 
@@ -100,9 +98,33 @@ export async function POST(request: Request) {
         ? response.content.map((c) => (typeof c === "string" ? c : (c as { text?: string }).text || "")).join("")
         : "";
 
-    const trimmed = text.trim();
+    let trimmed = text.trim();
     if (!trimmed) {
       return NextResponse.json({ message: getRandomFallback(lang) });
+    }
+
+    // Strip wrapping quotes if the model added them
+    if ((trimmed.startsWith('"') && trimmed.endsWith('"')) || (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
+      trimmed = trimmed.slice(1, -1).trim();
+    }
+
+    // Detect truncated output — if it doesn't end with sentence-ending punctuation,
+    // the free model likely hit its token limit mid-sentence. Use fallback instead.
+    const endsWithPunctuation = /[.!?।।؟!\u06D4\u0964]$/.test(trimmed);
+    if (!endsWithPunctuation && trimmed.length > 10) {
+      // Try to salvage by cutting at last complete sentence
+      const lastSentenceEnd = Math.max(
+        trimmed.lastIndexOf(". "),
+        trimmed.lastIndexOf("! "),
+        trimmed.lastIndexOf("? "),
+        trimmed.lastIndexOf("।"),
+        trimmed.lastIndexOf("؟"),
+      );
+      if (lastSentenceEnd > trimmed.length * 0.4) {
+        trimmed = trimmed.slice(0, lastSentenceEnd + 1).trim();
+      } else {
+        return NextResponse.json({ message: getRandomFallback(lang) });
+      }
     }
 
     return NextResponse.json({ message: trimmed });
