@@ -108,25 +108,19 @@ export function EidCardCreator({ lang, message, onMessageChange, onSuccess }: Ei
     }
   }, [lang, onMessageChange]);
 
-  // Generate card image blob with fixed pixel dimensions
+  // Generate card image blob — capture at actual rendered size with high DPI
   const getCardBlob = useCallback(async () => {
     if (!cardRef.current) return null;
     const { toPng } = await import("html-to-image");
-    const exportDim = EXPORT_DIMENSIONS[layout];
     const el = cardRef.current;
 
     const dataUrl = await toPng(el, {
-      pixelRatio: 2,
-      width: exportDim.width / 2,
-      height: exportDim.height / 2,
-      style: {
-        width: `${exportDim.width / 2}px`,
-        height: `${exportDim.height / 2}px`,
-        maxWidth: "none",
-      },
+      pixelRatio: 3,
+      width: el.offsetWidth,
+      height: el.offsetHeight,
     });
     return { dataUrl, blob: await (await fetch(dataUrl)).blob() };
-  }, [layout]);
+  }, []);
 
   // Download
   const handleDownload = useCallback(async () => {
@@ -165,7 +159,7 @@ export function EidCardCreator({ lang, message, onMessageChange, onSuccess }: Ei
   // WhatsApp share — always opens WhatsApp directly
   const handleWhatsApp = useCallback(() => {
     const text = encodeURIComponent(
-      `${t.eidMubarak}\n\n${message || ""}\n\n🌙 Create your own Eid card: ihsanwealth.onrender.com/eid`
+      `${t.eidMubarak}\n\n${message || ""}\n\n🌙 Create your own Eid card: https://ihsanwealth.onrender.com/eid`
     );
     window.open(`https://wa.me/?text=${text}`, "_blank");
   }, [message, t.eidMubarak]);
@@ -453,7 +447,7 @@ function EmailCaptchaModal({ lang, t, message, eidMubarak, onClose }: {
     }
     const subject = encodeURIComponent(t.emailSubject);
     const body = encodeURIComponent(`${t.emailBody}\n\n---\n\n${message}\n\n— ${eidMubarak}\n\nSent from IhsanWealth (ihsan-wealth.onrender.com)`);
-    window.open(`mailto:${email}?subject=${subject}&body=${body}`, "_blank");
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     onClose();
   };
 

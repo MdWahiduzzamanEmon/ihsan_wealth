@@ -50,7 +50,7 @@ function getRandomFallback(lang: string): string {
 export async function POST(request: Request) {
   const apiKey = process.env.OPENROUTER_API_KEY;
 
-  let body: { language?: string };
+  let body: { language?: string; tone?: string };
   try {
     body = await request.json();
   } catch {
@@ -58,6 +58,7 @@ export async function POST(request: Request) {
   }
 
   const lang = body.language || "en";
+  const tone = body.tone || "";
 
   // If no API key, return a fallback message directly
   if (!apiKey) {
@@ -88,7 +89,7 @@ export async function POST(request: Request) {
     const response = await model.invoke([
       new SystemMessage(SYSTEM_PROMPT),
       new HumanMessage(
-        `Write a short (2 sentences, under 40 words) Eid Mubarak greeting in ${langNames[lang] || "English"}. Be creative and warm. End with a complete sentence.`
+        `Write a short (2 sentences, under 40 words) Eid Mubarak greeting in ${langNames[lang] || "English"}.${tone ? ` Make the tone ${tone}.` : ""} Be creative and warm. End with a complete sentence.`
       ),
     ]);
 

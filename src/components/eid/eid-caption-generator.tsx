@@ -73,18 +73,36 @@ export function EidCaptionGenerator({ lang }: EidCaptionGeneratorProps) {
   const generate = useCallback(async () => {
     setIsLoading(true);
     setCaptions([]);
+
+    const tones = ["formal and elegant", "friendly and fun", "poetic and spiritual"];
     try {
-      const results = await Promise.all(
-        [1, 2, 3].map(() =>
-          fetch("/api/eid-message", {
+      // Call API sequentially with different tones to get varied results
+      const results: string[] = [];
+      for (const tone of tones) {
+        try {
+          const res = await fetch("/api/eid-message", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ language: lang }),
-          }).then((r) => r.json()).then((d) => d.message as string).catch(() => null)
-        )
-      );
-      const valid = results.filter(Boolean) as string[];
-      setCaptions(valid.length >= 2 ? valid : (FALLBACK_CAPTIONS[lang] || FALLBACK_CAPTIONS.en));
+            body: JSON.stringify({ language: lang, tone }),
+          });
+          const data = await res.json();
+          if (data.message && !results.includes(data.message)) {
+            results.push(data.message);
+          }
+        } catch { /* skip */ }
+      }
+
+      if (results.length >= 2) {
+        setCaptions(results);
+      } else {
+        // Use fallbacks but shuffle them
+        const fb = [...(FALLBACK_CAPTIONS[lang] || FALLBACK_CAPTIONS.en)];
+        for (let i = fb.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [fb[i], fb[j]] = [fb[j], fb[i]];
+        }
+        setCaptions(fb);
+      }
     } catch {
       setCaptions(FALLBACK_CAPTIONS[lang] || FALLBACK_CAPTIONS.en);
     } finally {

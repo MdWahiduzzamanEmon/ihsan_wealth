@@ -175,9 +175,9 @@ export const EidCardPreview = forwardRef<HTMLDivElement, EidCardPreviewProps>(
         </div>
 
         {/* Content wrapper */}
-        <div className={`relative flex h-full ${isLandscape ? "flex-row" : "flex-col"} ${isLandscape ? "px-6 py-6" : "px-8 py-8 sm:px-10 sm:py-10"}`}>
+        <div className={`relative flex h-full ${isLandscape ? "flex-row" : "flex-col items-center"} ${isLandscape ? "px-6 py-6" : "px-8 py-8 sm:px-10 sm:py-10"}`}>
           {/* Left/Top section: Title area */}
-          <div className={`${isLandscape ? "w-2/5 flex flex-col justify-center items-center border-r border-current/10 pr-5" : ""}`}>
+          <div className={`${isLandscape ? "w-2/5 flex flex-col justify-center items-center border-r border-current/10 pr-5" : "w-full"}`}>
             {/* Top decorative line (portrait/square only) */}
             {!isLandscape && (
               <div className={`flex items-center gap-2 mb-2 ${design.accent} opacity-30`}>
@@ -204,10 +204,10 @@ export const EidCardPreview = forwardRef<HTMLDivElement, EidCardPreviewProps>(
           </div>
 
           {/* Right/Bottom section: Message + Name */}
-          <div className={`${isLandscape ? "w-3/5 flex flex-col justify-center pl-5" : "flex-1 flex flex-col"}`}>
+          <div className={`${isLandscape ? "w-3/5 flex flex-col justify-center pl-5" : "flex-1 flex flex-col items-center w-full"}`}>
             {/* Decorative separator */}
             {!isLandscape && (
-              <div className={`flex items-center gap-3 my-3 ${design.accent} opacity-25`}>
+              <div className={`flex items-center gap-3 my-3 w-full ${design.accent} opacity-25`}>
                 <div className="h-px flex-1 bg-current" />
                 <span className="text-[10px] tracking-[0.3em]">&#9733; &#10022; &#9733;</span>
                 <div className="h-px flex-1 bg-current" />
@@ -215,7 +215,7 @@ export const EidCardPreview = forwardRef<HTMLDivElement, EidCardPreviewProps>(
             )}
 
             {/* Message */}
-            <div className={`flex-1 flex items-center justify-center ${isLandscape ? "py-1" : "py-2"}`}>
+            <div className={`flex-1 flex items-center justify-center ${isLandscape ? "py-1" : "py-2"} w-full`}>
               <p className={`${messageSize} leading-relaxed ${design.textColor} opacity-90 text-center max-w-[95%]`}>
                 {message || (
                   <span className="opacity-30 italic text-sm">
@@ -226,7 +226,7 @@ export const EidCardPreview = forwardRef<HTMLDivElement, EidCardPreviewProps>(
             </div>
 
             {/* Decorative separator */}
-            <div className={`flex items-center gap-3 ${isLandscape ? "my-2" : "my-3"} ${design.accent} opacity-25`}>
+            <div className={`flex items-center gap-3 ${isLandscape ? "my-2" : "my-3"} w-full ${design.accent} opacity-25`}>
               <div className="h-px flex-1 bg-current" />
               <span className="text-[10px]">✦</span>
               <div className="h-px flex-1 bg-current" />
