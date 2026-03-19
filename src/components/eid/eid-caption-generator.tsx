@@ -117,7 +117,7 @@ export function EidCaptionGenerator({ lang }: EidCaptionGeneratorProps) {
   }, []);
 
   const shareToFacebook = useCallback((text: string) => {
-    const url = encodeURIComponent("https://ihsanwealth.onrender.com/eid");
+    const url = encodeURIComponent("https://ihsan-wealth.onrender.com/eid");
     const quote = encodeURIComponent(text);
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${quote}`, "_blank", "width=600,height=400");
   }, []);

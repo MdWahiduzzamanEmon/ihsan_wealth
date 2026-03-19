@@ -264,7 +264,7 @@ export function EidSavingsCalculator({ lang }: EidSavingsCalculatorProps) {
         </motion.p>
         <p className="text-3xl mb-1">{getFunEmoji(total)}</p>
         <p className="text-emerald-200 text-sm font-medium">{getFunMessage(total, lang)}</p>
-        <p className="text-emerald-400/30 text-[8px] mt-3">ihsanwealth.onrender.com/eid</p>
+        <p className="text-emerald-400/30 text-[8px] mt-3">ihsan-wealth.onrender.com/eid</p>
       </div>
 
       {total > 0 && (

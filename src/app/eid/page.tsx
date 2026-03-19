@@ -32,7 +32,6 @@ import { EidPhotoFrame } from "@/components/eid/eid-photo-frame";
 import { EidSavingsCalculator } from "@/components/eid/eid-savings-calculator";
 import { EidCaptionGenerator } from "@/components/eid/eid-caption-generator";
 import { EidConfetti } from "@/components/eid/eid-confetti";
-import { EidBackgroundMusic } from "@/components/eid/eid-background-music";
 import { EID_PAGE_TEXTS } from "@/lib/eid-content";
 import { fadeIn, slideUp } from "@/lib/animations";
 
@@ -139,10 +138,7 @@ export default function EidPage() {
             {/* Takbeer + Background Music */}
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="flex flex-col items-center gap-3 mt-4">
               <p className="font-arabic text-sm text-amber-200/40" dir="rtl">وَاللَّهُ أَكْبَرُ وَلِلَّهِ الْحَمْدُ</p>
-              <div className="flex items-center gap-2">
-                <EidTakbeerPlayer lang={lang} />
-                <EidBackgroundMusic lang={lang} />
-              </div>
+              <EidTakbeerPlayer lang={lang} />
             </motion.div>
           </div>
         </motion.div>

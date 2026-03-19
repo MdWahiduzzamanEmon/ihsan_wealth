@@ -159,7 +159,7 @@ export function EidCardCreator({ lang, message, onMessageChange, onSuccess }: Ei
   // WhatsApp share — always opens WhatsApp directly
   const handleWhatsApp = useCallback(() => {
     const text = encodeURIComponent(
-      `${t.eidMubarak}\n\n${message || ""}\n\n🌙 Create your own Eid card: https://ihsanwealth.onrender.com/eid`
+      `${t.eidMubarak}\n\n${message || ""}\n\n🌙 Create your own Eid card:\nhttps://ihsan-wealth.onrender.com/eid`
     );
     window.open(`https://wa.me/?text=${text}`, "_blank");
   }, [message, t.eidMubarak]);

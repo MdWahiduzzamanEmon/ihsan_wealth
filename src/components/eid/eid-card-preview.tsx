@@ -256,7 +256,7 @@ export const EidCardPreview = forwardRef<HTMLDivElement, EidCardPreviewProps>(
                 <div className="h-px flex-1 bg-current" />
               </div>
               <p className={`${design.accent2} opacity-20 text-[8px] text-center mt-2 tracking-wider`}>
-                ihsanwealth.onrender.com
+                ihsan-wealth.onrender.com
               </p>
             </>
           )}

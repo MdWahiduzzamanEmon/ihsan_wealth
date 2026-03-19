@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Volume2, VolumeX } from "lucide-react";
 import { EID_PAGE_TEXTS } from "@/lib/eid-content";
@@ -10,66 +10,101 @@ interface EidTakbeerPlayerProps {
   lang: TransLang;
 }
 
-const TAKBEER_TEXT = "الله أكبر الله أكبر لا إله إلا الله، الله أكبر الله أكبر ولله الحمد";
+const TAKBEER_TEXT = "الله أكبر، الله أكبر، لا إله إلا الله، الله أكبر، الله أكبر، ولله الحمد";
 
 export function EidTakbeerPlayer({ lang }: EidTakbeerPlayerProps) {
   const t = EID_PAGE_TEXTS[lang];
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const urlRef = useRef<string | null>(null);
 
-  const handleToggle = useCallback(async () => {
-    if (isPlaying && audioRef.current) {
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+      if (urlRef.current) {
+        URL.revokeObjectURL(urlRef.current);
+      }
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  const stop = useCallback(() => {
+    if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
-      setIsPlaying(false);
-      return;
     }
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+    setIsPlaying(false);
+  }, []);
 
+  const play = useCallback(async () => {
     setIsLoading(true);
     try {
-      // Use the app's TTS endpoint
-      const res = await fetch("/api/tts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: TAKBEER_TEXT, lang: "ar" }),
+      // Use the app's TTS endpoint (GET with query params)
+      const params = new URLSearchParams({
+        text: TAKBEER_TEXT,
+        lang: "ar",
+        rate: "-20%", // Slower for recitation feel
       });
+      const res = await fetch(`/api/tts?${params.toString()}`);
 
       if (!res.ok) throw new Error("TTS failed");
 
       const blob = await res.blob();
+      // Cleanup old URL
+      if (urlRef.current) URL.revokeObjectURL(urlRef.current);
       const url = URL.createObjectURL(blob);
+      urlRef.current = url;
 
+      // Stop any existing playback
       if (audioRef.current) {
         audioRef.current.pause();
-        URL.revokeObjectURL(audioRef.current.src);
       }
 
       const audio = new Audio(url);
       audioRef.current = audio;
-      audio.onended = () => {
-        setIsPlaying(false);
-        URL.revokeObjectURL(url);
-      };
-      audio.onerror = () => {
-        setIsPlaying(false);
-      };
+      audio.onended = () => setIsPlaying(false);
+      audio.onerror = () => setIsPlaying(false);
       await audio.play();
       setIsPlaying(true);
     } catch {
-      // Fallback: use browser speech synthesis
-      if ("speechSynthesis" in window) {
-        const utterance = new SpeechSynthesisUtterance(TAKBEER_TEXT);
-        utterance.lang = "ar";
-        utterance.rate = 0.8;
-        utterance.onend = () => setIsPlaying(false);
-        window.speechSynthesis.speak(utterance);
-        setIsPlaying(true);
+      // Fallback: browser speech synthesis with Arabic voice
+      try {
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(TAKBEER_TEXT);
+          utterance.lang = "ar-SA";
+          utterance.rate = 0.7;
+          utterance.pitch = 0.9;
+          utterance.onend = () => setIsPlaying(false);
+          utterance.onerror = () => setIsPlaying(false);
+          window.speechSynthesis.speak(utterance);
+          setIsPlaying(true);
+        }
+      } catch {
+        // No audio available
       }
     } finally {
       setIsLoading(false);
     }
-  }, [isPlaying]);
+  }, []);
+
+  const handleToggle = useCallback(() => {
+    if (isPlaying) {
+      stop();
+    } else {
+      play();
+    }
+  }, [isPlaying, stop, play]);
 
   return (
     <button
@@ -89,7 +124,6 @@ export function EidTakbeerPlayer({ lang }: EidTakbeerPlayerProps) {
             className="flex items-center gap-1"
           >
             <VolumeX className="h-3.5 w-3.5" />
-            {/* Animated waveform bars */}
             <div className="flex items-end gap-[2px] h-3">
               {[0, 1, 2, 3].map((i) => (
                 <motion.div
