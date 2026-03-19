@@ -22,7 +22,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CARD_DESIGNS, EID_PAGE_TEXTS, FONT_STYLES, type CardDesign, type CardLayout } from "@/lib/eid-content";
+import { CARD_DESIGNS, CARD_LAYOUT_CONFIG, EID_PAGE_TEXTS, FONT_STYLES, type CardDesign, type CardLayout } from "@/lib/eid-content";
 import type { TransLang } from "@/lib/islamic-content";
 import { EidCardMini } from "./eid-card-preview";
 import { EidCardAnimatedWrapper } from "./eid-card-animated-wrapper";
@@ -53,13 +53,19 @@ const LAYOUT_ICONS = {
   square: Square,
 };
 
+// Fixed pixel dimensions for export (high quality)
+const EXPORT_DIMENSIONS: Record<CardLayout, { width: number; height: number }> = {
+  portrait: { width: 1080, height: 1440 },
+  landscape: { width: 1920, height: 1080 },
+  square: { width: 1080, height: 1080 },
+};
+
 export function EidCardCreator({ lang, message, onMessageChange }: EidCardCreatorProps) {
   const t = EID_PAGE_TEXTS[lang];
   const isRTL = lang === "ar" || lang === "ur";
 
   const [selectedDesign, setSelectedDesign] = useState<CardDesign>(CARD_DESIGNS[0]);
   const [name, setName] = useState("");
-  const [recipientName, setRecipientName] = useState("");
   const [messageSize, setMessageSize] = useState<TextSize>("medium");
   const [nameSize, setNameSize] = useState<TextSize>("medium");
   const [layout, setLayout] = useState<CardLayout>("portrait");
@@ -101,18 +107,25 @@ export function EidCardCreator({ lang, message, onMessageChange }: EidCardCreato
     }
   }, [lang, onMessageChange]);
 
-  // Generate card image blob
+  // Generate card image blob with fixed pixel dimensions
   const getCardBlob = useCallback(async () => {
     if (!cardRef.current) return null;
     const { toPng } = await import("html-to-image");
-    const dataUrl = await toPng(cardRef.current, {
-      pixelRatio: 3,
-      backgroundColor: undefined,
-      width: cardRef.current.scrollWidth,
-      height: cardRef.current.scrollHeight,
+    const exportDim = EXPORT_DIMENSIONS[layout];
+    const el = cardRef.current;
+
+    const dataUrl = await toPng(el, {
+      pixelRatio: 2,
+      width: exportDim.width / 2,
+      height: exportDim.height / 2,
+      style: {
+        width: `${exportDim.width / 2}px`,
+        height: `${exportDim.height / 2}px`,
+        maxWidth: "none",
+      },
     });
     return { dataUrl, blob: await (await fetch(dataUrl)).blob() };
-  }, []);
+  }, [layout]);
 
   // Download
   const handleDownload = useCallback(async () => {
@@ -131,7 +144,7 @@ export function EidCardCreator({ lang, message, onMessageChange }: EidCardCreato
     }
   }, [getCardBlob]);
 
-  // Share
+  // Share (native OS share sheet)
   const handleShare = useCallback(async () => {
     try {
       const result = await getCardBlob();
@@ -147,21 +160,13 @@ export function EidCardCreator({ lang, message, onMessageChange }: EidCardCreato
     } catch { /* cancelled */ }
   }, [message, t.eidMubarak, handleDownload, getCardBlob]);
 
-  // WhatsApp share
-  const handleWhatsApp = useCallback(async () => {
-    try {
-      const result = await getCardBlob();
-      if (!result) return;
-      const file = new File([result.blob], "eid-mubarak-card.png", { type: "image/png" });
-      if (navigator.share && navigator.canShare({ files: [file] })) {
-        await navigator.share({ title: t.eidMubarak, text: message || t.eidMubarak, files: [file] });
-      } else {
-        // Fallback: open WhatsApp with text
-        const text = encodeURIComponent(`${t.eidMubarak}\n\n${message}\n\nihsanwealth.onrender.com/eid`);
-        window.open(`https://wa.me/?text=${text}`, "_blank");
-      }
-    } catch { /* cancelled */ }
-  }, [message, t.eidMubarak, getCardBlob]);
+  // WhatsApp share — always opens WhatsApp directly
+  const handleWhatsApp = useCallback(() => {
+    const text = encodeURIComponent(
+      `${t.eidMubarak}\n\n${message || ""}\n\n🌙 Create your own Eid card: ihsanwealth.onrender.com/eid`
+    );
+    window.open(`https://wa.me/?text=${text}`, "_blank");
+  }, [message, t.eidMubarak]);
 
   // Copy to clipboard
   const handleCopyClipboard = useCallback(async () => {
@@ -249,27 +254,10 @@ export function EidCardCreator({ lang, message, onMessageChange }: EidCardCreato
         </div>
       </div>
 
-      {/* Step 3: Recipient Name (To) */}
+      {/* Step 3: Message */}
       <div>
         <h3 className="text-sm font-semibold text-emerald-800 mb-3 flex items-center gap-2">
           <span className="h-5 w-5 rounded-full bg-emerald-100 flex items-center justify-center text-xs font-bold text-emerald-700">3</span>
-          {t.recipientName}
-          <span className="text-xs text-gray-400 font-normal">({t.toLabel})</span>
-        </h3>
-        <input
-          type="text"
-          value={recipientName}
-          onChange={(e) => setRecipientName(e.target.value)}
-          placeholder={t.recipientName + "..."}
-          dir={isRTL ? "rtl" : "ltr"}
-          className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 focus:outline-none transition-all"
-        />
-      </div>
-
-      {/* Step 4: Message */}
-      <div>
-        <h3 className="text-sm font-semibold text-emerald-800 mb-3 flex items-center gap-2">
-          <span className="h-5 w-5 rounded-full bg-emerald-100 flex items-center justify-center text-xs font-bold text-emerald-700">4</span>
           {t.yourMessage}
         </h3>
         <div className="relative">
@@ -293,12 +281,11 @@ export function EidCardCreator({ lang, message, onMessageChange }: EidCardCreato
         </div>
       </div>
 
-      {/* Step 5: Your Name (From) */}
+      {/* Step 4: Your Name */}
       <div>
         <h3 className="text-sm font-semibold text-emerald-800 mb-3 flex items-center gap-2">
-          <span className="h-5 w-5 rounded-full bg-emerald-100 flex items-center justify-center text-xs font-bold text-emerald-700">5</span>
+          <span className="h-5 w-5 rounded-full bg-emerald-100 flex items-center justify-center text-xs font-bold text-emerald-700">4</span>
           {t.yourName}
-          <span className="text-xs text-gray-400 font-normal">({t.fromLabel})</span>
         </h3>
         <input
           type="text"
@@ -324,7 +311,6 @@ export function EidCardCreator({ lang, message, onMessageChange }: EidCardCreato
         {showSettings && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
             <div className="space-y-4 p-4 rounded-xl bg-gray-50 border border-gray-100">
-              {/* Font Style */}
               <div>
                 <label className="text-xs font-medium text-gray-600 mb-2 flex items-center gap-1">
                   <Type className="h-3 w-3" />
@@ -348,33 +334,24 @@ export function EidCardCreator({ lang, message, onMessageChange }: EidCardCreato
                   ))}
                 </div>
               </div>
-
               <div className="grid grid-cols-2 gap-4">
-                {/* Message Size */}
                 <div>
                   <label className="text-xs font-medium text-gray-600 mb-2 flex items-center gap-1">
-                    <Type className="h-3 w-3" />
-                    {t.messageSize}
+                    <Type className="h-3 w-3" /> {t.messageSize}
                   </label>
                   <div className="flex gap-1">
                     {(["small", "medium", "large"] as TextSize[]).map((s) => (
-                      <button key={s} type="button" onClick={() => setMessageSize(s)} className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${messageSize === s ? "bg-emerald-600 text-white" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-100"}`}>
-                        {t[s]}
-                      </button>
+                      <button key={s} type="button" onClick={() => setMessageSize(s)} className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${messageSize === s ? "bg-emerald-600 text-white" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-100"}`}>{t[s]}</button>
                     ))}
                   </div>
                 </div>
-                {/* Name Size */}
                 <div>
                   <label className="text-xs font-medium text-gray-600 mb-2 flex items-center gap-1">
-                    <Type className="h-3 w-3" />
-                    {t.nameSize}
+                    <Type className="h-3 w-3" /> {t.nameSize}
                   </label>
                   <div className="flex gap-1">
                     {(["small", "medium", "large"] as TextSize[]).map((s) => (
-                      <button key={s} type="button" onClick={() => setNameSize(s)} className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${nameSize === s ? "bg-emerald-600 text-white" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-100"}`}>
-                        {t[s]}
-                      </button>
+                      <button key={s} type="button" onClick={() => setNameSize(s)} className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${nameSize === s ? "bg-emerald-600 text-white" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-100"}`}>{t[s]}</button>
                     ))}
                   </div>
                 </div>
@@ -384,10 +361,10 @@ export function EidCardCreator({ lang, message, onMessageChange }: EidCardCreato
         )}
       </AnimatePresence>
 
-      {/* Card Preview with animation */}
+      {/* Card Preview */}
       <div>
         <h3 className="text-sm font-semibold text-emerald-800 mb-3 flex items-center gap-2">
-          <span className="h-5 w-5 rounded-full bg-emerald-100 flex items-center justify-center text-xs font-bold text-emerald-700">6</span>
+          <span className="h-5 w-5 rounded-full bg-emerald-100 flex items-center justify-center text-xs font-bold text-emerald-700">5</span>
           {t.preview}
         </h3>
         <div className="flex justify-center px-2 pb-6">
@@ -396,21 +373,21 @@ export function EidCardCreator({ lang, message, onMessageChange }: EidCardCreato
             design={selectedDesign}
             message={message}
             name={name}
-            recipientName={recipientName}
+            recipientName=""
             messageSize={SIZE_MAP[messageSize]}
             nameSize={NAME_SIZE_MAP[nameSize]}
             isRTL={isRTL}
             eidMubarakText={t.eidMubarak}
             layout={layout}
             fontClass={fontStyle.className}
-            toLabel={t.toLabel}
+            toLabel=""
             fromLabel={t.fromLabel}
             replayLabel={t.replayAnimation}
           />
         </div>
       </div>
 
-      {/* Action Buttons — 2 rows */}
+      {/* Action Buttons */}
       <div className="flex flex-wrap gap-2 justify-center pt-2">
         <Button onClick={handleDownload} disabled={downloading} className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2 rounded-xl px-5 h-10">
           {downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}

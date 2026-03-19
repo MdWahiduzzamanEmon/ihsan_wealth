@@ -192,18 +192,6 @@ export const EidCardPreview = forwardRef<HTMLDivElement, EidCardPreviewProps>(
               بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
             </p>
 
-            {/* Recipient name */}
-            {recipientName && (
-              <div className={`text-center ${isLandscape ? "mb-2" : "mb-3"}`}>
-                <p className={`${design.accent2} text-[10px] opacity-50 tracking-wider uppercase`}>
-                  {toLabel}
-                </p>
-                <p className={`text-sm font-semibold ${design.accent}`}>
-                  {recipientName}
-                </p>
-              </div>
-            )}
-
             {/* Eid Mubarak title */}
             <div className={`text-center ${isLandscape ? "mb-2" : "mb-2"}`}>
               <h2 className={`font-arabic ${isLandscape ? "text-2xl" : "text-4xl sm:text-5xl"} font-bold ${design.accent} leading-tight`} dir="rtl">
@@ -244,11 +232,11 @@ export const EidCardPreview = forwardRef<HTMLDivElement, EidCardPreviewProps>(
               <div className="h-px flex-1 bg-current" />
             </div>
 
-            {/* From Name */}
+            {/* Name */}
             {name ? (
               <div className={`text-center ${isLandscape ? "mb-1" : "mb-3"}`}>
                 <p className={`${design.accent2} text-[10px] opacity-50 mb-0.5 tracking-wider uppercase`}>
-                  {fromLabel}
+                  {isRTL ? "مع تحيات" : "With love from"}
                 </p>
                 <p className={`${nameSize} font-bold ${design.accent}`}>
                   {name}
