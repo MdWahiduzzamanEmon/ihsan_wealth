@@ -9,7 +9,7 @@ import { PriceSkeleton } from "@/components/ui/custom/loading-skeleton";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import type { ZakatFormData, NisabBasis } from "@/types/zakat";
+import type { ZakatFormData, NisabBasis, GoldKarat } from "@/types/zakat";
 import type { MetalPrices } from "@/hooks/use-metal-prices";
 import type { TransLang } from "@/lib/islamic-content";
 import { t, biDesc } from "@/lib/form-translations";
@@ -26,8 +26,16 @@ interface CountryStepProps {
   lang: TransLang;
 }
 
+const GOLD_KARATS: { value: GoldKarat; label: string; purity: number }[] = [
+  { value: 22, label: "22K", purity: 22 / 24 },
+  { value: 21, label: "21K", purity: 21 / 24 },
+  { value: 18, label: "18K", purity: 18 / 24 },
+  { value: 24, label: "24K", purity: 1 },
+];
+
 export function CountryStep({ formData, onChange, prices, pricesLoading, detectedCountry, lang }: CountryStepProps) {
   const [countryOpen, setCountryOpen] = useState(false);
+  const [displayKarat, setDisplayKarat] = useState<GoldKarat>(22);
   const isLocal = lang !== "en";
   const detectedInfo = detectedCountry ? COUNTRIES.find((c) => c.code === detectedCountry) : null;
   const selectedCountry = COUNTRIES.find((c) => c.code === formData.country);
@@ -159,20 +167,49 @@ export function CountryStep({ formData, onChange, prices, pricesLoading, detecte
                   <span className="font-semibold text-amber-800">Gold</span>
                   <span className="font-arabic text-xs text-amber-500">{isLocal ? t(lang, "gold") : "الذهب"}</span>
                 </div>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between items-center">
-                    <span className="text-amber-700/70">{isLocal ? t(lang, "perGram") : "Per Gram"}</span>
-                    <span className="font-bold text-amber-900 text-base">{selectedCountry?.currencySymbol}{prices.goldPricePerGram.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-amber-700/70">{isLocal ? t(lang, "perTola") : "Per Tola"}</span>
-                    <span className="font-semibold text-amber-900">{selectedCountry?.currencySymbol}{prices.goldPricePerTola.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-amber-700/70">{isLocal ? t(lang, "perTroyOz") : "Per Troy Oz"}</span>
-                    <span className="font-semibold text-amber-900">{selectedCountry?.currencySymbol}{prices.goldPricePerOunce.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                  </div>
+                {/* Karat selector tabs */}
+                <div className="flex gap-1 mb-3">
+                  {GOLD_KARATS.map((k) => (
+                    <button
+                      key={k.value}
+                      onClick={() => {
+                        setDisplayKarat(k.value);
+                        onChange({ goldKarat: k.value });
+                      }}
+                      className={cn(
+                        "flex-1 rounded-md px-2 py-1 text-xs font-semibold transition-all",
+                        displayKarat === k.value
+                          ? "bg-amber-500 text-white shadow-sm"
+                          : "bg-amber-100 text-amber-700 hover:bg-amber-200"
+                      )}
+                    >
+                      {k.label}
+                    </button>
+                  ))}
                 </div>
+                {(() => {
+                  const karat = GOLD_KARATS.find((k) => k.value === displayKarat)!;
+                  const pricePerGram = prices.goldPricePerGram * karat.purity;
+                  const pricePerTola = prices.goldPricePerTola * karat.purity;
+                  const pricePerOunce = prices.goldPricePerOunce * karat.purity;
+                  const fmt = (v: number) => selectedCountry?.currencySymbol + v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                  return (
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between items-center">
+                        <span className="text-amber-700/70">{isLocal ? t(lang, "perGram") : "Per Gram"}</span>
+                        <span className="font-bold text-amber-900 text-base">{fmt(pricePerGram)}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-amber-700/70">{isLocal ? t(lang, "perTola") : "Per Tola"}</span>
+                        <span className="font-semibold text-amber-900">{fmt(pricePerTola)}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-amber-700/70">{isLocal ? t(lang, "perTroyOz") : "Per Troy Oz"}</span>
+                        <span className="font-semibold text-amber-900">{fmt(pricePerOunce)}</span>
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
 
               {/* Silver Prices */}
