@@ -41,6 +41,7 @@ export function CountryStep({ formData, onChange, prices, pricesLoading, detecte
   const selectedCountry = COUNTRIES.find((c) => c.code === formData.country);
   const nisabGold = prices ? NISAB_GOLD_GRAMS * prices.goldPricePerGram : 0;
   const nisabSilver = prices ? NISAB_SILVER_GRAMS * prices.silverPricePerGram : 0;
+  const nisabGoldInKarat = displayKarat < 24 ? (NISAB_GOLD_GRAMS / (displayKarat / 24)).toFixed(2) : null;
 
   return (
     <motion.div
@@ -276,15 +277,23 @@ export function CountryStep({ formData, onChange, prices, pricesLoading, detecte
               {pricesLoading && !prices ? (
                 <div className="h-6 w-28 rounded bg-amber-200 animate-pulse" />
               ) : prices ? (
-                <p className="text-lg font-bold text-amber-900">
-                  {formatCurrency(nisabGold, formData.currency)}
-                </p>
+                <>
+                  <p className="text-lg font-bold text-amber-900">
+                    {formatCurrency(nisabGold, formData.currency)}
+                  </p>
+                  {nisabGoldInKarat ? (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {NISAB_GOLD_GRAMS}g pure gold ≈ <span className="font-semibold text-amber-700">{nisabGoldInKarat}g of {displayKarat}K</span>
+                    </p>
+                  ) : (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Based on {NISAB_GOLD_GRAMS}g of 24K pure gold
+                    </p>
+                  )}
+                </>
               ) : (
                 <p className="text-sm text-red-400">{isLocal ? t(lang, "priceUnavailable") : "Price unavailable"}</p>
               )}
-              <p className="text-xs text-muted-foreground mt-1">
-                {(isLocal ? t(lang, "basedOnGold") : "Based on {amount}g of pure gold").replace("{amount}", String(NISAB_GOLD_GRAMS))}
-              </p>
             </button>
 
             <button

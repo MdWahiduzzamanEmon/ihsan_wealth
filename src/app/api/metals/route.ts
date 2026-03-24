@@ -117,19 +117,44 @@ async function fetchFromSwissquote(): Promise<MetalResult | null> {
   return null;
 }
 
+// Source 3: metals.dev (free, no key, returns current spot prices)
+async function fetchFromMetalsDev(): Promise<MetalResult | null> {
+  try {
+    const res = await fetch("https://api.metals.dev/v1/latest?api_key=demo&currency=USD&unit=toz", {
+      next: { revalidate: 300 },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const gold = data.metals?.gold;
+    const silver = data.metals?.silver;
+    if (gold && silver) {
+      return {
+        goldPricePerOunce: gold,
+        silverPricePerOunce: silver,
+        live: true,
+        source: "metals.dev",
+      };
+    }
+  } catch {
+    // failed
+  }
+  return null;
+}
+
 async function fetchMetalPricesUSD(): Promise<MetalResult> {
-  // Try gold-api.com first (works reliably from cloud), then Swissquote
-  const sources = [fetchFromGoldApi, fetchFromSwissquote];
+  // Try multiple sources in order of reliability
+  const sources = [fetchFromGoldApi, fetchFromSwissquote, fetchFromMetalsDev];
 
   for (const fetchFn of sources) {
     const result = await fetchFn();
     if (result) return result;
   }
 
-  // All sources failed - use hardcoded fallback
+  // All sources failed - use hardcoded fallback (last resort)
   return {
-    goldPricePerOunce: 2650,
-    silverPricePerOunce: 31,
+    goldPricePerOunce: 3050,
+    silverPricePerOunce: 34,
     live: false,
     source: "fallback",
   };
