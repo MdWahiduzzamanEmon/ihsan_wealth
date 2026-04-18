@@ -2,7 +2,7 @@ import type { ChatFeature } from "@/types/chat";
 import type { TransLang } from "@/lib/islamic-content";
 
 export const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
-export const OPENROUTER_MODEL = "meta-llama/llama-3.3-70b-instruct:free";
+export const OPENROUTER_MODEL = "google/gemma-4-26b-a4b-it:free";
 
 export const LANG_TO_CURRENCY: Record<string, string> = {
   en: "USD",
